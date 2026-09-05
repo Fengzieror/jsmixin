@@ -16,6 +16,8 @@ window.__mixin.register({
             // 游戏主脚本：由 apploader.js 经 window.downloadfile + window.eval 执行
             file: 'main.min.js',
             replaces: [
+                ['赛季通行证', '[mixin]赛季通行证'],
+                ['礼品兑换', '[mixin]礼品兑换'],
                 ['点击屏幕继续', '[mixin]点击屏幕继续'],
                 ['秒后重试', '[mixin]秒后重试']
             ]
