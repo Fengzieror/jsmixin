@@ -12,7 +12,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '1.2.0'; // 1.2.0: 新增 modify op（子树内表达式精确文本替换，支持 nth/all）；1.1.0: inject tail 对齐 @At("TAIL")（末尾 return 前插入）；applyAstPatches 可选 stats
+    var VERSION = '1.2.1'; // 1.2.1: directChildFns 绑定 IIFE 类工厂声明名（var X=(function(){..})(Base) → asName='X'）；1.2.0: 新增 modify op（子树内表达式精确文本替换，支持 nth/all）；1.1.0: inject tail 对齐 @At("TAIL")（末尾 return 前插入）；applyAstPatches 可选 stats
 
     function log(msg) {
         try { console.log('[mixin-ast] ' + msg); } catch (e) { /* ignore */ }
@@ -44,6 +44,16 @@
     //   - var X = fn / X = fn / a.b.c = fn：asName = 绑定名（赋值取完整点分名）
     //   - var V = { m: fn } / V.m = { sub: fn }（命名空间对象）：asName = 'V.m' / 'V.m.sub'
     // 不深入子函数内部（它们属于下一层）。
+    // IIFE 类工厂: init 是 (function(t){...})(Base) 形态（callee 为函数的调用）。
+    // babel ES5 输出的绝大多数类都是这种形态——声明名在 declarator 上，函数体包在调用里，
+    // 不解包会让 {name:'Gy'} 这类绑定名段匹配不到。
+    function isIifeFactory(n) {
+        if (!n || n.type !== 'CallExpression') return false;
+        var c = n.callee;
+        if (c && c.type === 'ParenthesizedExpression') c = c.expression;
+        return !!(c && isFnNode(c));
+    }
+
     function directChildFns(node) {
         var out = [];
         function visit(n, bind, prefix) {
@@ -60,22 +70,26 @@
             }
             var cBind = null, cPrefix = null;
             if (n.type === 'VariableDeclarator' && n.id && n.id.type === 'Identifier') {
-                if (isFnNode(n.init)) cBind = n.id.name;
+                if (isFnNode(n.init) || isIifeFactory(n.init)) cBind = n.id.name;
                 else if (n.init && n.init.type === 'ObjectExpression') cPrefix = n.id.name;
             } else if (n.type === 'AssignmentExpression') {
                 var dn = dottedName(n.left);
                 if (dn) {
-                    if (isFnNode(n.right)) cBind = dn;
+                    if (isFnNode(n.right) || isIifeFactory(n.right)) cBind = dn;
                     else if (n.right && n.right.type === 'ObjectExpression') cPrefix = dn;
                 }
             } else if ((n.type === 'ObjectProperty' || n.type === 'Property') && prefix) {
                 var kv = n.key && (n.key.type === 'Literal' ? n.key.value : n.key.name);
                 if (typeof kv === 'string') {
-                    if (isFnNode(n.value)) cBind = prefix + '.' + kv;
+                    if (isFnNode(n.value) || isIifeFactory(n.value)) cBind = prefix + '.' + kv;
                     else if (n.value && n.value.type === 'ObjectExpression') cPrefix = prefix + '.' + kv;
                 }
             } else if (n.type === 'ObjectExpression') {
                 cPrefix = prefix; // 命名空间前缀穿透对象字面量，传给属性
+            } else if (n.type === 'CallExpression' && bind && isIifeFactory(n)) {
+                // IIFE 工厂调用是中间节点：把上一层绑定的声明名透传给被调函数
+                // （var X = function(t){..}(Base) → callee 拿到 asName='X'）
+                cBind = bind;
             }
             for (var k in n) {
                 if (k === 'start' || k === 'end' || k === 'loc' || k === 'range') continue;
