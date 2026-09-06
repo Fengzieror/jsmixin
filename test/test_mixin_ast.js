@@ -241,6 +241,24 @@ try {
         'ta=' + global.window.__ta + ' tb=' + global.window.__tb);
 } catch (e) { check('ASI: 双 tail 注入都可执行', false, e.message); }
 
+// wrap 显式取参：注入体内 arguments[0] 是转发函数（不是原实参），必须用 __mixin_args
+// （真机踩坑：getComponentName wrap 用 arguments[0] → 所有组件名变 "component_name_"+函数源码）
+var wsrc = '({1:function(){var t={getLocalizationText:function(k){return "T:"+k;}};var Oe=(function(){function o(){}return r(o,null,[{key:"getComponentName",value:function(e){return t.getLocalizationText("component_name_".concat(e));}}]),o;})();window.Oe=Oe;}})[1]();';
+var wout = __mixinAst.applyAstPatches('t.js', wsrc, [
+    { name: 'name-wrap', path: [{ module: '1' }, { anchor: { strings: ['component_name_'] } }, { method: 'getComponentName' }],
+      op: 'wrap', code: 'if (__mixin_args[0] === "prism") return "棱镜"; return $orig(__mixin_args[0]);' }
+]);
+try {
+    global.window = global.window || {};
+    new Function('window', 'r', wout)(global.window, function (C, n, tbl) {
+        for (var i = 0; i < tbl.length; i++) C[tbl[i].key] = tbl[i].value; // 静态表挂构造器
+    });
+    check('wrap: __mixin_args 取原实参', global.window.Oe.getComponentName('platform1x1') === 'T:component_name_platform1x1',
+        global.window.Oe.getComponentName('platform1x1'));
+    check('wrap: 命中自定义分支', global.window.Oe.getComponentName('prism') === '棱镜',
+        global.window.Oe.getComponentName('prism'));
+} catch (e) { check('wrap: __mixin_args 取原实参', false, e.message); }
+
 /* ---------- 2. 真实 main.min.js ---------- */
 console.log('== main.min.js ==');
 var realSrc = fs.readFileSync(path.join(__dirname, '../../pdzzapksworkspace/main.min.js'), 'utf8');

@@ -360,12 +360,15 @@
             var paramText = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : '';
             var origBody = src.slice(fn.body.start + 1, fn.body.end - 1);
             var n = '_' + fn.start;
-            // $orig() 无参 = 转发原始实参；$orig(a, b) 显式改参
+            // $orig() 无参 = 转发原始实参；$orig(a, b) 显式改参。
+            // 原始实参经 __mixin_args（第二包装参数）暴露给注入体——不要用 arguments：
+            // 包装函数自身的 arguments[0] 是转发函数（真机踩坑：getComponentName 拿 arguments[0]
+            // 当 id → 所有组件名变成 "component_name_" + 函数源码）。
             var newBody =
                 '\nfunction __mixin_orig' + n + '(' + paramText + ') {' + origBody + '}\n' +
                 'var __mixin_args' + n + ' = arguments;\n' +
-                'return (function ($orig) {\n' + code + '\n})(function () {' +
-                'return __mixin_orig' + n + '.apply(this, arguments.length ? arguments : __mixin_args' + n + '); });\n';
+                'return (function ($orig, __mixin_args) {\n' + code + '\n})(function () {' +
+                'return __mixin_orig' + n + '.apply(this, arguments.length ? arguments : __mixin_args' + n + '); }, __mixin_args' + n + ');\n';
             edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: newBody });
         } else if (op === 'log') {
             // 便捷 op：等价 inject + console.log
