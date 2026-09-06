@@ -153,6 +153,16 @@ assets/scripts/mixin/
    `repack_with_engine.py`（换 so）+ 签名（keystore 都在）；
 4. 安装 → logcat 过滤 LayaNative/console 标签验收 L0→L3。
 
-外部 mod 装载（mods.json 扫描/loader.js）全部推迟到阶段1，届时只需把 loader.js
-加回 mixin/ 目录——接口(`window.__mixin.register`)在 v1 transformer 里预留空实现。
+外部 mod 装载（mods.json 扫描/loader.js）—— **阶段1 已实现（2026-09-06）**：
+
+- `mixins/base-loader/loader.js`：patch_bundle 执行阶段【同步】装载（注册窗口纪律）。
+  读根 mods.json（兼容 `["id"]` 与 launcher 的 `{"mods":[{id,enabled}]}`）→
+  逐 mod 读 mixins.json + patches.js → `window.__mixin.register`；entry 进队列，
+  由 boot 标签（main.min.js 模块尾）或 10 秒兜底执行。
+- 存储访问走双模式授权（见 README v5 / android-modfs/）：
+  旧版运行时存储权限（真实路径直读）或 SAF 文件夹授权（ContentResolver），
+  native 全局 `modReadFileSync` 自动路由，路径根由 Java `Environment` 动态解析。
+- APK 组装（tools/build_mixin_apk.py）：loader.js 追加进 patch_bundle.js 一起注入；
+  ModFs.dex → classes3.dex；ModFsActivity 由 apktool 阶段合入 manifest
+  （产物 `派对制造_noads_modbase.apk` 缓存，改 manifest 后删掉重跑）。
 

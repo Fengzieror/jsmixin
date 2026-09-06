@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 
 /**
  * 透明辅助 Activity：承载两种授权流程的系统对话框（授权对话框/文件夹选择器
@@ -37,14 +38,24 @@ public class ModFsActivity extends Activity {
         }
         if (sdk >= 30) {
             try {
-                // 选择器默认停在主存储根；用户选 .battlecraft（或其上级）即可
+                // 选择器直接定位到 .battlecraft 文件夹（隐藏目录在 DocumentsUI 里
+                // 不可见，用户没法手动导航到；API 26+ 支持 EXTRA_INITIAL_URI，
+                // API 30+ 才走本分支所以必然可用）。用户确认即授权该文件夹。
                 Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                Uri initial = DocumentsContract.buildDocumentUri(
+                        "com.android.externalstorage.documents",
+                        "primary:" + ModFs.MOD_BASE);
+                i.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initial);
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
                         | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
                 startActivityForResult(i, REQ_SAF_TREE);
             } catch (Throwable t) {
-                finish();
+                try {
+                    startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), REQ_SAF_TREE);
+                } catch (Throwable t2) {
+                    finish();
+                }
             }
         } else {
             String[] perms = new String[] {
