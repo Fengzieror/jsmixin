@@ -1,0 +1,5 @@
+{
+  "modid": "real-smoke",
+  "version": "0.0.1",
+  "gameFiles": { "main.min.js": "../../../../pdzzapksworkspace/main.min.js" }
+}

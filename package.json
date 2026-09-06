@@ -1,0 +1,12 @@
+{
+  "name": "jsmixin",
+  "version": "0.5.0",
+  "private": true,
+  "description": "SpongePowered-Mixin-style source transform for LayaNative games",
+  "scripts": {
+    "test": "node test/test_mixin_ast.js && node test/test_build_tool.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "modid": "bad-mod",
+  "version": "0.0.0",
+  "gameFiles": { "sample2.js": "game/sample2.js" }
+}

@@ -659,25 +659,26 @@ system.apply();  // 注册到运行时
 - [x] 支持 `Inject`（在函数体头/尾插入字符串）
 - [x] JSON 配置格式
 
-### v2 — AST 变换
+### v2 — AST 变换（已完成，runtime v0.5 + mixinAst 1.1）
 
-- [x] 集成 acorn 精简版做 AST 解析
-- [x] 支持嵌套函数/类的精确定位
-- [x] 支持 IIFE 闭包体分析
-- [x] 支持 `Modify`（修改数值字面量）
+- [x] 集成 acorn 做 AST 解析（vendor/acorn.js，源码切片式编辑，不重新生成代码）
+- [x] 支持嵌套函数/类的精确定位（module/name/call/fn/method/anchor 段，唯一性强制）
+- [x] 支持 IIFE 闭包体分析（webpack 模块段 + 回调实参段 + 点分命名空间）
+- [ ] 支持 `Modify`（修改数值字面量）—— 未实现，可用 wrap 变通
 
-### v3 — 构建工具
+### v3 — 构建工具（build-tool/build.js，已实现主体）
 
-- [x] 构建工具 `build.js`
-- [x] 映射表 `name-map.json`
-- [x] 从可读名自动转换为混淆名
-- [x] 生成 `patch_bundle.js`
-- [x] 生成 `game-types.d.ts` 类型声明
-- [x] 用户用可读名写 Mark，编辑器不报错
+- [x] 构建工具 `build.js`（marks 解析 + 构建期预检 + 产物校验）
+- [x] 映射表 `name-map.json`（classes/methods/aliases）
+- [x] 从可读名自动转换为真实名
+- [x] 生成 `patches.js`（原设计名 patch_bundle.js，window.__mixin.register 形态）
+- [ ] 生成 `game-types.d.ts` 类型声明
+- [x] 用户用可读名写 Mark（`.mark.ts`，纯 ES5 + 装饰器；编辑器类型提示待 game-types.d.ts）
+- [x] mixins.json 清单（不生成 required 块——哈希校验暂不要求）
 
 ### v4 — 模块化发布
 
-- [x] 发布为 npm 包
+- [ ] 发布为 npm 包
 - [x] Node.js 适配器
 - [x] 浏览器适配器
 - [x] API 稳定化

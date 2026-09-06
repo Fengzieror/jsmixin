@@ -61,6 +61,9 @@ APK 内的基础加载器和每个用户 mod 各带一份，格式相同：
 }
 ```
 
+> 当前实现（build-tool/build.js）：mixins.json 不生成 `required` 块——
+> 哈希校验暂不要求；patch 产物文件名为 patches.js（= 设计中的 patch_bundle.js）。
+
 Sponge 对照：`<modid>.mixins.json` ≈ 本清单；refmap.json（构建期名字映射）≈
 我们嵌进 patches.js 的规范路径+特征哈希。TS 源码留在 mod 仓库，不进包。
 

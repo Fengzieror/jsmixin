@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "modid": "real-smoke",
+  "name": "real-smoke",
+  "version": "0.0.1",
+  "mixins": [
+    "patches.js"
+  ]
+}

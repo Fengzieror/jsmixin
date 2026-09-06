@@ -12,7 +12,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '1.0.0';
+    var VERSION = '1.1.0'; // 1.1.0: inject tail 对齐 @At("TAIL")（末尾 return 前插入）；applyAstPatches 可选 stats
 
     function log(msg) {
         try { console.log('[mixin-ast] ' + msg); } catch (e) { /* ignore */ }
@@ -335,7 +335,14 @@
             var at = patch.at || 'head';
             validateCode(code, 'inject-' + at);
             if (at === 'head') edits.push({ start: fn.body.start + 1, end: fn.body.start + 1, text: '\n' + code });
-            else if (at === 'tail') edits.push({ start: fn.body.end - 1, end: fn.body.end - 1, text: '\n' + code + '\n' });
+            else if (at === 'tail') {
+                // 对齐 Java Mixin @At("TAIL")：函数最后一条语句是 return 时，注入到它之前
+                // （落在 return 之后是死代码）；否则注入到函数体末尾。
+                var pos = fn.body.end - 1;
+                var stmts = fn.body.body;
+                if (stmts.length && stmts[stmts.length - 1].type === 'ReturnStatement') pos = stmts[stmts.length - 1].start;
+                edits.push({ start: pos, end: pos, text: '\n' + code + '\n' });
+            }
             else throw new Error('inject at 仅支持 head/tail，收到 ' + at);
         } else if (op === 'overwrite') {
             validateCode(code, 'overwrite');
@@ -390,13 +397,14 @@
     }
 
     /*
-     * applyAstPatches(filename, source, patches) → string
+     * applyAstPatches(filename, source, patches [, stats]) → string
      * patches: [{ path: [...], op, code/at/message, name? }]
      * 单个 patch 失败（定位失败/重叠冲突）→ 跳过该 patch 并打日志，其余照常；
      * 解析（acorn.parse）失败 → 整体返回原 source。
      * 编辑坐标全部基于原始 source，因此重叠 = 坐标错位 = 静默损坏，必须拒绝。
+     * 传入 stats 对象（可选，构建工具产物校验用）→ 得到 { applied, skipped:[label] }。
      */
-    function applyAstPatches(filename, source, patches) {
+    function applyAstPatches(filename, source, patches, stats) {
         var acorn = global.acorn;
         if (!acorn) { log('acorn 未加载，跳过 AST patch: ' + filename); return source; }
         var t0 = Date.now();
@@ -410,23 +418,26 @@
         log('parsed ' + filename + ' in ' + (Date.now() - t0) + 'ms');
         var accepted = [];
         var ok = 0;
+        var skipped = [];
         for (var i = 0; i < patches.length; i++) {
             var patch = patches[i];
             var label = patch.name || ('patch#' + i);
             try {
                 var r = resolvePath(ast, patch.path, source);
-                if (r.error) { log('SKIP ' + label + ': ' + r.error); continue; }
+                if (r.error) { log('SKIP ' + label + ': ' + r.error); skipped.push(label + ': ' + r.error); continue; }
                 var patchEdits = [];
                 applyOp(r.node, patch, source, patchEdits);
                 var conflict = findOverlap(accepted, patchEdits);
-                if (conflict) { log('SKIP ' + label + ': ' + conflict + '（坐标基于原文件，重叠会静默损坏，拒绝该 patch）'); continue; }
+                if (conflict) { log('SKIP ' + label + ': ' + conflict + '（坐标基于原文件，重叠会静默损坏，拒绝该 patch）'); skipped.push(label + ': ' + conflict); continue; }
                 accepted = accepted.concat(patchEdits);
                 log('OK ' + label + ' (' + patchEdits.length + ' 处编辑) → ' + describeFn(r.node, source));
                 ok++;
             } catch (e) {
                 log('SKIP ' + label + ': ' + e.message);
+                skipped.push(label + ': ' + e.message);
             }
         }
+        if (stats) { stats.applied = ok; stats.skipped = skipped; }
         if (ok === 0) {
             log('WARN: ' + filename + ' 没有 AST patch 生效（fail-safe 返回原文件）');
             return source;

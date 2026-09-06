@@ -13,8 +13,10 @@
    （`"CommonButton"`）、业务文案（`"秒后重试"`）、协议字段名，全部是字符串，
    压缩器不敢碰。锚点优先用字符串，函数名只当辅助。
 3. **构建期解析，运行期验证**：build 工具在本地对目标文件跑一遍 AST 解析，
-   把用户描述解析成**规范路径 + 逐段特征哈希**写进 patch_bundle；
-   运行时 transformer 按路径走 AST，每走一段先验哈希，任一段不符 → 整个 patch 拒绝执行并打日志。
+   把用户描述解析成**规范路径**写进 patches.js；
+   运行时 transformer 按路径走 AST，任一段不符 → 整个 patch 拒绝执行并打日志。
+   （逐段特征哈希设计**暂缓**：当前版本不生成、不强制校验哈希，避免误伤；运行时
+   仍支持 mixin 级 `hash` 字段，仅当显式提供时才校验。）
 4. **永远精确到要改的那个函数本身**：上层闭包/类只是定位锚点，不是修改目标。
    （对应 Java 里"mixin 外层类、修改内层方法"——ES5 里我们不给 transformer 做
    推断，用户必须显式写全路径，歧义时必须写序号。）
@@ -28,9 +30,8 @@
 ```
 Target := {
   file: string                      // 必填。目标文件名(后缀匹配)
-  hash: string                      // 可选(结构寻址时必配)。__mixin.sourceHash(source)
-                                    // = 'fnv1a32:xxxx:len:nnn'，针对"本轮轮到该mixin时的输入"，
-                                    // 不符→整个mixin跳过
+  hash: string                      // 可选。__mixin.sourceHash(source) = 'fnv1a32:xxxx:len:nnn'。
+                                    // 【暂不要求】当前构建工具不生成，运行时仅显式提供时校验
   priority: number                  // mod 级(Sponge mixins.json 约定)。小者先应用，
                                     // 后应用者可定位前者注入的代码（串行链式修改）
   cls?:  string                     // 类的真名(来自 name-map, 如 'f.AccountBindPopupUI'
@@ -101,6 +102,14 @@ MVP 只要求：`@MixinClass / @Inject(head,tail) / @Overwrite / @Wrap / @Export
 ---
 
 ## 四、用户侧写法（阶段一：TS 文件里写 JS）
+
+> 写法约定（build 工具已实现）：
+> - mark 文件内容是**纯 ES5 JS**，装饰器只做标记；方法体 = 注入体。
+> - 真实目标文件里类/函数都挂在 webpack 模块内，target 需显式锚定模块
+>   （`target.module: '625'`，或 path 首段 `{ module: '625' }`）。
+> - cls-only 目标：mark 方法名 = 目标类方法表的 key；给了 `target.method` 或
+>   `target.path` 时，所有装饰方法作用于同一解析结果（方法名随意，惯例叫 `target`）。
+> - `@Wrap` 方法第一个参数必须叫 `$orig`。
 
 用户只写 `.mark.ts` 文件，**文件内容是纯 ES5 JS**（不使用 TS 类型语法），
 用 TS 装饰器做标记。构建工具用 TypeScript Compiler API 直接读 **TS 源码的 AST**
@@ -196,24 +205,26 @@ export default class BootMark {
 
 ---
 
-## 五、构建期管线（build 工具）
+## 五、构建期管线（build-tool/build.js，已实现）
 
 ```
-1. 读 marks/*.mark.ts ──(TS Compiler API)──> 装饰器 + 函数体(字符串)
-2. 读 name-map.json (真名 ↔ 闭包内坐标, 由逆向工具产出)
-3. 对目标文件(如 main.pretty.js / 原始 main.min.js)跑 AST 解析:
-   a. cls   → 在命名空间挂载点解析出类绑定的规范路径
-   b. method → 在类的方法表中找 key 字符串, 拿到函数节点
-   c. path  → 逐段在子作用域里按锚点过滤, 要求唯一
-4. 生成规范路径: [段0, 段1, ...] 每段记录
-   { kind: 'module|iife|cls|method|fn',
-     anchorHash: H(参数个数+字符串集+调用名集),   // 逐段特征哈希
-     index }                                     // 同型兄弟序号
-5. 唯一性检查: 任何一层 0 个或多个候选 → 构建失败, 打印候选(行号+摘要)
-6. 产出 patch_bundle.js: [规范路径+哈希+变换类型+注入体(ES5字符串)]
-7. 产物校验: 对"打完补丁的目标文件"再跑一次完整解析+冒烟(语法解析通过,
-   目标函数仍可被同一路径+哈希定位) → 双重确认
+输入: build-config.json + marks/*.mark.ts + name-map.json(可选) + gameFiles 指向目标 js
+1. 读 marks/*.mark.ts ──(TS Compiler API)──> 装饰器 + 函数体(ES5 字符串)
+2. name-map.json 换名: classes→cls 点分名, methods→方法表 key, aliases→name/call 段
+   （未命中则原样使用，视为已写真名）
+3. 装饰器展开:
+   - cls-only 目标: mark 方法名 = 目标类方法表 key
+   - target.method / target.path: 所有装饰方法作用于同一解析结果
+   - @Export: 解析出目标函数的绑定名, 翻译成"父层函数尾注入 window.__mixin_exports 赋值"
+4. 构建期预检: 复用 runtime/mixinAst 的 _internals 对目标文件 resolvePath，
+   任何一段 0 个或多于 1 个候选 → 构建失败并列出候选（行:列 + 摘要）
+5. 注入体 acorn 语法校验（与运行时 validateCode 同规则）
+6. 产出 dist/patches.js（window.__mixin.register 形态）+ dist/mixins.json（无 required 块）
+7. 产物校验: applyAstPatches 整体打补丁（stats 要求 0 跳过）→ 再解析 → 各 path 重定位
 ```
+
+注意：真实目标文件的类/函数都挂在 webpack 模块函数内，mark 必须显式锚定模块段
+（`target.module: '625'` 或 path 首段 `{ module: '625' }`），构建期同样强制预检。
 
 ## 六、运行期管线（mixinTransformer.js）
 
@@ -236,12 +247,12 @@ __mixinTransform(filename, source):
 ## 七、健壮性清单（Review 用）
 
 - [ ] 每个目标 ≥2 个独立锚点（名字类 + 结构/字符串类）
-- [ ] 构建期唯一性失败 → 报错并列出候选（不许"取第一个"）
-- [ ] 运行期逐段哈希校验，任一失败 → 整文件跳过，不做部分 patch
-- [ ] version(md5) 强校验，换版本必须显式更新 marks
-- [ ] overwrite/wrap 不改变函数外壳：可 new 性、prototype、参数个数
-- [ ] 注入体一律编译为 ES5（阶段一）；acorn ecmaVersion 用 'latest' 以便未来 ES6
-- [ ] 所有失败可见：构建报错 / 运行时 console.warn，无静默丢弃
+- [x] 构建期唯一性失败 → 报错并列出候选（不许"取第一个"）
+- [x] 运行期逐 patch 校验，任一失败 → 跳过该 patch + console.warn，不做静默丢弃
+- [ ] version(md5)/逐段哈希强校验 —— **暂缓**（当前版本不生成不校验，见 §一.3）
+- [x] overwrite/wrap 不改变函数外壳：可 new 性、prototype、参数个数
+- [x] 注入体一律为 ES5（构建工具以 ES5 目标读取 marks 并做语法校验）
+- [x] inject tail 对齐 @At("TAIL")：函数以 return 结尾时注入到末尾 return 之前
 
 ## 八、与 Java Mixin 的语义对照（简）
 
