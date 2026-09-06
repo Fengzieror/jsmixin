@@ -12,7 +12,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '1.1.0'; // 1.1.0: inject tail 对齐 @At("TAIL")（末尾 return 前插入）；applyAstPatches 可选 stats
+    var VERSION = '1.2.0'; // 1.2.0: 新增 modify op（子树内表达式精确文本替换，支持 nth/all）；1.1.0: inject tail 对齐 @At("TAIL")（末尾 return 前插入）；applyAstPatches 可选 stats
 
     function log(msg) {
         try { console.log('[mixin-ast] ' + msg); } catch (e) { /* ignore */ }
@@ -370,6 +370,59 @@
                 'return (function ($orig, __mixin_args) {\n' + code + '\n})(function () {' +
                 'return __mixin_orig' + n + '.apply(this, arguments.length ? arguments : __mixin_args' + n + '); }, __mixin_args' + n + ');\n';
             edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: newBody });
+        } else if (op === 'modify') {
+            // 修改目标函数子树内表达式节点的源码文本（README v2：修改数值字面量；
+            // 泛化为任意表达式精确文本替换）。
+            //   find    必填。节点源码文本的精确匹配（按 trim 后逐节点比对）
+            //   replace 必填。替换文本（须为合法表达式）
+            //   nth     可选。命中多个时取第 n 个（0 起）；未写且命中>1 → 拒绝
+            //   all     可选。替换全部命中（嵌套同文本时保留最外层，其余丢弃——
+            //           坐标嵌套=重叠=静默损坏，交给统一的 overlap 拒绝逻辑前先去内层）
+            if (!patch.find || typeof patch.find !== 'string') throw new Error('modify 需要 find（节点源码精确文本）');
+            if (patch.replace == null || typeof patch.replace !== 'string') throw new Error('modify 需要 replace（替换表达式文本）');
+            // find/replace 可以是表达式，也可以是完整语句（如 "return x"）——
+            // 单语句 Program 都能解析即合法；插入形态按被替换节点种类决定
+            function modParseKind(text, what) {
+                var eMsg = null;
+                try {
+                    var ast = global.acorn.parse(text, { ecmaVersion: 'latest' });
+                    var first = ast.body[0];
+                    return (ast.body.length === 1 && first && first.type === 'ExpressionStatement') ? 'expr' : 'stmt';
+                } catch (e0) { eMsg = e0.message; }
+                try {
+                    // Program 层非法的语句（return/break/...）放进函数体再验
+                    var f = global.acorn.parse('(function(){' + text + '})', { ecmaVersion: 'latest' });
+                    var body = f.body[0].expression.body.body;
+                    if (body.length === 1) return 'stmt';
+                } catch (e1) { /* 落到统一报错 */ }
+                throw new Error('modify.' + what + ' 不是合法表达式/语句: ' + eMsg);
+            }
+            modParseKind(patch.find, 'find');
+            modParseKind(patch.replace, 'replace');
+            var matches = [];
+            walkAll(fn, function (n) {
+                if (n === fn) return;
+                if (src.slice(n.start, n.end) === patch.find) matches.push(n);
+            });
+            if (!matches.length) throw new Error('modify: 目标函数内 0 处命中 "' + patch.find + '"');
+            // 去内层：文本相同的嵌套节点只保留最外层（文本一致，外层替换结果相同且坐标安全）
+            var kept = matches.filter(function (n) {
+                return !matches.some(function (m) { return m !== n && m.start <= n.start && m.end >= n.end; });
+            });
+            if (kept.length > 1 && patch.all !== true && patch.nth == null) {
+                throw new Error('modify: ' + kept.length + ' 处命中 "' + patch.find + '"，需写 nth 或 all:true');
+            }
+            var targets = kept;
+            if (patch.all !== true) {
+                var nth = patch.nth == null ? 0 : patch.nth;
+                if (nth < 0 || nth >= kept.length) throw new Error('modify: nth ' + nth + ' 越界（命中 ' + kept.length + ' 处）');
+                targets = [kept[nth]];
+            }
+            for (var ti = 0; ti < targets.length; ti++) {
+                var isStmt = /Statement$|Declaration$/.test(targets[ti].type);
+                edits.push({ start: targets[ti].start, end: targets[ti].end,
+                    text: isStmt ? patch.replace : '(' + patch.replace + ')' });
+            }
         } else if (op === 'log') {
             // 便捷 op：等价 inject + console.log
             edits.push({ start: fn.body.start + 1, end: fn.body.start + 1, text: '\nconsole.log(' + JSON.stringify(String(patch.message || '[mixin] hit')) + ');\n' });

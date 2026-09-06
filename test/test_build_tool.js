@@ -28,18 +28,26 @@ var res = build.runBuild(proj);
 check('构建成功', res.ok === true, res.ok ? '' : (res.message + '\n  ' + (res.errors || []).join('\n  ')));
 
 if (res.ok) {
-    check('patch 数 = 4（tick inject / tick wrap / boot tail / step export）', res.patchCount === 4,
+    check('patch 数 = 5（tick inject / tick wrap / boot tail / step export / helper modify）', res.patchCount === 5,
         '实际 ' + res.patchCount);
 
     var patchesJs = fs.readFileSync(path.join(res.outDir, 'patches.js'), 'utf8');
     check('产物 patches.js 存在且含 register 调用', patchesJs.indexOf('window.__mixin.register(') >= 0);
     check('产物包含 export 赋值', patchesJs.indexOf('__mixin_exports') >= 0);
+    check('产物包含 modify patch（find/replace）', /"op":\s*"modify"/.test(patchesJs)
+        && patchesJs.indexOf('return x + 1;') >= 0 && patchesJs.indexOf('return x + 2;') >= 0);
 
     var manifest = JSON.parse(fs.readFileSync(path.join(res.outDir, 'mixins.json'), 'utf8'));
     check('mixins.json: modid/priority 正确',
         manifest.modid === 'demo-mod' && manifest.priority === 100 && manifest.mixins[0] === 'patches.js',
         JSON.stringify(manifest));
     check('mixins.json 不含 required（哈希暂不要求）', manifest.required === undefined);
+
+    var dts = fs.readFileSync(path.join(res.outDir, 'game-types.d.ts'), 'utf8');
+    check('game-types.d.ts: 可读类 interface（Counter）', /interface Counter \{/.test(dts));
+    check('game-types.d.ts: 方法表 key 提示（tick）', /tick\?\(\.\.\.args: any\[\]\): any/.test(dts));
+    check('game-types.d.ts: @Export 汇总（stepFn）', dts.indexOf('stepFn?: any;') >= 0);
+    check('game-types.d.ts: modFs 全局声明', dts.indexOf('declare function modFsStatus()') >= 0);
 
     // name-map 生效：Counter→App、start→boot
     var mod = JSON.parse(patchesJs.slice(patchesJs.indexOf('register(') + 'register('.length, patchesJs.lastIndexOf(')')));
@@ -91,8 +99,8 @@ if (res.ok) {
             sandboxLog.join(' | '));
         check('export 拿到 step 函数', typeof sandboxWindow.__mixin_exports.stepFn === 'function',
             JSON.stringify(sandboxWindow.__mixin_exports && Object.keys(sandboxWindow.__mixin_exports)));
-        check('原业务语义保持（helper(2)+"!"、tick-run）',
-            sandboxLog.indexOf('3!') >= 0 && sandboxLog.indexOf('tick-run') >= 0, sandboxLog.join(' | '));
+        check('原业务语义保持 + modify 数值生效（helper(2)=2+2 → "4!"、tick-run）',
+            sandboxLog.indexOf('4!') >= 0 && sandboxLog.indexOf('tick-run') >= 0, sandboxLog.join(' | '));
     } catch (e) {
         check('变换后目标可执行且无异常', false, e.message);
     }

@@ -41,3 +41,10 @@ export default class ExportMark {
     @Export({ as: 'stepFn' })
     target() {}
 }
+
+// 修改数值：helper 的加成 1 → 2（helper(x){return x+1;}），语句文本含分号
+@MixinClass({ target: { file: 'sample.js', path: [{ module: '7' }, { name: 'helper' }] } })
+export default class ModifyMark {
+    @Modify({ find: 'return x + 1;', replace: 'return x + 2;' })
+    target() {}
+}

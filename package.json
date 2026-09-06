@@ -1,10 +1,43 @@
 {
   "name": "jsmixin",
-  "version": "0.5.0",
-  "private": true,
-  "description": "SpongePowered-Mixin-style source transform for LayaNative games",
+  "version": "1.0.0",
+  "description": "SpongePowered-Mixin-style source transform for LayaNative games: AST-level inject/overwrite/wrap/modify/export on game JS before V8 compiles it",
+  "keywords": [
+    "mixin",
+    "layanative",
+    "layaair",
+    "ast",
+    "acorn",
+    "mod",
+    "game-modding"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fengzieror/jsmixin.git"
+  },
+  "files": [
+    "runtime/",
+    "vendor/",
+    "build-tool/",
+    "android-modfs/",
+    "mixins/base-loader/",
+    "README.md",
+    "DESIGN-target.md",
+    "DESIGN-layout.md"
+  ],
+  "main": "runtime/mixinAst.js",
+  "exports": {
+    ".": "./runtime/mixinAst.js",
+    "./transformer": "./runtime/mixinTransformer.js",
+    "./build": "./build-tool/build.js"
+  },
   "scripts": {
-    "test": "node test/test_mixin_ast.js && node test/test_build_tool.js"
+    "test": "node test/test_mixin_ast.js && node test/test_build_tool.js",
+    "build:mod": "node build-tool/build.js"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "devDependencies": {
     "typescript": "^5.5.0"

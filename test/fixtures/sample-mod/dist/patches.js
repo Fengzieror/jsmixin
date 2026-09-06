@@ -74,6 +74,20 @@ window.__mixin.register({
           "op": "inject",
           "at": "tail",
           "code": "\nwindow.__mixin_exports = window.__mixin_exports || {};\nwindow.__mixin_exports[\"stepFn\"] = step;"
+        },
+        {
+          "name": "ModifyMark.target",
+          "path": [
+            {
+              "module": "7"
+            },
+            {
+              "name": "helper"
+            }
+          ],
+          "op": "modify",
+          "find": "return x + 1;",
+          "replace": "return x + 2;"
         }
       ]
     }

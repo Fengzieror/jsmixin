@@ -192,9 +192,13 @@ function parseMarkFile(file, map) {
                 } else if (dn === 'Export') {
                     if (!da.as) fail(file + ': @Export 需要 { as: "导出名" }');
                     made.push({ op: 'export', as: da.as });
+                } else if (dn === 'Modify') {
+                    if (!da.find || typeof da.find !== 'string') fail(file + ': @Modify 需要 { find: "节点源码精确文本" }');
+                    if (da.replace == null || typeof da.replace !== 'string') fail(file + ': @Modify 需要 { replace: "替换表达式文本" }');
+                    made.push({ op: 'modify', find: da.find, replace: da.replace, nth: da.nth, all: da.all === true ? true : undefined });
                 } else {
                     fail(file + ': 方法 ' + markMethodName + ' 上有未支持的装饰器 @' + dn
-                        + '（MVP 支持 Inject/Overwrite/Wrap/Export）');
+                        + '（支持 Inject/Overwrite/Wrap/Export/Modify）');
                 }
             }
             if (made.length) ops.push({ markMethod: markMethodName, patches: made });
@@ -234,6 +238,10 @@ function expandGroups(groups) {
                     at: pk.at,
                     code: pk.code,
                     as: pk.as,
+                    find: pk.find,
+                    replace: pk.replace,
+                    nth: pk.nth,
+                    all: pk.all,
                     from: grp.file
                 });
             }
@@ -276,7 +284,8 @@ function runBuild(projDir) {
     var marksDir = path.join(projDir, cfg.marks || 'marks');
     var outDir = path.join(projDir, cfg.outDir || 'dist');
     var nameMapPath = path.join(projDir, cfg.nameMap || 'name-map.json');
-    var map = makeMapper(fs.existsSync(nameMapPath) ? JSON.parse(readText(nameMapPath)) : null);
+    var nameMapJson = fs.existsSync(nameMapPath) ? JSON.parse(readText(nameMapPath)) : null;
+    var map = makeMapper(nameMapJson);
 
     if (!cfg.gameFiles || typeof cfg.gameFiles !== 'object') fail('build-config.json 缺少 gameFiles');
     var markFiles = fs.readdirSync(marksDir).filter(function (f) { return /\.mark\.ts$/.test(f); })
@@ -311,12 +320,14 @@ function runBuild(projDir) {
 
     var errors = [];
     var patchesByFile = {}; // targetFile → [patch]
+    var exportNames = [];   // @Export 汇总（game-types.d.ts 用）
     for (var r = 0; r < reqs.length; r++) {
         var req = reqs[r];
         var c;
         try { c = getAst(req.targetFile); } catch (e) { errors.push(req.name + ': ' + e.message); continue; }
 
         if (req.op === 'export') {
+            exportNames.push(req.as);
             var ee = expandExport(req, astCache);
             if (ee) { errors.push(req.name + ' (@Export ' + req.as + '): ' + ee); continue; }
         }
@@ -334,6 +345,12 @@ function runBuild(projDir) {
         var patch = { name: req.name, path: req.path, op: req.op };
         if (req.op === 'inject') patch.at = req.at || 'head';
         if (req.code != null) patch.code = req.code;
+        if (req.op === 'modify') {
+            patch.find = req.find;
+            patch.replace = req.replace;
+            if (req.nth != null) patch.nth = req.nth;
+            if (req.all === true) patch.all = true;
+        }
         if (!patchesByFile[req.targetFile]) patchesByFile[req.targetFile] = [];
         patchesByFile[req.targetFile].push(patch);
     }
@@ -397,13 +414,71 @@ function runBuild(projDir) {
     // 哈希校验暂不要求：不生成 required 块
     fs.writeFileSync(path.join(outDir, 'mixins.json'), JSON.stringify(manifest, null, 2) + '\n');
 
+    // game-types.d.ts：name-map 可读类 + 方法表 key + @Export 汇总（编辑器类型提示）
+    fs.writeFileSync(path.join(outDir, 'game-types.d.ts'), genTypesDts(nameMapJson, exportNames));
+
     return {
         ok: true,
         outDir: outDir,
         patchCount: total,
-        files: Object.keys(patchesByFile),
+        files: Object.keys(patchesByFile).concat(['game-types.d.ts']),
         patchesByFile: patchesByFile
     };
+}
+
+/*
+ * 生成 game-types.d.ts。数据源（无类型信息的现实约束下做"结构提示"而非精确类型）：
+ *   - name-map.classes：可读类名 → interface（全部成员 any，索引签名兜底）
+ *   - name-map.methods："类.方法" key → 该 interface 的可选方法
+ *   - 本 mod 的 @Export as 名 → window.__mixin_exports 的具名条目
+ *   - 引擎 modFs 全局（Android 部署才存在，声明成函数供 mod 作者引用）
+ * mark 文件本身是纯 ES5（@ts-nocheck），本文件服务阶段二（TS 注入体）与补丁作者。
+ */
+function genTypesDts(nameMapJson, exportNames) {
+    var lines = [];
+    lines.push('// 由 jsmixin build-tool 生成，勿手改。数据源：name-map.json + 本 mod 的 @Export。');
+    lines.push('// tsconfig "include" 加入本文件即可获得 game.<可读类> / window.__mixin_exports 的类型提示。');
+    lines.push('declare namespace game {');
+    var classes = (nameMapJson && nameMapJson.classes) || {};
+    var methods = (nameMapJson && nameMapJson.methods) || {};
+    var byCls = {};
+    Object.keys(methods).forEach(function (k) {
+        var dot = k.indexOf('.');
+        if (dot <= 0) return;
+        var cls = k.slice(0, dot);
+        (byCls[cls] = byCls[cls] || []).push(k.slice(dot + 1));
+    });
+    Object.keys(classes).forEach(function (readable) {
+        lines.push('  /** 真实内部名: ' + classes[readable] + ' */');
+        lines.push('  interface ' + readable + ' {');
+        (byCls[readable] || []).forEach(function (m) {
+            lines.push('    ' + m + '?(...args: any[]): any; // 方法表 key "' + m + '"');
+        });
+        lines.push('    [key: string]: any;');
+        lines.push('  }');
+    });
+    lines.push('}');
+    lines.push('interface Window {');
+    lines.push('  __mixin: {');
+    lines.push('    version: string;');
+    lines.push('    register(mod: any): void;');
+    lines.push('    stats(): any;');
+    lines.push('    sourceHash(src: string): string;');
+    lines.push('  };');
+    lines.push('  __mixin_exports: {');
+    exportNames.forEach(function (n) {
+        lines.push('    ' + n + '?: any; // @Export');
+    });
+    lines.push('    [key: string]: any;');
+    lines.push('  };');
+    lines.push('  __mixinLoader?: any; // 阶段1 外部 mod 装载器（loader.js）');
+    lines.push('}');
+    // 引擎 modFs 全局（android-modfs + native，仅 Android 部署存在）
+    lines.push('// 引擎 modFs 全局（Android 部署才有；双模式存储授权，见 android-modfs/）');
+    lines.push('declare function modFsStatus(): string;');
+    lines.push('declare function modFsEnsure(): boolean;');
+    lines.push('declare function modReadFileSync(path: string): string;');
+    return lines.join('\n') + '\n';
 }
 
 module.exports = { runBuild: runBuild, makeMapper: makeMapper };

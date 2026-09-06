@@ -259,6 +259,54 @@ try {
         global.window.Oe.getComponentName('prism'));
 } catch (e) { check('wrap: __mixin_args 取原实参', false, e.message); }
 
+/* ---------- 1m. modify op ---------- */
+console.log('== modify op ==');
+var msrc = '({1:function(){function calc(){ var a = 10; var b = 10; return a + b + helper(1); }}})[1]();';
+function mrun(patches) {
+    var st = {};
+    var out = __mixinAst.applyAstPatches('m.js', msrc, patches, st);
+    return { out: out, st: st };
+}
+// 单命中：替换（语句节点的精确文本含末尾分号）
+var m1 = mrun([{ name: 'mod-one', path: [{ module: '1' }, { name: 'calc' }],
+    op: 'modify', find: 'return a + b + helper(1);', replace: 'return a + b + helper(2);' }]);
+check('modify: 单命中替换', m1.out.indexOf('helper(2)') > 0, m1.st.skipped.join('|'));
+try { acorn.parse(m1.out, { ecmaVersion: 'latest' }); check('modify: 输出语法完整', true); }
+catch (e) { check('modify: 输出语法完整', false, e.message); }
+// 多命中未消歧 → 拒绝该 patch（fail-safe）
+var m2 = mrun([{ name: 'mod-many', path: [{ module: '1' }, { name: 'calc' }],
+    op: 'modify', find: '10', replace: '99' }]);
+check('modify: 多命中未消歧被拒绝', m2.out.indexOf('99') < 0 && m2.st.skipped.length === 1,
+    m2.out + ' | ' + m2.st.skipped.join('|'));
+// nth 消歧：第 2 个 10
+var m3 = mrun([{ name: 'mod-nth', path: [{ module: '1' }, { name: 'calc' }],
+    op: 'modify', find: '10', replace: '99', nth: 1 }]);
+check('modify: nth=1 取第二处', /var a = 10; var b = \(99\);/.test(m3.out), m3.out);
+// all：全部替换
+var m4 = mrun([{ name: 'mod-all', path: [{ module: '1' }, { name: 'calc' }],
+    op: 'modify', find: '10', replace: '99', all: true }]);
+check('modify: all 替换全部', (m4.out.split('(99)').length - 1) === 2, m4.out);
+// 0 命中 → 拒绝
+var m5 = mrun([{ name: 'mod-zero', path: [{ module: '1' }, { name: 'calc' }],
+    op: 'modify', find: '404', replace: '1' }]);
+check('modify: 0 命中被拒绝', m5.st.skipped.length === 1 && /0 处命中/.test(m5.st.skipped[0]),
+    m5.st.skipped.join('|'));
+// replace 非法表达式 → 拒绝
+var m6 = mrun([{ name: 'mod-bad', path: [{ module: '1' }, { name: 'calc' }],
+    op: 'modify', find: '10', replace: 'a b c)' }]);
+check('modify: replace 非法表达式被拒绝', m6.st.skipped.length === 1 && m6.out.indexOf('a b c)') < 0,
+    m6.st.skipped.join('|'));
+// 语义执行：modify 后结果可运行且数值生效
+try {
+    var execLog = [];
+    var m7src = '({1:function(){function helper(x){return x+1;} function calc(){ var a = 10; return helper(a); } console.log(calc());}})[1]();';
+    var m7 = __mixinAst.applyAstPatches('m7.js', m7src, [
+        { name: 'mod-run', path: [{ module: '1' }, { name: 'calc' }], op: 'modify', find: '10', replace: '41' }]);
+    var cap = [];
+    new Function('console', m7)({ log: function (v) { cap.push(v); } });
+    check('modify: 替换后语义生效（41+1=42）', cap[0] === 42, cap.join(','));
+} catch (e) { check('modify: 替换后语义生效（41+1=42）', false, e.message); }
+
 /* ---------- 2. 真实 main.min.js ---------- */
 console.log('== main.min.js ==');
 var realSrc = fs.readFileSync(path.join(__dirname, '../../pdzzapksworkspace/main.min.js'), 'utf8');

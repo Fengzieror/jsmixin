@@ -10,11 +10,14 @@
  */
 window.__mixinBoot = function (Laya) {
     var tries = 0;
+    // main.min.js 模块尾已执行 → 外部 mod 注册窗口关闭（loader.js 据此停止重试）
+    try { window.__mixinLoader && window.__mixinLoader.windowClosed && window.__mixinLoader.windowClosed(); } catch (e) {}
     function addLabel() {
         tries++;
         try {
             if (!Laya || !Laya.stage || !Laya.stage.addChild) {
                 if (tries < 120) setTimeout(addLabel, 500);
+                else window.__mixinLoader && window.__mixinLoader.runEntries && window.__mixinLoader.runEntries();
                 return;
             }
             var lb = new Laya.Label('[mixin] mixin active (ast v1)');
@@ -25,6 +28,8 @@ window.__mixinBoot = function (Laya) {
             lb.zOrder = 99999;
             Laya.stage.addChild(lb);
             console.log('[mixin] boot label added to stage');
+            // 游戏已起来：执行外部 mod 的 entry（loader.js 队列）
+            window.__mixinLoader && window.__mixinLoader.runEntries && window.__mixinLoader.runEntries();
         } catch (e) {
             console.log('[mixin] boot label error: ' + e);
         }
