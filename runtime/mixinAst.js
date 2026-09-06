@@ -238,18 +238,24 @@
     }
 
     // babel 类方法表：X(ClassName, [{key:"...", value:function(){}}]) 形态。
-    // 在当前节点整个子树里扫描双参调用；若给了 cls（或上一段解析出了绑定名）则校验第一参。
+    // 访问器条目 {key:"...", get:fn}（getter/setter）同样支持——取其 get/set 函数。
+    // 静态方法表是三参调用 X(Cls, null, [...])（babel _createClass(Cls, null, staticProps)）。
+    // 在当前节点整个子树里扫描；若给了 cls（或上一段解析出了绑定名）则校验第一参。
     function resolveMethod(node, seg, src, prevAsName) {
         var clsName = seg.cls || prevAsName || null;
         var candidates = [];
         walkAll(node, function (n) {
             if (n.type !== 'CallExpression') return;
             var args = n.arguments;
-            if (!args || args.length !== 2) return;
+            if (!args || (args.length !== 2 && args.length !== 3)) return;
             if (!args[0] || args[0].type !== 'Identifier') return;
             if (clsName && args[0].name !== clsName) return;
-            if (!args[1] || args[1].type !== 'ArrayExpression') return;
-            var props = args[1].elements;
+            var table = null;
+            if (args.length === 2 && args[1] && args[1].type === 'ArrayExpression') table = args[1];
+            else if (args.length === 3 && args[1] && args[1].type === 'Literal' && args[1].value === null
+                && args[2] && args[2].type === 'ArrayExpression') table = args[2];
+            if (!table) return;
+            var props = table.elements;
             for (var i = 0; i < props.length; i++) {
                 // 元素形如 { key: "createChildren", value: function(){...} }
                 var el = props[i];
@@ -260,7 +266,7 @@
                     if (pp.type !== 'Property' && pp.type !== 'ObjectProperty') continue;
                     var pn = pp.key && (pp.key.name || pp.key.value);
                     if (pn === 'key') keyVal = pp.value && (pp.value.type === 'Literal' ? pp.value.value : pp.value.name);
-                    else if (pn === 'value') valNode = pp.value;
+                    else if (pn === 'value' || pn === 'get' || pn === 'set') valNode = pp.value;
                 }
                 if (keyVal === seg.method && isFnNode(valNode) && hasBlockBody(valNode)) candidates.push(valNode);
             }

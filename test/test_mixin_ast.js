@@ -215,6 +215,15 @@ check('重叠: 内层 patch 被拒绝而非损坏', ovlOut.split('ole.log(helper
 try { acorn.parse(ovlOut, { ecmaVersion: 'latest' }); check('重叠: 输出语法完整', true); }
 catch (e) { check('重叠: 输出语法完整', false, e.message); }
 
+// getter 访问器条目：{key:"...", get:fn} 也要能被 method 段命中（Of.creators/configs 场景）
+var acc = '({1:function(){var Of=(function(){function Of(){}return r(Of,[{key:"creators",get:function(){return this._m||{};}},{key:"size",value:function(){return 7;}}]),Of;})(); Of; }})[1]();';
+var r3 = I.resolvePath(acorn.parse(acc, { ecmaVersion: 'latest' }),
+    [{ module: '1' }, { anchor: { strings: ['creators'] } }, { method: 'creators' }], acc);
+check('方法链: getter 访问器条目命中', !r3.error && acc.slice(r3.node.start, r3.node.end).indexOf('this._m') > 0, r3.error);
+var r4 = I.resolvePath(acorn.parse(acc, { ecmaVersion: 'latest' }),
+    [{ module: '1' }, { anchor: { strings: ['creators'] } }, { method: 'size' }], acc);
+check('方法链: value 条目不受影响', !r4.error && acc.slice(r4.node.start, r4.node.end).indexOf('return 7') > 0, r4.error);
+
 /* ---------- 2. 真实 main.min.js ---------- */
 console.log('== main.min.js ==');
 var realSrc = fs.readFileSync(path.join(__dirname, '../../pdzzapksworkspace/main.min.js'), 'utf8');
