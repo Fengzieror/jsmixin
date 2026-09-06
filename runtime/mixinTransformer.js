@@ -13,7 +13,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '0.3.0';
+    var VERSION = '0.4.0';
     var mods = []; // 已注册的 mod 描述列表
 
     function log(msg) {
@@ -54,64 +54,82 @@
     }
 
     /*
-     * 对一段源码应用一个 mod 的全部变换。支持：
-     *   replaces: [[from, to], ...] 纯字符串替换（全部出现处）
-     *   patches:  [{ path, op, code, ... }] AST 锚点精确定位（需 __mixinAst + acorn）
-     *   hash:     可选版本锁，不符则该 mixin 整体跳过（结构寻址必配）
-     * 先跑 replaces（便宜），有 patches 再解析一次 AST（昂贵，仅按需）。
-     * 未做任何修改时返回原字符串（引用相等），供上层判断。
+     * 字符串级替换（一个 mixin 的 replaces）。
      */
-    function applyMod(mx, source, filename) {
+    function applyReplaces(mx, source, filename) {
         var out = source;
-        if (mx.hash) {
-            var actual = sourceHash(source);
-            if (actual !== mx.hash) {
-                log('WARN: ' + (mx.file || '?') + ' 哈希不符（期望 ' + mx.hash + '，实际 ' + actual + '），跳过该 mixin（fail-safe）');
-                return source;
+        if (!mx.replaces) return out;
+        for (var i = 0; i < mx.replaces.length; i++) {
+            var from = mx.replaces[i][0];
+            var to = mx.replaces[i][1];
+            var n = out.split(from).length - 1;
+            if (n === 0) {
+                log('WARN: ' + (mx.file || '?') + ' 中找不到替换目标 "' + from + '"（可能游戏版本不符）');
+                continue;
             }
-        }
-        var i, from, to, n;
-        if (mx.replaces) {
-            for (i = 0; i < mx.replaces.length; i++) {
-                from = mx.replaces[i][0];
-                to = mx.replaces[i][1];
-                n = out.split(from).length - 1;
-                if (n === 0) {
-                    log('WARN: ' + (mx.file || '?') + ' 中找不到替换目标 "' + from + '"（可能游戏版本不符）');
-                    continue;
-                }
-                out = out.split(from).join(to);
-                log('replace "' + from + '" x' + n + ' in ' + filename);
-            }
-        }
-        if (mx.patches && mx.patches.length) {
-            if (global.__mixinAst) {
-                var patched = global.__mixinAst.applyAstPatches(filename, out, mx.patches);
-                if (patched !== out) out = patched;
-            } else {
-                log('WARN: __mixinAst 未加载，跳过 ' + (mx.file || '?') + ' 的 ' + mx.patches.length + ' 个 AST patch');
-            }
+            out = out.split(from).join(to);
+            log('replace "' + from + '" x' + n + ' in ' + filename);
         }
         return out;
     }
 
+    /*
+     * 单一管线（对齐 DESIGN-layout §三）：
+     *   1. 收集所有匹配的 mixin，先验哈希锁（针对本轮输入 = 原始文件，与顺序无关）
+     *   2. replaces 按注册顺序跑（字符串级）
+     *   3. 所有 AST patches 合并成一次解析、一次应用 —— 所有 path 坐标基于同一份
+     *      解析结果，先注册的 mixin 注入的代码不会进入本次解析树，因此任何 mixin
+     *      增删都不会移动既有 patch 的名字/序号坐标（{fn:n}/{name,index} 稳定）。
+     *      两个 patch 改同一区域 → 由 __mixinAst 的重叠检测拒绝后者，不静默损坏。
+     */
     function transform(filename, source) {
         if (typeof source !== 'string' || source.length === 0) return source;
         var base = baseName(filename);
+        var matched = [];
         for (var mi = 0; mi < mods.length; mi++) {
             var mod = mods[mi];
             var mixins = mod.mixins || [];
             for (var i = 0; i < mixins.length; i++) {
                 var mx = mixins[i];
                 if (!fileMatches(mx.file, base, filename)) continue;
-                var out = applyMod(mx, source, filename);
-                if (out !== source) {
-                    log('patched: ' + filename + ' (by ' + (mod.modid || '?') + ')');
-                    source = out;
+                if (mx.hash) {
+                    var actual = sourceHash(source);
+                    if (actual !== mx.hash) {
+                        log('WARN: ' + (mx.file || '?') + ' 哈希不符（期望 ' + mx.hash + '，实际 ' + actual + '），跳过 mod "' + (mod.modid || '?') + '"（fail-safe）');
+                        continue;
+                    }
                 }
+                matched.push(mx);
             }
         }
-        return source;
+        if (!matched.length) return source;
+
+        var out = source;
+        for (i = 0; i < matched.length; i++) {
+            var mxr = matched[i];
+            if (!mxr.replaces) continue;
+            var after = applyReplaces(mxr, out, filename);
+            if (after !== out) {
+                log('patched(replaces): ' + filename + ' (by ' + (mxr._modid || '?') + ')');
+                out = after;
+            }
+        }
+
+        var allPatches = [];
+        for (i = 0; i < matched.length; i++) {
+            if (matched[i].patches && matched[i].patches.length) {
+                allPatches = allPatches.concat(matched[i].patches);
+            }
+        }
+        if (allPatches.length) {
+            if (global.__mixinAst) {
+                var patched = global.__mixinAst.applyAstPatches(filename, out, allPatches);
+                if (patched !== out) out = patched;
+            } else {
+                log('WARN: __mixinAst 未加载，跳过 ' + allPatches.length + ' 个 AST patch');
+            }
+        }
+        return out;
     }
 
     /*
@@ -156,9 +174,11 @@
         version: VERSION,
         register: function (mod) {
             if (!mod || typeof mod !== 'object') return;
+            var mixins = mod.mixins || [];
+            for (var i = 0; i < mixins.length; i++) mixins[i]._modid = mod.modid || '?';
             mods.push(mod);
             log('registered mod "' + (mod.modid || '?') + '" v' + (mod.version || '?')
-                + ' with ' + ((mod.mixins || []).length) + ' mixin(s)');
+                + ' with ' + mixins.length + ' mixin(s)');
         },
         stats: function () {
             return { mods: mods.length, evalHooked: !!global.__mixinEvalHooked };

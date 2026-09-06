@@ -240,25 +240,35 @@
     }
 
     function resolvePath(ast, path, src) {
-        var node = ast; // Program
+        var chain = [ast]; // 已解析节点链，末位 = 当前节点
         var prevAsName = null;
         for (var i = 0; i < path.length; i++) {
             var seg = path[i];
+            var node = chain[chain.length - 1];
             var r;
             if (seg.module != null) r = resolveModule(node, seg, src);
             else if (seg.name != null) r = resolveName(node, seg, src);
             else if (seg.fn != null) r = resolveFnIndex(node, seg, src);
-            else if (seg.method != null) r = resolveMethod(node, seg, src, prevAsName);
+            else if (seg.method != null) {
+                r = resolveMethod(node, seg, src, prevAsName);
+                if (r.error && chain.length > 1 && /0 个候选/.test(r.error)) {
+                    // 非 IIFE 包装的类：方法表调用是类绑定语句的兄弟（不在类函数体内）。
+                    // 回退到上一层的子树里找 —— cls 名字过滤仍然保证身份，唯一性仍然强制。
+                    var up = resolveMethod(chain[chain.length - 2], seg, src, prevAsName);
+                    if (!up.error) r = up;
+                }
+            }
             else if (seg.anchor) r = resolveAnchor(node, seg, src);
-            else return { error: 'path[' + i + '] 段类型无法识别（需 module/name/method/anchor）' };
+            else return { error: 'path[' + i + '] 段类型无法识别（需 module/name/fn/method/anchor）' };
             if (r.error) return { error: 'path[' + i + '] ' + r.error };
             node = r.node;
+            chain.push(node);
             prevAsName = r.asName || null;
             if (isFnNode(node) && !hasBlockBody(node)) {
                 return { error: 'path[' + i + '] 目标函数体不是块（箭头函数表达式体），无法注入' };
             }
         }
-        return { node: node };
+        return { node: chain[chain.length - 1] };
     }
 
     /* ---------- op 应用：产出 {start,end,text} 编辑，基于原 source ---------- */

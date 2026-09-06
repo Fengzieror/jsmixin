@@ -131,6 +131,41 @@ check('纯结构链注入生效', structural.indexOf('struct-hit') > 0);
 try { acorn.parse(structural, { ecmaVersion: 'latest' }); check('结构补丁后语法完整', true); }
 catch (e) { check('结构补丁后语法完整', false, e.message); }
 
+// ---- 单一管线：先注册的 mixin 注入新代码，不影响后注册 mixin 的序号/名字 ----
+console.log('== 单一管线（顺序无关） ==');
+var pipeSrc = '({1:function(){function X(){return 1;} X(); }})[1]();';
+// modA 先注册：往模块头部注入新函数 INJECTED + 新绑定 X
+// modB 后注册：fn:0 应仍指向原始第一个子函数 X 声明（而不是 A 注入的 INJECTED）
+global.__mixin.register({ modid: 'pipe-a', mixins: [{ file: 'pipe.js',
+    patches: [{ path: [{ module: '1' }], op: 'inject', at: 'head',
+               code: 'function INJECTED(){return 9;} var X=function(){return 9;};' }] }] });
+global.__mixin.register({ modid: 'pipe-b', mixins: [{ file: 'pipe.js',
+    patches: [
+        { path: [{ module: '1' }, { fn: 0 }], op: 'log', message: 'b-fn0' },
+        { path: [{ module: '1' }, { name: 'X', index: 0 }], op: 'log', message: 'b-x-decl' }
+    ] }] });
+var pipeOut = global.__mixinTransform('pipe.js', pipeSrc);
+// b-fn0 落在原始 X 声明体内（return 1 前），而不是 INJECTED 里（return 9 前）
+var xDecl = pipeOut.indexOf('function X(){');
+check('管线: fn:0 仍指原始 X 声明', xDecl > 0 &&
+    pipeOut.slice(xDecl, xDecl + 60).indexOf('b-fn0') > 0 &&
+    pipeOut.indexOf('function INJECTED(){return 9;}') < pipeOut.indexOf('b-fn0'),
+    pipeOut.slice(0, 200));
+var xDecl2 = pipeOut.indexOf('function X(){');
+check('管线: name:X,index:0 仍指原始声明', pipeOut.slice(xDecl2, pipeOut.indexOf('}', xDecl2) + 1).indexOf('b-x-decl') > 0);
+
+// ---- 方法链：具名类两种形态都可达 ----
+console.log('== 方法链 ==');
+// 形态1（babel IIFE 包装）：表在包装体内
+var r1 = I.resolvePath(acorn.parse(dup, { ecmaVersion: 'latest' }),
+    [{ module: '1' }, { fn: 0 }, { name: 't' }, { method: 'setData' }], dup);
+check('方法链: IIFE 包装 name→method', !r1.error && dup.slice(r1.node.start, r1.node.end).indexOf('"A"') > 0, r1.error);
+// 形态2（兄弟语句）：表是类声明的兄弟 —— 需要"上一层回退"
+var sib = '({1:function(){function Ct(){this.x=1;} reg(Ct,[{key:"run",value:function(){return "run";}}]); Ct(); }})[1]();';
+var r2 = I.resolvePath(acorn.parse(sib, { ecmaVersion: 'latest' }),
+    [{ module: '1' }, { name: 'Ct' }, { method: 'run' }], sib);
+check('方法链: 兄弟语句形态（上一层回退）', !r2.error && sib.slice(r2.node.start, r2.node.end).indexOf('"run"') > 0, r2.error);
+
 // 重叠拒绝：overwrite 模块 + log 内层函数（历史静默损坏场景）
 var ovl = '({1:function(){function helper(x){return x+1;} console.log(helper(1)); }})[1]();';
 var ovlOut = __mixinAst.applyAstPatches('t.js', ovl, [
