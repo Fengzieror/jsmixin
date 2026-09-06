@@ -224,6 +224,23 @@ var r4 = I.resolvePath(acorn.parse(acc, { ecmaVersion: 'latest' }),
     [{ module: '1' }, { anchor: { strings: ['creators'] } }, { method: 'size' }], acc);
 check('方法链: value 条目不受影响', !r4.error && acc.slice(r4.node.start, r4.node.end).indexOf('return 7') > 0, r4.error);
 
+// ASI 邻接防护：原末句无分号（靠 } 结束）时，tail 注入不得被解析成对原表达式的调用
+// （真机踩坑：jS.init(...)(注入IIFE) → "TypeError: (intermediate value) is not a function"）
+var asi = '({1:function(){jS.init((function(){return 42;}))}})[1]();';
+var asiOut = __mixinAst.applyAstPatches('t.js', asi, [
+    { name: 'tail-a', path: [{ module: '1' }], op: 'inject', at: 'tail', code: 'window.__ta = 1;' },
+    { name: 'tail-b', path: [{ module: '1' }], op: 'inject', at: 'tail', code: 'window.__tb = 2;' }
+]);
+try { acorn.parse(asiOut, { ecmaVersion: 'latest' }); check('ASI: 注入后语法完整', true); }
+catch (e) { check('ASI: 注入后语法完整', false, e.message); }
+check('ASI: 末句与注入体已隔离（前导分号）', /jS\.init\(\(function\(\)\{return 42;\}\)\)\s*;\s*window\.__t/.test(asiOut), asiOut.slice(-120));
+global.window = global.window || {};
+try {
+    new Function('window', 'jS', asiOut.replace('({1:', 'window.__m = ({1:'))(global.window, { init: function () {} });
+    check('ASI: 双 tail 注入都可执行', global.window.__ta === 1 && global.window.__tb === 2,
+        'ta=' + global.window.__ta + ' tb=' + global.window.__tb);
+} catch (e) { check('ASI: 双 tail 注入都可执行', false, e.message); }
+
 /* ---------- 2. 真实 main.min.js ---------- */
 console.log('== main.min.js ==');
 var realSrc = fs.readFileSync(path.join(__dirname, '../../pdzzapksworkspace/main.min.js'), 'utf8');

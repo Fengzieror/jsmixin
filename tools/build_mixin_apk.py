@@ -31,6 +31,10 @@ RUNTIME_PARTS = [
     os.path.join(JS, 'runtime', 'mixinTransformer.js'),
 ]
 PATCH_BUNDLE = os.path.join(JS, 'mixins', 'base-loader', 'patch_bundle.js')
+# 额外 mod 的 patch 产物（存在才合并，按序追加执行——都是独立的 register 调用）
+EXTRA_PATCH_FILES = [
+    r'D:\Projects\battlecraft\pdzzmoddeveloper\prism-mod\dist\patches.js',
+]
 
 for p in RUNTIME_PARTS + [PATCH_BUNDLE]:
     if not os.path.exists(p):
@@ -55,9 +59,19 @@ if os.path.exists(STAGE):
     os.remove(STAGE)
 import shutil
 shutil.copyfile(BASE_APK, STAGE)
+patch_data = open(PATCH_BUNDLE, 'rb').read()
+for extra in EXTRA_PATCH_FILES:
+    if os.path.exists(extra):
+        part = open(extra, 'rb').read()
+        if not patch_data.endswith(b'\n'):
+            patch_data += b'\n'
+        patch_data += part
+        print('patch merged:', os.path.basename(extra), len(part), 'bytes')
+    else:
+        print('patch skip (missing):', extra)
 ASSETS = [
     ('assets/scripts/mixin/mixinTransformer.js', bundle),
-    ('assets/scripts/mixin/patch_bundle.js', open(PATCH_BUNDLE, 'rb').read()),
+    ('assets/scripts/mixin/patch_bundle.js', patch_data),
 ]
 with zipfile.ZipFile(STAGE, 'a') as z:
     for entry, data in ASSETS:

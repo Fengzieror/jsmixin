@@ -344,10 +344,12 @@
             else if (at === 'tail') {
                 // 对齐 Java Mixin @At("TAIL")：函数最后一条语句是 return 时，注入到它之前
                 // （落在 return 之后是死代码）；否则注入到函数体末尾。
+                // 前导 ';' 防御 ASI 邻接：原末句可能无分号（靠 } 结束），
+                // 直接拼接会被解析成对原表达式返回值的调用（真机踩过：jS.init(...)(注入IIFE) → TypeError）。
                 var pos = fn.body.end - 1;
                 var stmts = fn.body.body;
                 if (stmts.length && stmts[stmts.length - 1].type === 'ReturnStatement') pos = stmts[stmts.length - 1].start;
-                edits.push({ start: pos, end: pos, text: '\n' + code + '\n' });
+                edits.push({ start: pos, end: pos, text: '\n;' + code + '\n' });
             }
             else throw new Error('inject at 仅支持 head/tail，收到 ' + at);
         } else if (op === 'overwrite') {
