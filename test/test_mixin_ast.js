@@ -96,6 +96,52 @@ check('运行: helper-hit', /helper-hit 1/.test(joined), joined); // helper(1) �
 check('运行: inner-wrapped', /inner-wrapped/.test(joined), joined);
 console.log('    [运行输出] ' + joined);
 
+/* ---------- 1.5 零特征结构寻址 / 同名 index 消歧 / 哈希锁 / 重叠拒绝 ---------- */
+console.log('== 结构寻址与安全 ==');
+var dup = '({1:function(){' +
+    'var a=(function(){function t(){};reg(t,[{key:"setData",value:function(){return "A";}}]);return t;})();' +
+    'var b=(function(){function t(){};reg(t,[{key:"setData",value:function(){return "B";}}]);return t;})();' +
+    '}})[1]();';
+
+// 同名消歧（同层重名）：index 直接取序号，无特征
+var dupName = '({1:function(){function X(){return 1;} var Y=X; var X2=X; var X=function(){return 2;}; return X();}})[1]();';
+var astD = acorn.parse(dupName, { ecmaVersion: 'latest' });
+r = I.resolvePath(astD, [{ module: '1' }, { name: 'X', index: 0 }], dupName);
+check('同名 index:0 命中声明', !r.error && r.node.type === 'FunctionDeclaration', r.error);
+r = I.resolvePath(astD, [{ module: '1' }, { name: 'X', index: 1 }], dupName);
+check('同名 index:1 命中第二个绑定', !r.error && r.node.type === 'FunctionExpression', r.error);
+
+// 跨作用域同名不可见（设计行为）：t 存在于 IIFE 内层，从模块层找 → 0 候选
+r = I.resolvePath(acorn.parse(dup, { ecmaVersion: 'latest' }), [{ module: '1' }, { name: 't' }], dup);
+check('跨作用域同名 0 候选', !!r.error && /0 个候选/.test(r.error), r.error);
+r = I.resolvePath(acorn.parse(dup, { ecmaVersion: 'latest' }), [{ module: '1' }, { method: 'setData', cls: 't', index: 1 }], dup);
+check('method 同名 index:1', !r.error && dup.slice(r.node.start, r.node.end).indexOf('"B"') > 0, r.error);
+
+// {fn:n} 纯序号段：匿名函数也能指（零名字零特征）
+r = I.resolvePath(astD, [{ module: '1' }, { fn: 0 }], dup);
+check('fn:0 = 第一个直接子函数', !r.error && r.node.start < dup.indexOf('"A"'), r.error);
+r = I.resolvePath(astD, [{ module: '1' }, { fn: 99 }], dup);
+check('fn 越界拒绝并报总数', !!r.error && /共 \d+ 个/.test(r.error), r.error);
+
+// 纯结构链打补丁：module → fn 序号，全程无特征
+var structural = __mixinAst.applyAstPatches('t.js', dup, [
+    { name: 'struct', path: [{ module: '1' }, { fn: 1 }, { fn: 1 }], op: 'log', message: 'struct-hit' }
+]);
+check('纯结构链注入生效', structural.indexOf('struct-hit') > 0);
+try { acorn.parse(structural, { ecmaVersion: 'latest' }); check('结构补丁后语法完整', true); }
+catch (e) { check('结构补丁后语法完整', false, e.message); }
+
+// 重叠拒绝：overwrite 模块 + log 内层函数（历史静默损坏场景）
+var ovl = '({1:function(){function helper(x){return x+1;} console.log(helper(1)); }})[1]();';
+var ovlOut = __mixinAst.applyAstPatches('t.js', ovl, [
+    { name: 'ow-module', path: [{ module: '1' }], op: 'overwrite', code: 'function helper(x){return x+2;} console.log(helper(1));' },
+    { name: 'in-helper', path: [{ module: '1' }, { name: 'helper' }], op: 'log', message: 'hit' }
+]);
+check('重叠: overwrite 生效', ovlOut.indexOf('x+2') > 0);
+check('重叠: 内层 patch 被拒绝而非损坏', ovlOut.split('ole.log(helper(1))').length - 1 === 1 && ovlOut.indexOf('"hit"') < 0);
+try { acorn.parse(ovlOut, { ecmaVersion: 'latest' }); check('重叠: 输出语法完整', true); }
+catch (e) { check('重叠: 输出语法完整', false, e.message); }
+
 /* ---------- 2. 真实 main.min.js ---------- */
 console.log('== main.min.js ==');
 var realSrc = fs.readFileSync(path.join(__dirname, '../../pdzzapksworkspace/main.min.js'), 'utf8');
@@ -121,6 +167,21 @@ if (!r.error) console.log('    类包装 @' + r.node.start + '..' + r.node.end);
 r = I.resolvePath(ast0, [{ module: '625' }, { anchor: { strings: ['秒后重试'] } }, { anchor: { strings: ['秒后重试'], params: 0 } }], realSrc);
 check("main.min.js: '秒后重试' 内层方法唯一", !r.error, r.error);
 if (!r.error) console.log('    内层方法 @' + r.node.start + '..' + r.node.end);
+
+// 纯结构定位对照：fn 序号应与特征/名字定位同点（确定性验证）
+r = I.resolvePath(ast0, [{ module: '625' }, { fn: 0 }], realSrc);
+check('main.min.js: fn:0 = 模块第一个直接子函数(t)', !r.error && realSrc.slice(r.node.start, r.node.end).indexOf('function t(') === 0, r.error);
+
+// 哈希锁：transformer 级
+var goodHash = global.__mixin.sourceHash(realSrc);
+global.__mixin.register({ modid: 'hash-test', mixins: [{ file: 'main.min.js', hash: goodHash, patches: [{ path: [{ module: '625' }], op: 'log', message: 'hash-ok-mixin' }] }] });
+global.__mixin.register({ modid: 'hash-bad', mixins: [{ file: 'main.min.js', hash: 'fnv1a32:dead:len:1', patches: [{ path: [{ module: '625' }], op: 'log', message: 'never-mixin-xyz' }] }] });
+var withHash = global.__mixinTransform('main.min.js', realSrc);
+check('哈希相符 → patch 生效', withHash.indexOf('hash-ok-mixin') > 0);
+check('哈希不符 → 整个 mixin 跳过', withHash.indexOf('never-mixin-xyz') < 0);
+// eval 形态（带 sourceURL 尾巴）哈希应一致
+var evaled = global.__mixinTransform('main.min.js', realSrc + '\n//@ sourceURL=https://cdn/main.min.js');
+check('sourceURL 尾巴不破坏哈希判定', evaled.indexOf('never-mixin-xyz') < 0 && evaled.indexOf('hash-ok-mixin') > 0);
 
 // 全量补丁流（含一个坏 patch 验证 skip 不影响其他）
 var t1 = Date.now();

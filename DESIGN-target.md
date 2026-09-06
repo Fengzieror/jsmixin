@@ -28,7 +28,8 @@
 ```
 Target := {
   file: string                      // 必填。目标文件名(后缀匹配)
-  version: string                   // 可选。目标文件 md5 前8位, 写入后运行时强校验
+  hash: string                      // 可选(结构寻址时必配)。__mixin.sourceHash(source)
+                                    // = 'fnv1a32:xxxx:len:nnn'，不符→整个mixin跳过
   cls?:  string                     // 类的真名(来自 name-map, 如 'f.AccountBindPopupUI'
                                     // 或 'Rt.ElementStageView')
   method?: string                   // 方法表 key 字符串(如 'createChildren')
@@ -38,14 +39,17 @@ Target := {
 PathSeg := 
   | string                          // 具名段: 类真名或方法key
   | {
-      anchor: {
-        strings?: string[],         // 内容锚点: 该函数体内必须包含这些字符串字面量
-        calls?: string[],           // 调用锚点: 函数体内必须出现这些被调用的名字
-        params?: number,            // 形参数量
-        ctor?: boolean              // 是构造函数(体内有 this.x = 且被 new)
+      module: string|number         // webpack 模块表 key (仅 Program 层)
+      name: string                  // 绑定名: 函数声明id / var X=fn / X.Y=fn / 属性值fn
+      fn: number                    // 纯结构序号: 第n个直接子函数(AST源码顺序, 零特征)
+      method: string                // babel 方法表 key: X(Cls,[{key,value:fn}])
+      anchor: {                     // 内容锚点(AND): 直接子函数的子树必须包含
+        strings?: string[],         // 这些字符串字面量
+        calls?: string[],           // 出现这些被调用的名字
+        params?: number             // 形参数量
       },
-      index?: number                // 歧义序号: 满足锚点的候选有多个时, 取第几个(默认0)
-                                   // 未写 index 且候选>1 → 构建报错
+      index?: number                // 歧义序号: 候选>1 时取第n个(0起)。
+                                    // 显式写 index:0 也是合法指向; 未写且候选>1 → 报错
     }
 ```
 

@@ -13,7 +13,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '0.2.0';
+    var VERSION = '0.3.0';
     var mods = []; // 已注册的 mod 描述列表
 
     function log(msg) {
@@ -37,14 +37,39 @@
     }
 
     /*
+     * FNV-1a 32 位 + 长度：结构寻址（fn 序号等）的版本锁。
+     * 文件任何字节变化都会改变哈希 → mixin 整体跳过，杜绝序号指错。
+     * 哈希针对"本轮变换的输入"；eval 传入文本尾部的 //@ sourceURL=...
+     * 参与运行但不属于文件本体，先剥离再算。
+     */
+    function sourceHash(s) {
+        var tail = s.match(/\s*\/\/@ sourceURL=[^\n]*\s*$/);
+        var code = tail ? s.slice(0, tail.index) : s;
+        var h = 0x811c9dc5;
+        for (var i = 0; i < code.length; i++) {
+            h ^= code.charCodeAt(i);
+            h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+        }
+        return 'fnv1a32:' + h.toString(16) + ':len:' + code.length;
+    }
+
+    /*
      * 对一段源码应用一个 mod 的全部变换。支持：
      *   replaces: [[from, to], ...] 纯字符串替换（全部出现处）
      *   patches:  [{ path, op, code, ... }] AST 锚点精确定位（需 __mixinAst + acorn）
+     *   hash:     可选版本锁，不符则该 mixin 整体跳过（结构寻址必配）
      * 先跑 replaces（便宜），有 patches 再解析一次 AST（昂贵，仅按需）。
      * 未做任何修改时返回原字符串（引用相等），供上层判断。
      */
     function applyMod(mx, source, filename) {
         var out = source;
+        if (mx.hash) {
+            var actual = sourceHash(source);
+            if (actual !== mx.hash) {
+                log('WARN: ' + (mx.file || '?') + ' 哈希不符（期望 ' + mx.hash + '，实际 ' + actual + '），跳过该 mixin（fail-safe）');
+                return source;
+            }
+        }
         var i, from, to, n;
         if (mx.replaces) {
             for (i = 0; i < mx.replaces.length; i++) {
@@ -137,7 +162,9 @@
         },
         stats: function () {
             return { mods: mods.length, evalHooked: !!global.__mixinEvalHooked };
-        }
+        },
+        // 供补丁作者/测试计算期望哈希：__mixin.sourceHash(source) → 'fnv1a32:xxxx:len:nnn'
+        sourceHash: sourceHash
     };
 
     installEvalHook();

@@ -176,6 +176,16 @@
         return pick(candidates, seg, src, 'name ' + seg.name);
     }
 
+    // 纯结构序号：当前节点的第 n 个直接子函数（AST 源码顺序，确定性）。
+    // 零特征寻址的基础段：不使用名字、不使用内容特征。
+    function resolveFnIndex(node, seg, src) {
+        var kids = directChildFns(node);
+        var n = seg.fn;
+        if (typeof n !== 'number' || n < 0) return { error: 'fn 必须是非负数字序号' };
+        if (n >= kids.length) return { error: 'fn ' + n + ' 越界：该层直接子函数共 ' + kids.length + ' 个' };
+        return { node: kids[n].fn, asName: kids[n].asName };
+    }
+
     function resolveAnchor(node, seg, src) {
         var kids = directChildFns(node);
         var candidates = [];
@@ -217,9 +227,10 @@
     }
 
     function pick(candidates, seg, src, what) {
-        var idx = seg.index || 0;
+        var hasIndex = seg.index != null; // index:0 也是显式指向，不能当"没写"（falsy 陷阱）
+        var idx = hasIndex ? seg.index : 0;
         if (candidates.length === 0) return { error: '0 个候选（' + what + '）' };
-        if (candidates.length > 1 && !seg.index) {
+        if (candidates.length > 1 && !hasIndex) {
             var list = [];
             for (var i = 0; i < Math.min(candidates.length, 8); i++) list.push(describeFn(candidates[i], src));
             return { error: candidates.length + ' 个候选且未写 index（' + what + '）：' + list.join(' | ') };
@@ -236,6 +247,7 @@
             var r;
             if (seg.module != null) r = resolveModule(node, seg, src);
             else if (seg.name != null) r = resolveName(node, seg, src);
+            else if (seg.fn != null) r = resolveFnIndex(node, seg, src);
             else if (seg.method != null) r = resolveMethod(node, seg, src, prevAsName);
             else if (seg.anchor) r = resolveAnchor(node, seg, src);
             else return { error: 'path[' + i + '] 段类型无法识别（需 module/name/method/anchor）' };
@@ -307,11 +319,29 @@
 
     /* ---------- 对外入口 ---------- */
 
+    // 两个编辑区间是否重叠（零长度插入只与其内部插入冲突；边界相接不算）
+    function editsOverlap(a, b) {
+        return a.start < b.end && b.start < a.end;
+    }
+
+    function findOverlap(accepted, incoming) {
+        for (var i = 0; i < accepted.length; i++) {
+            for (var j = 0; j < incoming.length; j++) {
+                if (editsOverlap(accepted[i], incoming[j])) {
+                    return '新编辑 @' + incoming[j].start + '..' + incoming[j].end +
+                        ' 与已接受编辑 @' + accepted[i].start + '..' + accepted[i].end + ' 重叠';
+                }
+            }
+        }
+        return null;
+    }
+
     /*
      * applyAstPatches(filename, source, patches) → string
      * patches: [{ path: [...], op, code/at/message, name? }]
-     * 单个 patch 失败 → 跳过该 patch 并打日志（文件其余 patch 照常）；
+     * 单个 patch 失败（定位失败/重叠冲突）→ 跳过该 patch 并打日志，其余照常；
      * 解析（acorn.parse）失败 → 整体返回原 source。
+     * 编辑坐标全部基于原始 source，因此重叠 = 坐标错位 = 静默损坏，必须拒绝。
      */
     function applyAstPatches(filename, source, patches) {
         var acorn = global.acorn;
@@ -325,7 +355,7 @@
             return source;
         }
         log('parsed ' + filename + ' in ' + (Date.now() - t0) + 'ms');
-        var edits = [];
+        var accepted = [];
         var ok = 0;
         for (var i = 0; i < patches.length; i++) {
             var patch = patches[i];
@@ -333,9 +363,12 @@
             try {
                 var r = resolvePath(ast, patch.path, source);
                 if (r.error) { log('SKIP ' + label + ': ' + r.error); continue; }
-                var before = edits.length;
-                applyOp(r.node, patch, source, edits);
-                log('OK ' + label + ' (' + (edits.length - before) + ' 处编辑) → ' + describeFn(r.node, source));
+                var patchEdits = [];
+                applyOp(r.node, patch, source, patchEdits);
+                var conflict = findOverlap(accepted, patchEdits);
+                if (conflict) { log('SKIP ' + label + ': ' + conflict + '（坐标基于原文件，重叠会静默损坏，拒绝该 patch）'); continue; }
+                accepted = accepted.concat(patchEdits);
+                log('OK ' + label + ' (' + patchEdits.length + ' 处编辑) → ' + describeFn(r.node, source));
                 ok++;
             } catch (e) {
                 log('SKIP ' + label + ': ' + e.message);
@@ -345,7 +378,7 @@
             log('WARN: ' + filename + ' 没有 AST patch 生效（fail-safe 返回原文件）');
             return source;
         }
-        var out = applyEdits(source, edits);
+        var out = applyEdits(source, accepted);
         log('applied ' + ok + '/' + patches.length + ' AST patches to ' + filename);
         return out;
     }
