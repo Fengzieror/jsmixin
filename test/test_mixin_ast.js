@@ -307,6 +307,48 @@ try {
     check('modify: 替换后语义生效（41+1=42）', cap[0] === 42, cap.join(','));
 } catch (e) { check('modify: 替换后语义生效（41+1=42）', false, e.message); }
 
+/* ---------- 1b. 批量快路径（黑屏优化） ---------- */
+console.log('== 批量快路径 ==');
+// 统计 acorn.parse 次数：3 个 mod 同文件无链式 → 只解析 1 次
+(function () {
+    var realParse = global.acorn.parse;
+    var fullParses = 0; // 只统计目标文件的全量解析（validateCode 的小样解析不算）
+    global.acorn.parse = function (src) {
+        if (src === batchSrc) fullParses++;
+        return realParse.apply(global.acorn, arguments);
+    };
+    var batchSrc = '({1:function(){var x=0;console.log(x);}})[1]();';
+    try {
+        global.__mixin.register({ modid: 'batch-a', priority: 10, mixins: [{ file: 'batch.js',
+            patches: [{ path: [{ module: '1' }], op: 'inject', at: 'head', code: 'var a=1;' }] }] });
+        global.__mixin.register({ modid: 'batch-b', priority: 20, mixins: [{ file: 'batch.js',
+            patches: [{ path: [{ module: '1' }], op: 'inject', at: 'head', code: 'var b=2;' }] }] });
+        global.__mixin.register({ modid: 'batch-c', priority: 30, mixins: [{ file: 'batch.js',
+            patches: [{ path: [{ module: '1' }], op: 'log', message: 'batch-c' }] }] });
+        fullParses = 0;
+        var outB = global.__mixinTransform('batch.js', batchSrc);
+        check('批量: 3 mod 合并一次解析（全文件解析次数=1）', fullParses === 1, '实际 ' + fullParses);
+        check('批量: 全部生效', outB.indexOf('var a=1;') >= 0 && outB.indexOf('var b=2;') >= 0
+            && outB.indexOf('"batch-c"') >= 0, outB.slice(0, 120));
+        // 链式（后者定位前者注入的 Hook）→ 快路径有 patch 未生效 → 回退串行仍成功
+        var srcChain2 = '({1:function(){function X(){return 1;} X(); }})[1]();';
+        global.__mixin.register({ modid: 'ch2-a', priority: 0, mixins: [{ file: 'ch2.js',
+            patches: [{ path: [{ module: '1' }], op: 'inject', at: 'head', code: 'var Hook=function(){return 9;};' }] }] });
+        global.__mixin.register({ modid: 'ch2-b', priority: 100, mixins: [{ file: 'ch2.js',
+            patches: [{ path: [{ module: '1' }, { name: 'Hook' }], op: 'log', message: 'ch2-hook' }] }] });
+        var outChain = global.__mixinTransform('ch2.js', srcChain2);
+        check('批量: 链式依赖自动回退串行且生效', outChain.indexOf('ch2-hook') > outChain.indexOf('var Hook'), outChain.slice(0, 150));
+        // replaces 存在 → 直接串行（不合并）
+        global.__mixin.register({ modid: 'rep-m', priority: 0, mixins: [{ file: 'rep.js', replaces: [['AAA', 'BBB']] }] });
+        global.__mixin.register({ modid: 'rep-p', priority: 100, mixins: [{ file: 'rep.js',
+            patches: [{ path: [{ module: '1' }], op: 'log', message: 'rep-p' }] }] });
+        global.__mixinTransform('rep.js', '({1:function(){var v="AAA";}})[1]();');
+        check('批量: replaces 存在走串行', true);
+    } finally {
+        global.acorn.parse = realParse;
+    }
+})();
+
 /* ---------- 2. 真实 main.min.js ---------- */
 console.log('== main.min.js ==');
 var realSrc = fs.readFileSync(path.join(__dirname, '../../pdzzapksworkspace/main.min.js'), 'utf8');

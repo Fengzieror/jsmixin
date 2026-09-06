@@ -13,7 +13,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '0.5.0';
+    var VERSION = '0.6.0'; // 0.6.0: 批量快路径（多 mod 同文件合并一次解析，黑屏优化；链式/replaces 自动回退串行）
     var mods = []; // 已注册的 mod 描述列表
 
     function log(msg) {
@@ -83,9 +83,15 @@
      *     前面 mixin 注入的代码（链式修改）；重名会因唯一性强制报错，因此
      *     注入名请像 Java 类名一样起唯一的名字
      *   - 稳定寻址靠名字链（含点分命名空间）而非裸序号；{fn:n}/index 仅作最后手段
+     *
+     * 批量快路径（黑屏优化，v0.6.0）：acorn 全量解析大文件约 1.5-4 秒/次，
+     * 逐 mod 串行 = 黑屏随 mod 数线性增长。当同文件的各 mixin 都只有 AST
+     * patches（无 replaces、无哈希锁）时，把所有 patch 合并对【原始文件】一次
+     * 解析定位并整体应用；仅当有 patch 未生效（可能链式定位了前一个 mod 注入
+     * 的代码，或锚点真的不符）时，回退到本函数的逐 mixin 串行管线——语义与
+     * 旧版完全一致，最坏只多一次解析。
      */
-    function transform(filename, source) {
-        if (typeof source !== 'string' || source.length === 0) return source;
+    function transformSerial(filename, source) {
         var base = baseName(filename);
         var ordered = mods.slice().sort(function (a, b) {
             var pa = a.priority == null ? 1000 : a.priority;
@@ -122,6 +128,48 @@
             }
         }
         return source;
+    }
+
+    function matchingMixins(filename) {
+        var base = baseName(filename);
+        var ordered = mods.slice().sort(function (a, b) {
+            var pa = a.priority == null ? 1000 : a.priority;
+            var pb = b.priority == null ? 1000 : b.priority;
+            return pa - pb;
+        });
+        var out = [];
+        for (var mi = 0; mi < ordered.length; mi++) {
+            var mixins = ordered[mi].mixins || [];
+            for (var i = 0; i < mixins.length; i++) {
+                if (fileMatches(mixins[i].file, base, filename)) {
+                    out.push({ mod: ordered[mi], mx: mixins[i] });
+                }
+            }
+        }
+        return out;
+    }
+
+    function transform(filename, source) {
+        if (typeof source !== 'string' || source.length === 0) return source;
+        var matched = matchingMixins(filename);
+        if (matched.length <= 1 || !global.__mixinAst) return transformSerial(filename, source);
+
+        // 批量快路径：任一 mixin 带 replaces / 哈希锁（语义绑定"本轮中间态"）→ 直接串行
+        var batch = [];
+        for (var i = 0; i < matched.length; i++) {
+            var mx = matched[i].mx;
+            if (mx.replaces || mx.hash) return transformSerial(filename, source);
+            batch = batch.concat(mx.patches || []);
+        }
+        if (!batch.length) return source;
+        var stats = {};
+        var out = global.__mixinAst.applyAstPatches(filename, source, batch, stats);
+        if (stats.skipped && stats.skipped.length) {
+            log('批量快路径有 ' + stats.skipped.length + ' 个 patch 未生效，回退串行管线: ' + filename);
+            return transformSerial(filename, source);
+        }
+        if (out !== source) log('patched (batch): ' + filename + ' (' + matched.length + ' 个 mixin 合并一次解析)');
+        return out;
     }
 
     /*
