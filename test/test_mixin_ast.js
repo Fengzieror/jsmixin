@@ -131,28 +131,66 @@ check('纯结构链注入生效', structural.indexOf('struct-hit') > 0);
 try { acorn.parse(structural, { ecmaVersion: 'latest' }); check('结构补丁后语法完整', true); }
 catch (e) { check('结构补丁后语法完整', false, e.message); }
 
-// ---- 单一管线：先注册的 mixin 注入新代码，不影响后注册 mixin 的序号/名字 ----
-console.log('== 单一管线（顺序无关） ==');
+// ---- 命名空间点分名 / 具名函数表达式 / 回调段 ----
+console.log('== 命名空间与回调 ==');
+var nsSrc = '({1:function(){var ns={};ns.helper=function(){return "h";};var V={showToast:function(){return "t";},deep:{fn:function(){return "d";}}};var x = function foo(){return 1;}; ns.helper(); V.showToast(); jS.init(function(){return "cb";}); }})[1]();';
+var astNS = acorn.parse(nsSrc, { ecmaVersion: 'latest' });
+r = I.resolvePath(astNS, [{ module: '1' }, { name: 'ns.helper' }], nsSrc);
+check('点分: 赋值命名空间 ns.helper', !r.error, r.error);
+r = I.resolvePath(astNS, [{ module: '1' }, { name: 'V.showToast' }], nsSrc);
+check('点分: 对象字面量 V.showToast', !r.error, r.error);
+r = I.resolvePath(astNS, [{ module: '1' }, { name: 'V.deep.fn' }], nsSrc);
+check('点分: 嵌套对象 V.deep.fn', !r.error, r.error);
+r = I.resolvePath(astNS, [{ module: '1' }, { name: 'foo' }], nsSrc);
+check('具名函数表达式: 自身 id 可指', !r.error, r.error);
+r = I.resolvePath(astNS, [{ module: '1' }, { name: 'x' }], nsSrc);
+check('具名函数表达式: 绑定名可指', !r.error, r.error);
+r = I.resolvePath(astNS, [{ module: '1' }, { call: 'jS.init', arg: 0 }], nsSrc);
+check('回调: jS.init 实参[0]', !r.error && nsSrc.slice(r.node.start, r.node.end).indexOf('"cb"') > 0, r.error);
+var dupCall = '({1:function(){jS.init(function(){return 1;}); jS.init(function(){return 2;}); }})[1]();';
+r = I.resolvePath(acorn.parse(dupCall, { ecmaVersion: 'latest' }), [{ module: '1' }, { call: 'jS.init', arg: 0 }], dupCall);
+check('回调: 同名调用点多候选拒绝', !!r.error && /候选/.test(r.error), r.error);
+var cb2 = '({1:function(){jS.init(function(){function inner(){return 7;} inner(); }); }})[1]();';
+r = I.resolvePath(acorn.parse(cb2, { ecmaVersion: 'latest' }),
+    [{ module: '1' }, { call: 'jS.init', arg: 0 }, { name: 'inner' }], cb2);
+check('回调链: call→name 连走', !r.error, r.error);
+
+// ---- 串行 mixin（Sponge 语义）：priority 定序，后者定位前者注入的代码 ----
+console.log('== 串行 mixin（Sponge 语义） ==');
 var pipeSrc = '({1:function(){function X(){return 1;} X(); }})[1]();';
-// modA 先注册：往模块头部注入新函数 INJECTED + 新绑定 X
-// modB 后注册：fn:0 应仍指向原始第一个子函数 X 声明（而不是 A 注入的 INJECTED）
-global.__mixin.register({ modid: 'pipe-a', mixins: [{ file: 'pipe.js',
+global.__mixin.register({ modid: 'chain-a', priority: 0, mixins: [{ file: 'pipe.js',
     patches: [{ path: [{ module: '1' }], op: 'inject', at: 'head',
-               code: 'function INJECTED(){return 9;} var X=function(){return 9;};' }] }] });
-global.__mixin.register({ modid: 'pipe-b', mixins: [{ file: 'pipe.js',
-    patches: [
-        { path: [{ module: '1' }, { fn: 0 }], op: 'log', message: 'b-fn0' },
-        { path: [{ module: '1' }, { name: 'X', index: 0 }], op: 'log', message: 'b-x-decl' }
-    ] }] });
+               code: 'var Hook=function(){return 9;}; Hook();' }] }] });
+global.__mixin.register({ modid: 'chain-collide', priority: 50, mixins: [{ file: 'pipe.js',
+    patches: [{ path: [{ module: '1' }], op: 'inject', at: 'head',
+               code: 'function X(){return 8;}' }] }] });
+global.__mixin.register({ modid: 'chain-b', priority: 100, mixins: [{ file: 'pipe.js',
+    patches: [{ path: [{ module: '1' }, { name: 'Hook' }], op: 'log', message: 'b-hook' }] }] });
+// 与原始 X 重名 → chain-c 必须大声失败（不静默指错）
+global.__mixin.register({ modid: 'chain-c', priority: 300, mixins: [{ file: 'pipe.js',
+    patches: [{ path: [{ module: '1' }, { name: 'X' }], op: 'log', message: 'c-x' }] }] });
 var pipeOut = global.__mixinTransform('pipe.js', pipeSrc);
-// b-fn0 落在原始 X 声明体内（return 1 前），而不是 INJECTED 里（return 9 前）
-var xDecl = pipeOut.indexOf('function X(){');
-check('管线: fn:0 仍指原始 X 声明', xDecl > 0 &&
-    pipeOut.slice(xDecl, xDecl + 60).indexOf('b-fn0') > 0 &&
-    pipeOut.indexOf('function INJECTED(){return 9;}') < pipeOut.indexOf('b-fn0'),
-    pipeOut.slice(0, 200));
-var xDecl2 = pipeOut.indexOf('function X(){');
-check('管线: name:X,index:0 仍指原始声明', pipeOut.slice(xDecl2, pipeOut.indexOf('}', xDecl2) + 1).indexOf('b-x-decl') > 0);
+var hookPos = pipeOut.indexOf('var Hook=function(){');
+check('串行: B 定位 A 注入的 Hook', hookPos > 0 &&
+    pipeOut.slice(hookPos, pipeOut.indexOf('return 9;')).indexOf('b-hook') > 0, pipeOut.slice(0, 240));
+check('串行: 重名冲突大声失败不指错', pipeOut.indexOf('"c-x"') < 0);
+try { acorn.parse(pipeOut, { ecmaVersion: 'latest' }); check('串行: 输出语法完整', true); }
+catch (e) { check('串行: 输出语法完整', false, e.message); }
+
+// priority：小者先应用（用替换链验证顺序：AAA→BBB→CCC 才能走通）
+global.__mixin.register({ modid: 'pri-low', priority: 100, mixins: [{ file: 'pri.js', replaces: [['BBB', 'CCC']] }] });
+global.__mixin.register({ modid: 'pri-high', priority: 0, mixins: [{ file: 'pri.js', replaces: [['AAA', 'BBB']] }] });
+var priOut = global.__mixinTransform('pri.js', 'var s = "AAA";');
+check('priority: 小者先应用', priOut.indexOf('CCC') > 0 && priOut.indexOf('AAA') < 0, priOut);
+
+// 串行 + 哈希：后者锁原始哈希而前者已改文件 → 后者安全跳过（不指错）
+var h1 = global.__mixin.sourceHash(pipeSrc);
+global.__mixin.register({ modid: 'chain-pre', priority: 0, mixins: [{ file: 'pipe2.js',
+    patches: [{ path: [{ module: '1' }], op: 'log', message: 'chain-pre' }] }] });
+global.__mixin.register({ modid: 'chain-h', priority: 100, mixins: [{ file: 'pipe2.js', hash: h1,
+    patches: [{ path: [{ module: '1' }], op: 'log', message: 'chain-h' }] }] });
+var pipe2Out = global.__mixinTransform('pipe2.js', pipeSrc);
+check('串行+哈希: 前者改过文件则锁原哈希的跳过', pipe2Out.indexOf('chain-pre') > 0 && pipe2Out.indexOf('"chain-h"') < 0);
 
 // ---- 方法链：具名类两种形态都可达 ----
 console.log('== 方法链 ==');

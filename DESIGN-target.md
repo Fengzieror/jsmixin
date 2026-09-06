@@ -29,29 +29,41 @@
 Target := {
   file: string                      // 必填。目标文件名(后缀匹配)
   hash: string                      // 可选(结构寻址时必配)。__mixin.sourceHash(source)
-                                    // = 'fnv1a32:xxxx:len:nnn'，不符→整个mixin跳过
+                                    // = 'fnv1a32:xxxx:len:nnn'，针对"本轮轮到该mixin时的输入"，
+                                    // 不符→整个mixin跳过
+  priority: number                  // mod 级(Sponge mixins.json 约定)。小者先应用，
+                                    // 后应用者可定位前者注入的代码（串行链式修改）
   cls?:  string                     // 类的真名(来自 name-map, 如 'f.AccountBindPopupUI'
                                     // 或 'Rt.ElementStageView')
   method?: string                   // 方法表 key 字符串(如 'createChildren')
-  path?: PathSeg[]                  // 更深的函数链(函数里的函数), 见下
+  path?: PathSeg[]                  // 逐层收窄的链，每段标一层名字（见下）
 }
 
 PathSeg := 
   | string                          // 具名段: 类真名或方法key
   | {
       module: string|number         // webpack 模块表 key (仅 Program 层)
-      name: string                  // 绑定名: 函数声明id / var X=fn / X.Y=fn / 属性值fn
-      fn: number                    // 纯结构序号: 第n个直接子函数(AST源码顺序, 零特征)
+      name: string                  // 名字段。单名匹配绑定名或函数自身id；点分名
+                                    // ('ns.helper'/'V.deep.fn'/'f.AccountBindPopupUI')
+                                    // 精确匹配命名空间绑定: a.b.c=fn / V={m:fn} / 嵌套对象
+      call: string, arg: number     // 具名调用实参段: 定位"传给某个具名函数的回调"
+                                    // (一次性函数/闭包没有绑定名，但调用点有名字)。
+                                    // 实参槽位是语义位置；同名调用点必须唯一
+      fn: number                    // [最后手段] 第n个直接子函数(裸序号，非常不建议)
       method: string                // babel 方法表 key: X(Cls,[{key,value:fn}])
-      anchor: {                     // 内容锚点(AND): 直接子函数的子树必须包含
+                                    // 当前子树0候选时自动回退上一层查找
+      anchor: {                     // [辅助] 内容锚点(AND): 直接子函数的子树必须包含
         strings?: string[],         // 这些字符串字面量
         calls?: string[],           // 出现这些被调用的名字
         params?: number             // 形参数量
       },
-      index?: number                // 歧义序号: 候选>1 时取第n个(0起)。
-                                    // 显式写 index:0 也是合法指向; 未写且候选>1 → 报错
+      index?: number                // [最后手段] 歧义序号(非常不建议；优先用更长的
+                                    // 点分名/更深的链消歧)。未写且候选>1 → 报错
     }
 ```
+
+寻址优先级（按健壮性）：**名字链（含点分命名空间）> {call,arg} 回调段 > anchor 内容锚点 > fn/index 裸序号**。
+裸序号只能锁死在特定文件哈希上（必须配 hash），任何注入/版本变化都会失效。
 
 **解析语义**：`cls + method` 定位到方法表成员；`path` 从方法（或 cls 的构造函数）
 出发继续向内。`path` 每一段的锚点在该层的**直接子作用域**里求值——即"函数里的函数"

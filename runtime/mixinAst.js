@@ -28,44 +28,63 @@
 
     /* ---------- 遍历：收集“直接子函数”（最近外层函数为本节点的函数） ---------- */
 
-    // 返回 [{ fn, asName }]，asName 是函数被绑定的名字（FunctionDeclaration id /
-    // var 声明名 / 赋值左侧属性名），匿名则为 null。不深入子函数内部。
+    // 成员表达式 → 点分名 'a.b.c'（仅 Identifier 链），否则 null
+    function dottedName(n) {
+        var parts = [];
+        while (n && n.type === 'MemberExpression' && !n.computed && n.property && n.property.type === 'Identifier') {
+            parts.unshift(n.property.name);
+            n = n.object;
+        }
+        if (n && n.type === 'Identifier') { parts.unshift(n.name); return parts.join('.'); }
+        return null;
+    }
+
+    // 返回 [{ fn, asName, idName }]。名字解析规则：
+    //   - FunctionDeclaration / 具名函数表达式：idName = 自身 id
+    //   - var X = fn / X = fn / a.b.c = fn：asName = 绑定名（赋值取完整点分名）
+    //   - var V = { m: fn } / V.m = { sub: fn }（命名空间对象）：asName = 'V.m' / 'V.m.sub'
+    // 不深入子函数内部（它们属于下一层）。
     function directChildFns(node) {
         var out = [];
-        function visit(n, inFnRoot) {
+        function visit(n, bind, prefix) {
             if (!n || typeof n !== 'object') return;
             if (Array.isArray(n)) {
-                for (var i = 0; i < n.length; i++) visit(n[i], false);
+                for (var i = 0; i < n.length; i++) visit(n[i], null, null);
                 return;
             }
             if (typeof n.type !== 'string') return;
             if (isFnNode(n) && n !== node) {
-                // 函数自己的绑定名：声明 id 优先；否则取父链传来的 var/赋值/属性名
-                var nm = null;
-                if (n.type === 'FunctionDeclaration' && n.id) nm = n.id.name;
-                else if (inFnRoot && inFnRoot.name) nm = inFnRoot.name;
-                out.push({ fn: n, asName: nm });
-                return; // 不进入子函数
+                var id = n.id ? n.id.name : null;
+                out.push({ fn: n, asName: bind, idName: id });
+                return;
             }
-            // 记录“这个子树的根被绑了什么名字”，供 var X = function(){} / X.Y = function(){} / {y: function(){}} 识别
-            var namedRoot = null;
-            if (n.type === 'VariableDeclarator' && n.id && n.id.type === 'Identifier' && isFnNode(n.init)) namedRoot = { name: n.id.name };
-            else if (n.type === 'AssignmentExpression' && isFnNode(n.right)) {
-                var l = n.left;
-                if (l.type === 'Identifier') namedRoot = { name: l.name };
-                else if (l.type === 'MemberExpression' && !l.computed && l.property.type === 'Identifier') namedRoot = { name: l.property.name };
-            } else if ((n.type === 'ObjectProperty' || n.type === 'Property') && isFnNode(n.value)) {
+            var cBind = null, cPrefix = null;
+            if (n.type === 'VariableDeclarator' && n.id && n.id.type === 'Identifier') {
+                if (isFnNode(n.init)) cBind = n.id.name;
+                else if (n.init && n.init.type === 'ObjectExpression') cPrefix = n.id.name;
+            } else if (n.type === 'AssignmentExpression') {
+                var dn = dottedName(n.left);
+                if (dn) {
+                    if (isFnNode(n.right)) cBind = dn;
+                    else if (n.right && n.right.type === 'ObjectExpression') cPrefix = dn;
+                }
+            } else if ((n.type === 'ObjectProperty' || n.type === 'Property') && prefix) {
                 var kv = n.key && (n.key.type === 'Literal' ? n.key.value : n.key.name);
-                if (typeof kv === 'string') namedRoot = { name: kv };
+                if (typeof kv === 'string') {
+                    if (isFnNode(n.value)) cBind = prefix + '.' + kv;
+                    else if (n.value && n.value.type === 'ObjectExpression') cPrefix = prefix + '.' + kv;
+                }
+            } else if (n.type === 'ObjectExpression') {
+                cPrefix = prefix; // 命名空间前缀穿透对象字面量，传给属性
             }
             for (var k in n) {
                 if (k === 'start' || k === 'end' || k === 'loc' || k === 'range') continue;
                 var v = n[k];
-                if (Array.isArray(v)) { for (var j = 0; j < v.length; j++) visit(v[j], namedRoot); }
-                else if (v && typeof v === 'object' && typeof v.type === 'string') visit(v, namedRoot);
+                if (Array.isArray(v)) { for (var j = 0; j < v.length; j++) visit(v[j], cBind, cPrefix); }
+                else if (v && typeof v === 'object' && typeof v.type === 'string') visit(v, cBind, cPrefix);
             }
         }
-        visit(node, null);
+        visit(node, null, null);
         return out;
     }
 
@@ -167,13 +186,36 @@
         return pick(candidates, seg, src, 'module ' + seg.module);
     }
 
+    // 具名段：{name:'XS'} 单名（匹配绑定名或函数自身 id）；{name:'V.showToast'}
+    // 点分命名空间（只匹配绑定名的完整点分路径，如 a.b.c = fn / V = { m: fn }）
     function resolveName(node, seg, src) {
         var kids = directChildFns(node);
+        var wantDot = seg.name.indexOf('.') >= 0;
         var candidates = [];
         for (var i = 0; i < kids.length; i++) {
-            if (kids[i].asName === seg.name) candidates.push(kids[i].fn);
+            var k = kids[i];
+            if (wantDot ? (k.asName === seg.name) : (k.asName === seg.name || k.idName === seg.name)) {
+                candidates.push(k.fn);
+            }
         }
         return pick(candidates, seg, src, 'name ' + seg.name);
+    }
+
+    // 具名调用实参段：{ call:'jS.init', arg:0 } —— 定位"传给某个具名函数的回调"。
+    // 一次性函数/闭包回调没有绑定名，但它们出现的调用点有名字；
+    // 实参槽位是语义位置（回调参数），不是"第几个函数"式的裸序号。
+    // 同名调用点必须唯一（多个 → 报错列候选；写更长点分名消歧）。
+    function resolveCall(node, seg, src) {
+        var argIdx = seg.arg != null ? seg.arg : 0;
+        var candidates = [];
+        walkAll(node, function (n) {
+            if (n.type !== 'CallExpression' || !n.arguments) return;
+            var nm = n.callee.type === 'Identifier' ? n.callee.name : dottedName(n.callee);
+            if (nm !== seg.call) return;
+            var a = n.arguments[argIdx];
+            if (a && isFnNode(a) && hasBlockBody(a)) candidates.push(a);
+        });
+        return pick(candidates, seg, src, 'call ' + seg.call + ' 实参[' + argIdx + ']');
     }
 
     // 纯结构序号：当前节点的第 n 个直接子函数（AST 源码顺序，确定性）。
@@ -248,6 +290,7 @@
             var r;
             if (seg.module != null) r = resolveModule(node, seg, src);
             else if (seg.name != null) r = resolveName(node, seg, src);
+            else if (seg.call != null) r = resolveCall(node, seg, src);
             else if (seg.fn != null) r = resolveFnIndex(node, seg, src);
             else if (seg.method != null) {
                 r = resolveMethod(node, seg, src, prevAsName);

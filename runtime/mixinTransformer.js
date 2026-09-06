@@ -13,7 +13,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '0.4.0';
+    var VERSION = '0.5.0';
     var mods = []; // 已注册的 mod 描述列表
 
     function log(msg) {
@@ -74,20 +74,26 @@
     }
 
     /*
-     * 单一管线（对齐 DESIGN-layout §三）：
-     *   1. 收集所有匹配的 mixin，先验哈希锁（针对本轮输入 = 原始文件，与顺序无关）
-     *   2. replaces 按注册顺序跑（字符串级）
-     *   3. 所有 AST patches 合并成一次解析、一次应用 —— 所有 path 坐标基于同一份
-     *      解析结果，先注册的 mixin 注入的代码不会进入本次解析树，因此任何 mixin
-     *      增删都不会移动既有 patch 的名字/序号坐标（{fn:n}/{name,index} 稳定）。
-     *      两个 patch 改同一区域 → 由 __mixinAst 的重叠检测拒绝后者，不静默损坏。
+     * 串行 mixin 管线（对齐 SpongePowered Mixin 语义）：
+     *   - mod 按 priority 升序应用（小者先，Sponge mixins.json 约定；缺省 1000，
+     *     同级按注册顺序，V8 sort 稳定）
+     *   - 每个 mixin 依次处理：哈希锁（针对"本轮轮到它时的输入"）→ replaces →
+     *     AST patches（单 mixin 内一次解析一次应用，自身 patch 互不干扰）
+     *   - 后应用的 mixin 解析的是前面 mixin 改过的文本 —— 可以定位/继续修改
+     *     前面 mixin 注入的代码（链式修改）；重名会因唯一性强制报错，因此
+     *     注入名请像 Java 类名一样起唯一的名字
+     *   - 稳定寻址靠名字链（含点分命名空间）而非裸序号；{fn:n}/index 仅作最后手段
      */
     function transform(filename, source) {
         if (typeof source !== 'string' || source.length === 0) return source;
         var base = baseName(filename);
-        var matched = [];
-        for (var mi = 0; mi < mods.length; mi++) {
-            var mod = mods[mi];
+        var ordered = mods.slice().sort(function (a, b) {
+            var pa = a.priority == null ? 1000 : a.priority;
+            var pb = b.priority == null ? 1000 : b.priority;
+            return pa - pb;
+        });
+        for (var mi = 0; mi < ordered.length; mi++) {
+            var mod = ordered[mi];
             var mixins = mod.mixins || [];
             for (var i = 0; i < mixins.length; i++) {
                 var mx = mixins[i];
@@ -99,37 +105,23 @@
                         continue;
                     }
                 }
-                matched.push(mx);
+                var out = source;
+                if (mx.replaces) out = applyReplaces(mx, out, filename);
+                if (mx.patches && mx.patches.length) {
+                    if (global.__mixinAst) {
+                        var patched = global.__mixinAst.applyAstPatches(filename, out, mx.patches);
+                        if (patched !== out) out = patched;
+                    } else {
+                        log('WARN: __mixinAst 未加载，跳过 ' + mx.patches.length + ' 个 AST patch');
+                    }
+                }
+                if (out !== source) {
+                    log('patched: ' + filename + ' (by ' + (mod.modid || '?') + ')');
+                    source = out;
+                }
             }
         }
-        if (!matched.length) return source;
-
-        var out = source;
-        for (i = 0; i < matched.length; i++) {
-            var mxr = matched[i];
-            if (!mxr.replaces) continue;
-            var after = applyReplaces(mxr, out, filename);
-            if (after !== out) {
-                log('patched(replaces): ' + filename + ' (by ' + (mxr._modid || '?') + ')');
-                out = after;
-            }
-        }
-
-        var allPatches = [];
-        for (i = 0; i < matched.length; i++) {
-            if (matched[i].patches && matched[i].patches.length) {
-                allPatches = allPatches.concat(matched[i].patches);
-            }
-        }
-        if (allPatches.length) {
-            if (global.__mixinAst) {
-                var patched = global.__mixinAst.applyAstPatches(filename, out, allPatches);
-                if (patched !== out) out = patched;
-            } else {
-                log('WARN: __mixinAst 未加载，跳过 ' + allPatches.length + ' 个 AST patch');
-            }
-        }
-        return out;
+        return source;
     }
 
     /*
