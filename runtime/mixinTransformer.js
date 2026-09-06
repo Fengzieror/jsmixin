@@ -13,7 +13,7 @@
 (function (global) {
     'use strict';
 
-    var VERSION = '0.1.0';
+    var VERSION = '0.2.0';
     var mods = []; // 已注册的 mod 描述列表
 
     function log(msg) {
@@ -37,8 +37,10 @@
     }
 
     /*
-     * 对一段源码应用一个 mod 的全部变换。当前支持：
+     * 对一段源码应用一个 mod 的全部变换。支持：
      *   replaces: [[from, to], ...] 纯字符串替换（全部出现处）
+     *   patches:  [{ path, op, code, ... }] AST 锚点精确定位（需 __mixinAst + acorn）
+     * 先跑 replaces（便宜），有 patches 再解析一次 AST（昂贵，仅按需）。
      * 未做任何修改时返回原字符串（引用相等），供上层判断。
      */
     function applyMod(mx, source, filename) {
@@ -55,6 +57,14 @@
                 }
                 out = out.split(from).join(to);
                 log('replace "' + from + '" x' + n + ' in ' + filename);
+            }
+        }
+        if (mx.patches && mx.patches.length) {
+            if (global.__mixinAst) {
+                var patched = global.__mixinAst.applyAstPatches(filename, out, mx.patches);
+                if (patched !== out) out = patched;
+            } else {
+                log('WARN: __mixinAst 未加载，跳过 ' + (mx.file || '?') + ' 的 ' + mx.patches.length + ' 个 AST patch');
             }
         }
         return out;
@@ -131,4 +141,4 @@
     };
 
     installEvalHook();
-})(typeof window !== 'undefined' ? window : this);
+})(typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : this);

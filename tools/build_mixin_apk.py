@@ -1,9 +1,10 @@
 """
-build_mixin_apk.py — 阶段0 测试 APK 组装
+build_mixin_apk.py — mixin 测试 APK 组装
 
-1. 把 jsmixin 的 runtime/mixinTransformer.js + mixins/base-loader/patch_bundle.js
-   注入基座 APK 的 assets/scripts/mixin/
-2. 调用 pdzzapksworkspace/scripts/repack_with_engine.py 替换 liblayaair.so（arm64）
+1. 拼接 runtime bundle：vendor/acorn.js + runtime/mixinAst.js + runtime/mixinTransformer.js
+   （C++ 端只认一个 scripts/mixin/mixinTransformer.js，拼接后无需重编 .so）
+2. 注入 bundle + mixins/base-loader/patch_bundle.js 到基座 APK 的 assets/scripts/mixin/
+3. 调用 pdzzapksworkspace/scripts/repack_with_engine.py 替换 liblayaair.so（arm64）
    并 zipalign + apksigner 签名
 
 用法:
@@ -24,12 +25,14 @@ if len(sys.argv) < 2:
 NEW_SO = sys.argv[1]
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(WS, '派对制造_mixin_test.apk')
 
-ASSETS = [
-    ('assets/scripts/mixin/mixinTransformer.js', os.path.join(JS, 'runtime', 'mixinTransformer.js')),
-    ('assets/scripts/mixin/patch_bundle.js', os.path.join(JS, 'mixins', 'base-loader', 'patch_bundle.js')),
+RUNTIME_PARTS = [
+    os.path.join(JS, 'vendor', 'acorn.js'),
+    os.path.join(JS, 'runtime', 'mixinAst.js'),
+    os.path.join(JS, 'runtime', 'mixinTransformer.js'),
 ]
+PATCH_BUNDLE = os.path.join(JS, 'mixins', 'base-loader', 'patch_bundle.js')
 
-for _, p in ASSETS:
+for p in RUNTIME_PARTS + [PATCH_BUNDLE]:
     if not os.path.exists(p):
         sys.exit('missing: ' + p)
 if not os.path.exists(NEW_SO):
@@ -37,15 +40,28 @@ if not os.path.exists(NEW_SO):
 if not os.path.exists(BASE_APK):
     sys.exit('missing base apk: ' + BASE_APK)
 
-# --- 1. 注入 mixin assets（追加条目；脚本不重复运行，重跑先删产物）---
+# --- 1. 拼接 runtime bundle ---
+bundle = b''
+for p in RUNTIME_PARTS:
+    part = open(p, 'rb').read()
+    if not part.endswith(b'\n'):
+        part += b'\n'
+    bundle += part
+    print('part:', os.path.relpath(p, JS), len(part), 'bytes')
+print('runtime bundle total:', len(bundle), 'bytes')
+
+# --- 2. 注入 mixin assets（追加条目；重跑先删产物）---
 if os.path.exists(STAGE):
     os.remove(STAGE)
 import shutil
 shutil.copyfile(BASE_APK, STAGE)
+ASSETS = [
+    ('assets/scripts/mixin/mixinTransformer.js', bundle),
+    ('assets/scripts/mixin/patch_bundle.js', open(PATCH_BUNDLE, 'rb').read()),
+]
 with zipfile.ZipFile(STAGE, 'a') as z:
-    for entry, path in ASSETS:
-        data = open(path, 'rb').read()
-        zi = zipfile.ZipInfo(entry, date_time=(2026, 9, 5, 0, 0, 0))
+    for entry, data in ASSETS:
+        zi = zipfile.ZipInfo(entry, date_time=(2026, 9, 6, 0, 0, 0))
         zi.compress_type = zipfile.ZIP_DEFLATED
         zi.external_attr = 0o100644 << 16
         z.writestr(zi, data)
@@ -54,6 +70,6 @@ with zipfile.ZipFile(STAGE) as z:
     for entry, _ in ASSETS:
         assert z.getinfo(entry).file_size > 0
 
-# --- 2. 换 so + 对齐 + 签名 ---
+# --- 3. 换 so + 对齐 + 签名 ---
 r = subprocess.run([sys.executable, REPACK, NEW_SO, OUT, STAGE])
 sys.exit(r.returncode)

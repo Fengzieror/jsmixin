@@ -1,15 +1,12 @@
 /*
- * patch_bundle.js — 阶段0 测试补丁（base-loader 的第一个 mixin）
+ * patch_bundle.js — base-test mod v0.0.3（AST 精确定位版）
  *
  * 由 C++ 在 mixinTransformer.js 之后、apploader.js 之前执行。
  * 只对 APK 自带 assets/scripts/mixin/ 生效，不加载外部 mod。
  *
- * 验证手段：
- *   1. 字符串替换（点击屏幕继续/秒后重试，logcat 可见替换计数）
- *   2. 加法注入：把 main.min.js 模块尾部（}()}})[625]();，文件内唯一）
- *      替换为"原语句 + 在 webpack 模块闭包内调用 __mixinBoot(Laya)"，
- *      向 Laya.stage 添加一个游戏里原本不存在的文本框。
- *      这是真正的"mixin 进去一个东西"，不依赖游戏自带文本。
+ * v0.0.3：boot 标签从 v0.0.2 的字符串尾部 hack（`}()}})[625]();` 全文替换）
+ * 换成 AST inject-tail（定位 webpack 模块 625 函数体末尾），另加两个精准 log
+ * 点验证锚点体系。所有 path 候选必须唯一，否则该 patch 跳过（fail-safe）。
  */
 window.__mixinBoot = function (Laya) {
     var tries = 0;
@@ -20,7 +17,7 @@ window.__mixinBoot = function (Laya) {
                 if (tries < 120) setTimeout(addLabel, 500);
                 return;
             }
-            var lb = new Laya.Label('[mixin] mixin active');
+            var lb = new Laya.Label('[mixin] mixin active (ast v1)');
             lb.color = '#00ff88';
             lb.fontSize = 30;
             lb.bold = true;
@@ -37,17 +34,38 @@ window.__mixinBoot = function (Laya) {
 
 window.__mixin.register({
     modid: 'base-test',
-    version: '0.0.2',
+    version: '0.0.3',
     mixins: [
         {
             // 游戏主脚本：由 apploader.js 经 window.downloadfile + window.eval 执行
             file: 'main.min.js',
-            replaces: [
-                // 模块尾部（全文件唯一）：在 webpack 模块函数内、引导 IIFE 执行完之后
-                // 调用 boot（Laya 在该闭包内可见）
-                ['}()}})[625]();', '}();window.__mixinBoot&&window.__mixinBoot(Laya)}})[625]();'],
-                ['点击屏幕继续', '[mixin]点击屏幕继续'],
-                ['秒后重试', '[mixin]秒后重试']
+            patches: [
+                {
+                    // webpack 模块 625 函数体尾部：Laya 等闭包内符号已就绪，拉起 boot 标签
+                    name: 'module-tail-boot',
+                    path: [{ module: '625' }],
+                    op: 'inject',
+                    at: 'tail',
+                    code: 'window.__mixinBoot && window.__mixinBoot(Laya);'
+                },
+                {
+                    // XS = 资源版本回调 → 游戏入口函数；进函数先打日志
+                    name: 'xs-head-log',
+                    path: [{ module: '625' }, { name: 'XS' }],
+                    op: 'log',
+                    message: '[mixin-ast] XS enter (resource-version callback)'
+                },
+                {
+                    // 实名认证倒计时 toast 所在类：'秒后重试' 两层锚定（类包装 → 方法表 value）
+                    name: 'retry-countdown-log',
+                    path: [
+                        { module: '625' },
+                        { anchor: { strings: ['秒后重试'] } },
+                        { anchor: { strings: ['秒后重试'], params: 0 } }
+                    ],
+                    op: 'log',
+                    message: '[mixin-ast] retry-countdown method enter'
+                }
             ]
         }
     ]
