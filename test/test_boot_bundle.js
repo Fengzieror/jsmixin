@@ -17,8 +17,15 @@ function check(name, cond, detail) {
 
 var BOOT = path.join(__dirname, '../dist/boot/mixin-boot.js');
 
+var tmpDirs = [];
+process.on('exit', function () {
+    // 临时目录用完即清（#17）：此前每跑一次测试泄漏一个 tmp 目录
+    tmpDirs.forEach(function (t) { try { fs.rmSync(t, { recursive: true, force: true }); } catch (e) { /* ignore */ } });
+});
+
 function runChild(entrySrc) {
     var tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'jsmixin-boot-'));
+    tmpDirs.push(tmp);
     var entry = path.join(tmp, 'entry.js');
     fs.writeFileSync(entry, entrySrc);
     var r = spawnSync(process.execPath, [entry], { encoding: 'utf8' });

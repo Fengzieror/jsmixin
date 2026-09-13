@@ -6,9 +6,12 @@
  * tsc 没有 banner 选项，所以走后置处理。
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const BANNER = '/*! jsmixin v2.1.0 | MIT License | https://github.com/Fengzieror/jsmixin */\n';
+// 版本单一来源：package.json（#16，bump 只改一处）
+const VERSION = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json'), 'utf8')).version;
+const BANNER = '/*! jsmixin v' + VERSION + ' | MIT License | https://github.com/Fengzieror/jsmixin */\n';
 
 function walk(dir) {
     for (const f of readdirSync(dir, { withFileTypes: true })) {
