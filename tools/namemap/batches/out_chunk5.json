@@ -1,0 +1,24 @@
+{
+ "classes": {
+  "AntiAddictionModel": {"real": "Xw", "conf": "high", "ev": "getAntiAddictionReason/getNotEnoughPlayTimeStr + maxOnlineHour/forceOfflineTS/underAge/isTimeLimit"},
+  "BankApiService": {"real": "Pu", "conf": "high", "ev": "bank/claimfreecoin、bank/claimbankcoin、bank/startwork 端点 + 金矿打工; parent=Lu"},
+  "MatchPvpApiService": {"real": "Bc", "conf": "high", "ev": "matchpvp/randjoin、matchpvp/getroomlist、matchpvp/getroomids + ErrNoMatchRooms; parent=Pc"},
+  "ChatApiService": {"real": "uo", "conf": "high", "ev": "chatroom/claninvite、chatroom/sendugclevel、chatroom/getugclevellist 端点; parent=co"},
+  "PanelBase": {"real": "xt", "conf": "high", "ev": "destroy/disable/enable/setEnterItem/_needResetView/_enterTabID; parent=Rt.SmartListener（Lt/Bt/At/Ft 面板族基类）"},
+  "CurrencyItemAdapter": {"real": "Kp", "conf": "high", "ev": "getVirtualItemByID + recharge/item_gem_//recharge/item_gold_//specialitems//getItemByType/currencyModel; parent=Yp"},
+  "CameraShrinkBehaviour": {"real": "Kk", "conf": "medium", "ev": "shrinkBottom/shrinkLeft + _dynamicCameraBounds/_dynamicPlayerBounds; parent=Rt.ElementBehaviour"},
+  "PlayerTriggerComponent": {"real": "mf", "conf": "medium", "ev": "onPlayerEnter/onPlayerExit/onPlayerStay + _ghostCollidable/deadghost; parent=Rt.EntityComponent"},
+  "DouyinVideoService": {"real": "Ni", "conf": "medium", "ev": "fetchVideoIDS/fetchVideoInfosByIDs/reportVideoID/_douyinVideoModel; parent=Rt.ElementComponent"},
+  "DeadState": {"real": "rf", "conf": "medium", "ev": "onEnter/onExit + dead/jump/setAlpha/_move/_input; parent=Rt.State"},
+  "ScarecrowComponent": {"real": "Qg", "conf": "medium", "ev": "init/update + _scarecrow//grassh//grassm（稻草人摆动）; parent=Yg"},
+  "AiEditController": {"real": "Ak", "conf": "medium", "ev": "_aiEdits/simulatePickComponent/searchCellForEditComponent/onAddComponentFailed; parent=xk"},
+  "FreePlayState": {"real": "AS", "conf": "medium", "ev": "onEnter/enterGame/initCurrentGame + free/replaySpeed/initCurrentGame; parent=Rt.State"},
+  "DailyRewardModel": {"real": "Da", "conf": "medium", "ev": "claimDouyinSidebarVisitReward/claimQQStickyReward/addLiveHpCount/dailyData; parent=Ba"},
+  "FxPool": {"real": "Pg", "conf": "medium", "ev": "spawn/despawn/despawnAll/_pool/_effects/Pool"},
+  "CharacterSkinController": {"real": "qd", "conf": "medium", "ev": "equipSkin/equipSkinLocal/_currentSkin/characterConfig; parent=Wt"},
+  "SpinComponent": {"real": "If", "conf": "medium", "ev": "setSpeed/_autoSpin/startRotation/update; parent=Rt.EntityComponent"},
+  "HonestyService": {"real": "go", "conf": "medium", "ev": "fetchHistories/reportPvp/_honestyModel/needFetchHistories; parent=Rt.ElementComponent"},
+  "PhysicsMaterial": {"real": "nm", "conf": "medium", "ev": "calculateResponseVelocity + _elasticity/_friction/_glue/Vector"},
+  "FriendStatusModel": {"real": "ec", "conf": "medium", "ev": "refreshOnlineStatus + friend_lastonline_day/_intimacy/_hideRelation/lastActivedAt"}
+ }
+}

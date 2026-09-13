@@ -53,6 +53,25 @@ const core = {
     methods: {},
 };
 
+/* ── 1.5 自动推断命名批次（auto-names.json；仅 conf=high 进入 build-tool 消费） ── */
+const autoNames = JSON.parse(fs.readFileSync(path.join(__dirname, 'auto-names.json'), 'utf8'));
+const autoInfo = {}; // friendly -> {conf, ev}（供 NAMEMAP.md 证据列回退）
+const usedReals = new Set(Object.values(core.classes));
+for (const [f, info] of Object.entries(autoNames.classes || {})) {
+    autoInfo[f] = { conf: info.conf, ev: info.ev };
+    if (info.conf !== 'high' || usedReals.has(info.real)) continue;
+    core.classes[f] = info.real;
+    usedReals.add(info.real);
+}
+const aliasReals = new Set(Object.values(core.aliases));
+for (const [real, info] of Object.entries(autoNames.enums || {})) {
+    if (!info) continue;
+    if (info.conf !== 'high' || usedReals.has(real) || aliasReals.has(real)) continue;
+    core.aliases[info.name] = real;
+    aliasReals.add(real);
+    autoInfo[info.name] = { conf: info.conf, ev: info.ev };
+}
+
 /* ── 2. 组件注册表: Of.creators 的 id → 类（id 即语义名, PascalCase 化） ── */
 const pascal = (s) => s.split(/[^a-zA-Z0-9]+/).filter(Boolean)
     .map((w) => w[0].toUpperCase() + w.slice(1)).join('');
@@ -132,10 +151,12 @@ const evidence = {
     ScreenId: 'realname/realnameinfo/antiaddiction/clan/album*/skintrial…（150+ 视图 id）',
 };
 for (const [f, r] of Object.entries(core.classes)) {
-    L.push(`| ${f} | \`${r}\` | ${kinds[f] || ''} | ${evidence[f] || ''} | ${report[r.split('.')[0]] ? report[r.split('.')[0]].line : '?'} |`);
+    const ai = autoInfo[f];
+    L.push(`| ${f} | \`${r}\` | ${kinds[f] || (ai ? '类/推断(' + ai.conf + ')' : '')} | ${evidence[f] || (ai ? ai.ev : '')} | ${report[r.split('.')[0]] ? report[r.split('.')[0]].line : '?'} |`);
 }
 for (const [f, r] of Object.entries(core.aliases)) {
-    L.push(`| ${f} | \`${r}\` | 枚举 | ${evidence[f] || ''} | ${report[r].line} |`);
+    const ai = autoInfo[f];
+    L.push(`| ${f} | \`${r}\` | ${kinds[f] || (ai ? '枚举/推断(' + ai.conf + ')' : '枚举')} | ${evidence[f] || (ai ? ai.ev : '')} | ${report[r].line} |`);
 }
 L.push('');
 L.push('## Rt 命名空间（物理/ECS，点分引用 `Rt.Xxx`）');

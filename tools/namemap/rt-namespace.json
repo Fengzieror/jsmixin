@@ -1,0 +1,530 @@
+{
+ "note": "Rt/GS 为运行时闭包内真实存在的命名空间变量, 成员名明文（点分引用可直接用于注入体）。kind=class-like 的成员多为 ECS/游戏框架类; refs=出现次数。",
+ "Rt": {
+  "memberCount": 71,
+  "members": [
+   {
+    "member": "TweenMgr",
+    "refs": 331,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "tweenProps",
+    "refs": 322,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "Observable",
+    "refs": 271,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "MathUtils",
+    "refs": 260,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "timer",
+    "refs": 223,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "UIUtils",
+    "refs": 187,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "random",
+    "refs": 176,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "ElementStageView",
+    "refs": 175,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Entity",
+    "refs": 159,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ActionTask",
+    "refs": 128,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Vector",
+    "refs": 117,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Ease",
+    "refs": 104,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ShadowLabel",
+    "refs": 101,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "BoxCollider",
+    "refs": 88,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "RectangleF",
+    "refs": 75,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "LoopType",
+    "refs": 64,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ElementComponent",
+    "refs": 62,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TweenFlow",
+    "refs": 56,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "SoundManager",
+    "refs": 52,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ElementModel",
+    "refs": 41,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ValueChangeCommand",
+    "refs": 38,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "LocalizationLabel",
+    "refs": 30,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "State",
+    "refs": 30,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Physics",
+    "refs": 29,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "CircleCollider",
+    "refs": 27,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TimeUtils",
+    "refs": 26,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ElementBehaviour",
+    "refs": 19,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "WebSocketEvent",
+    "refs": 17,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Pool",
+    "refs": 17,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ObservableT",
+    "refs": 17,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "WebSocketState",
+    "refs": 16,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "w",
+    "refs": 13,
+    "binding": "w",
+    "kind": "function-or-field",
+    "line": 9966
+   },
+   {
+    "member": "QuickDebugUI",
+    "refs": 11,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "LocalizationImage",
+    "refs": 10,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "EntityComponent",
+    "refs": 10,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "CameraAxis",
+    "refs": 10,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Color",
+    "refs": 7,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ShakeTween",
+    "refs": 7,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "SmartListener",
+    "refs": 6,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "CollisionResult",
+    "refs": 6,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TweenChain",
+    "refs": 5,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "readUInt",
+    "refs": 5,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "Element",
+    "refs": 5,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "CameraSmoothingType",
+    "refs": 5,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "tween",
+    "refs": 4,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "SetExt",
+    "refs": 4,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "writeUInt",
+    "refs": 4,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "Collisions",
+    "refs": 4,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "WebSocketClient",
+    "refs": 3,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Dictionary",
+    "refs": 3,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Collider",
+    "refs": 3,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Line",
+    "refs": 3,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Spline",
+    "refs": 3,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "StateMachine",
+    "refs": 2,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TKGestureRecognizerState",
+    "refs": 2,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TKRect",
+    "refs": 2,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "IntCompression",
+    "refs": 2,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "Camera2D",
+    "refs": 2,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TouchKit",
+    "refs": 2,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TKAnyTouchRecognizer",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TKButtonRecognizer",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "CharacterController",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "fixedTimeStep",
+    "refs": 1,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "PseudoRandom",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "ArcadeRigidbody",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "AbstractCameraBehavior",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "CameraKit2D",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "PositionLocking",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TKTapRecognizer",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "TKPanRecognizer",
+    "refs": 1,
+    "binding": null,
+    "kind": "class-like"
+   },
+   {
+    "member": "init",
+    "refs": 1,
+    "binding": null,
+    "kind": "function-or-field"
+   }
+  ]
+ },
+ "GS": {
+  "memberCount": 15,
+  "members": [
+   {
+    "member": "online",
+    "refs": 54,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "version",
+    "refs": 29,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "getInstance",
+    "refs": 12,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "relogin",
+    "refs": 8,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "handleLoginFailed",
+    "refs": 6,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "atlasVersion",
+    "refs": 6,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "levelVersion",
+    "refs": 4,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "enter",
+    "refs": 3,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "handleInvalidVersion",
+    "refs": 3,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "exit",
+    "refs": 3,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "logout",
+    "refs": 2,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "clearLocalStorage",
+    "refs": 2,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "_reloginCount",
+    "refs": 1,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "onGameFollowedFromMenu",
+    "refs": 1,
+    "binding": null,
+    "kind": "function-or-field"
+   },
+   {
+    "member": "onMemoryWarning",
+    "refs": 1,
+    "binding": null,
+    "kind": "function-or-field"
+   }
+  ]
+ }
+}

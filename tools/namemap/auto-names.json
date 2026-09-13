@@ -1,0 +1,1184 @@
+{
+ "note": "AI 辅助推断命名（批次1+2，2026-09-06）。conf=high 才会被 gen_map.js 合入 name-map.json（build-tool 消费）；conf=medium 仅出现在 enums.json 的建议名。每条带证据，核对后可把 medium 升 high。",
+ "classes": {
+  "PlayerDataModel": {
+   "real": "Er",
+   "conf": "high",
+   "ev": "86 方法: adaptLevelData/addLocalLevel/consumeHp/buyStamp/addChallengeHistory/addReplayRecord/clearLocalSetting; 字符串: 人品分不足/你的人品分过低，不允许点评; parent=Rt.ElementModel"
+  },
+  "HomeStageView": {
+   "real": "Vb",
+   "conf": "high",
+   "ev": "60+ 方法: onBadgeButtonClicked/onBattlePassHudClicked/onClanButtonClicked/onDailyChallengeButtonClicked/getTutorialType; 字符串: 创建房间/组队赛暂时关闭中/自制地图，全国挑战; parent=Rt.ElementStageView"
+  },
+  "UgcLevelService": {
+   "real": "Mr",
+   "conf": "high",
+   "ev": "43+ 方法: createUGCLevel/deleteUGCLevel/fetchComments/fetchLevelData/buyUploadSlot/actionComment; 字符串: 地图槽位/生成全景图失败/今天已经发了…点评; parent=Rt.ElementComponent"
+  },
+  "LevelEditor": {
+   "real": "Ek",
+   "conf": "high",
+   "ev": "42+ 方法: addEditComponentToLevel/createComponentAndDrag/editCurrentComponent/handleResizeMap/initMapAllComponents/moveMap; statics: maxUndoCount; 字符串: 地图最多/地图横向至少/广告结束后，即可立即获得组件; parent=xk"
+  },
+  "MatchController": {
+   "real": "kk",
+   "conf": "high",
+   "ev": "38+ 方法: getMatchMode/getMatchEndType/getPlayerByIndex/getLocalPlayerTeam/handlePlayerHitCheckpoint/checkIfRespawnInstantKill; 字符串: parse level snapshot failed/房主决定重新开始闯关"
+  },
+  "MatchRoomStageView": {
+   "real": "zb",
+   "conf": "high",
+   "ev": "33+ 方法: cancelMatchmaking/changeTeam/changeToCreativeMode/copyMatchID/getMatchID/onChangeRoomType/onEnterFriendlyMatch; 字符串: 率先达到…分的队伍获胜/生肖训练师为你准备了新手教学; parent=Rt.ElementStageView"
+  },
+  "ShareService": {
+   "real": "dp",
+   "conf": "high",
+   "ev": "32+ 方法: getShareConfig/getShareMessage/onShareAppMessage/onShareSuccess/captureScreen/logShareInfo; 字符串: 派对制造/生肖派对/20.6.0; parent=Rt.ElementComponent"
+  },
+  "GameEndStageView": {
+   "real": "yC",
+   "conf": "high",
+   "ev": "32+ 方法: canRematch/doRematchCountdown/backToHome/handleRematch/needShowAnnualReportButton; 字符串: 分享比赛视频/继续游戏/赛季已结束; parent=Rt.ElementStageView"
+  },
+  "AnnualReportStageView": {
+   "real": "Ew",
+   "conf": "high",
+   "ev": "29+ 方法: onAnnualReportFetched/onAnnualRewardClaimed/onAnnualReportUnlocked/getVideoInfo; 字符串: 年终奖已解锁，分享领取/年终奖已领取; parent=Rt.ElementStageView"
+  },
+  "ReplayStageView": {
+   "real": "UC",
+   "conf": "high",
+   "ev": "26+ 方法: onRecordButtonClicked/canComment/handleCommentResult/despawnPlayer; 字符串: 回放数据是临时的。如需录屏，请现在启动哦/点评地图; parent=Rt.ElementStageView"
+  },
+  "ClanService": {
+   "real": "ls",
+   "conf": "high",
+   "ev": "24+ 方法: createClan/fetchClanList/getClanInfo/handleApplication/invite/blockUser; 字符串: 战队招募/战队邀请/不是队长，没有操作权限; parent=Rt.ElementComponent"
+  },
+  "PvpEndStageView": {
+   "real": "XC",
+   "conf": "high",
+   "ev": "23+ 方法: getOtherPlayerName/canComment/despawnPlayers; 字符串: 你们创造了新纪录！/地图发布后，才可以点评; parent=Rt.ElementStageView"
+  },
+  "GameHudStageView": {
+   "real": "pC",
+   "conf": "high",
+   "ev": "22+ 方法: onPlayerKilled/onPlayerScoreAdd/onGiveupButtonClick/onOpponentJoin/clearHud/initByGameMode; 字符串: 放弃本局!/飞出了边界!/被挤扁了!; parent=Rt.ElementStageView"
+  },
+  "UgcLevelStageView": {
+   "real": "RC",
+   "conf": "medium",
+   "ev": "81+ 方法: deleteLevel/enterChallenge/exitChallenge/fetchReplayData/initTab/onAlbumButtonClicked; 字符串: 录制出现错误/地图需要有人通关才能上首页; parent=Rt.ElementStageView"
+  },
+  "ShopPanel": {
+   "real": "Lt",
+   "conf": "medium",
+   "ev": "29+ 方法: getSkinRatings/onBuy/onCharacterUnlockSucceeded/isItemEquipped; 字符串: 评分来自于资深玩家评审团/限免中/前往商城; parent=xt"
+  },
+  "ProfilePanel": {
+   "real": "Bt",
+   "conf": "medium",
+   "ev": "23+ 方法: equip/getEquippedID/getItemList/onEditGenderButtonClicked/onEditNameButtonClicked; 字符串: 今日无法修改性别/avatar://; parent=xt"
+  },
+  "GameModeBehaviour": {
+   "real": "bk",
+   "conf": "medium",
+   "ev": "37+ 方法: enterFakeRoom/enterFriendlyMatch/enterQQMatch/enterReplayMatch/getChallengeModeDelegate/getFreeModeDelegate/confirmRevive; 字符串: 段位解锁组队赛; parent=Rt.ElementBehaviour"
+  },
+  "SoloPlayController": {
+   "real": "mk",
+   "conf": "medium",
+   "ev": "28+ 方法: backToLastCheckpoint/createGhostPlayer/destroyGhostPlayer/delayAfterPlayerDead; 字符串: 是否回退到上一个记忆点?/你被困在了当前记忆点"
+  },
+  "ComponentInventory": {
+   "real": "hk",
+   "conf": "medium",
+   "ev": "26+ 方法: IncComponentCacheCount/getCurrentMaxCountInLevel/checkDefaultElementsAndCreate; 字符串: 的仓库容量已达上限"
+  },
+  "LoginStageView": {
+   "real": "wi",
+   "conf": "high",
+   "ev": "loginWithApple/Guest/Taptap/Tel/Wechat + 用户协议/隐私政策/TapTap 预约更新文案; parent=Rt.ElementStageView"
+  },
+  "BattlePassStageView": {
+   "real": "ir",
+   "conf": "high",
+   "ev": "onBuyBattlePassButtonClicked/initList + 赛季通行证/旗帜数量会延续至下一等级/跳过当前等级; parent=Rt.ElementStageView"
+  },
+  "CheckinPanel": {
+   "real": "Vs",
+   "conf": "high",
+   "ev": "onCheckinButtonClicked/onFillButtonClicked + 补签成功/签到成功/签满7日即可领取; parent=Rt.ElementStageView"
+  },
+  "FriendService": {
+   "real": "ac",
+   "conf": "high",
+   "ev": "agreeApplication/deleteFriend/fetchFriends/handlePvpInvitationMsg/handleIntimacySyncResult; parent=Rt.ElementComponent"
+  },
+  "GameLiveService": {
+   "real": "Ji",
+   "conf": "high",
+   "ev": "fetchMission/fetchOfficialLiveInfo/handleLiveReserveResult + 主播任务/连播奖励/周播奖励/看播奖励/startLive; parent=Rt.ElementComponent"
+  },
+  "FriendModel": {
+   "real": "nc",
+   "conf": "high",
+   "ev": "addFriend/deleteFriend/getFriendByShortID/getOnlineFriendCount/_pvpInvitations; parent=Rt.ElementModel"
+  },
+  "CharacterModel": {
+   "real": "Yd",
+   "conf": "high",
+   "ev": "buy/equip/getCharacterByID/giveDebris/getDebrisCountNeed/characterSkinConfig; parent=Rt.ElementModel"
+  },
+  "BuffModel": {
+   "real": "Do",
+   "conf": "high",
+   "ev": "addBuff/getInventoryBuff/getItemTrialBuff/haveSpecialSkinTrailBuff/_localBuffs; parent=Rt.ElementModel"
+  },
+  "ReplayDataModel": {
+   "real": "th",
+   "conf": "high",
+   "ev": "addGameEvent/addPlayerRoundScore/convertToFlatBuffer/getRoundReplayData/fillStructure + invalid RPC attributes data; parent=Rt.ElementModel"
+  },
+  "ItemUtils": {
+   "real": "wp",
+   "conf": "high",
+   "ev": "getItemName/getQuality/getQualityColor/getInventoryTypeName + statics currencyTypes; 字符串: 试用卡/保星卡/金币卡/道具/礼物/贴花"
+  },
+  "AiPathBehaviour": {
+   "real": "P_",
+   "conf": "high",
+   "ev": "advanceToNextNode/findNextPlatformNodeAndUpdate/isNextPlatformDangerousToLand/getFinalNode + \"use top/large path\"; parent=Rt.ElementBehaviour"
+  },
+  "SettingsStageView": {
+   "real": "aS",
+   "conf": "high",
+   "ev": "ToggleSound/ToggleMusic/ToggleRecord/clearCache + 用户协议/隐私政策/清理缓存？; parent=Rt.ElementStageView"
+  },
+  "LevelSpatialGrid": {
+   "real": "yg",
+   "conf": "high",
+   "ev": "addWithCells/cellAtPosition/checkComponentSpaceTaken/checkGhostComponentOverlap/checkInHazardReachableArea/checkIfPathNodeAtCellPos"
+  },
+  "MatchmakingState": {
+   "real": "LS",
+   "conf": "high",
+   "ev": "createNewMatch/joinRoom/enterGameState/exitMatchmaking + 正在联赛，无法进入房间/已经在房间中; parent=Rt.State"
+  },
+  "EmojiPanel": {
+   "real": "At",
+   "conf": "high",
+   "ev": "initSlotEntries/isItemPreviewed + 全部表情（/预览中/使用中/ui/icon_emoji_white.png; parent=xt(面板基类)"
+  },
+  "EditorComponentListView": {
+   "real": "cC",
+   "conf": "medium",
+   "ev": "initTabs/mapComponentCategoryToTabType/createComponentAtCenter/getComponentLockType + 该组件仅限「双人重生模式」; parent=Rt.ElementStageView"
+  },
+  "EditorSaveStageView": {
+   "real": "DC",
+   "conf": "medium",
+   "ev": "doSaveLevel/handleSaveLevel/onMapSizeButtonClicked + 上传失败/关卡中有部分文字内容不符合平台规范/录屏中; parent=Rt.ElementStageView"
+  },
+  "MatchSettingsPanel": {
+   "real": "jb",
+   "conf": "medium",
+   "ev": "changeMatchMode/initMapList/changeToTargetScoreEndType + 联赛升级到「/随机地图"
+  },
+  "UnlimitedHpPanel": {
+   "real": "hl",
+   "conf": "medium",
+   "ev": "canClaimBy/onAdButtonClicked/onLiveButtonClicked + 求助好友，才能生命无限哦/直播期间无限生命"
+  },
+  "ClanInfoEditPanel": {
+   "real": "qa",
+   "conf": "medium",
+   "ev": "checkClanNameLocal/onChangeIDButtonClicked/onChangeModeButtonClicked + 战队号修改成功/请输入战队名称/确认创建; parent=Rt.ElementStageView"
+  },
+  "RoomStageView": {
+   "real": "Zb",
+   "conf": "medium",
+   "ev": "changeToCharacterState/changeToHomeState/despawnOpponentPlayer/getPlayerSpawnPoint/_roomMemberHuds; parent=Rt.ElementStageView"
+  },
+  "GameplayControllerBase": {
+   "real": "lk",
+   "conf": "medium",
+   "ev": "lk 家族(dk/pk/_k/fk/Ck)共同基类; 成员含 getMatchMode/getLevelID/initGame 等对局控制通用方法"
+  },
+  "PvpMatchController": {
+   "real": "dk",
+   "conf": "medium",
+   "ev": "checkIfFirstPvp/onFetchLevelSnapshot/onGetLevelSnapshotFromOtherPlayer + 遇见高手 开启5局模式/只剩1个对手; parent=lk"
+  },
+  "TutorialMatchController": {
+   "real": "pk",
+   "conf": "medium",
+   "ev": "generateTutorial1Elements/jumpButtonTip + 同时按右和跳跃键，跳一下试试/放个刺球，搞搞破坏如何？; parent=lk"
+  },
+  "DailyChallengeView": {
+   "real": "Al",
+   "conf": "medium",
+   "ev": "onDailyChallengeFetched/getDifficultyStar + 冷却时间 /看广告…立即挑战关卡"
+  },
+  "PartyComponentModel": {
+   "real": "ak",
+   "conf": "medium",
+   "ev": "initRoundData/nextRound/generatePartyComponents/getAvaliablePartyComponents/_roundComponents/_selectedPlayerIndexes; parent=Rt.ElementModel"
+  },
+  "AccountApiService": {
+   "real": "$w",
+   "conf": "medium",
+   "ev": "bindPhoneNumber/fetchProfile/fetchRealNameInfo/generateRestoreCode + account/update、account/decode 端点; parent=Rt.ElementComponent"
+  },
+  "StoryModeView": {
+   "real": "An",
+   "conf": "medium",
+   "ev": "fetchUGCLevels/fetchUGCLevelsReverse + 请先完成上一个关卡/花费钻石或印花跳过关卡？/story.png; parent=Rt.ElementStageView"
+  },
+  "ActivityStageView": {
+   "real": "Es",
+   "conf": "medium",
+   "ev": "onEventStateChanged/onRankFetched + 活动已结束/reward_score.png/reward_rank.png/theme_bg.png; parent=Rt.ElementStageView"
+  },
+  "UgcLevelApiService": {
+   "real": "Pr",
+   "conf": "medium",
+   "ev": "同 Mr(UgcLevelService) 方法表 + ugclevel/addmark、ugclevel/getmarklist、ugclevel/playhistory 端点; parent=Lr"
+  },
+  "ItemBuyPanel": {
+   "real": "fu",
+   "conf": "medium",
+   "ev": "buyWithCurrency/onBuy + 赠送试用卡/购买个数/今日限购/永久限购/确认购买/评分来自于资深玩家评审团; parent=Rt.ElementStageView"
+  },
+  "CoopGameStageView": {
+   "real": "ZC",
+   "conf": "medium",
+   "ev": "onGiveUpButtonClick + 重生点已启用/气泡已启用/抛下队友，退出闯关，这就是你要的结果吗？; parent=Rt.ElementStageView"
+  },
+  "CommentAdminPanel": {
+   "real": "bl",
+   "conf": "medium",
+   "ev": "onBlockButtonClicked/onReportButtonClicked + 举报已提交/金币删除这条评论？/巡检; parent=Rt.ElementStageView"
+  },
+  "FriendlyMatchRoom": {
+   "real": "Lw",
+   "conf": "medium",
+   "ev": "kickPlayerFromFriendlyMatch/onFriendlyMatchBasicInfoChanged/generateDouyinChannel + 您被房主请出了房间/队伍人数已满"
+  },
+  "FreehornPanel": {
+   "real": "Ra",
+   "conf": "medium",
+   "ev": "refrehShopDataInfo/refreshBuyInfo + 发布视频，才能获得小喇叭哦/每日可领/限购; parent=Rt.ElementStageView"
+  },
+  "ClanServiceBase": {
+   "real": "hs",
+   "conf": "medium",
+   "ev": "cs/us(clan/* 端点变体)共同父类; blockUser/createClan/fetchClanList/getClanInfo"
+  },
+  "VipLotteryPanel": {
+   "real": "Xs",
+   "conf": "medium",
+   "ev": "onVipButtonClicked/onDrawButtonClicked/onMaxRewardClicked + 开通免广告/幸运鹅/贵族经验; parent=zs"
+  },
+  "RechargePanel": {
+   "real": "au",
+   "conf": "medium",
+   "ev": "onRecharged/onRechargeEntryClicked + recharge/banner_vip.png/recharge/banner_newbie.png/您已经购买; parent=Kc"
+  },
+  "PhysicsMoveBehaviour": {
+   "real": "C_",
+   "conf": "medium",
+   "ev": "applyHorizontalVelocity/applyVerticalVelocity/checkPlayerPenetration/killFromSquashed/addExtraMotion; parent=Rt.ElementBehaviour"
+  },
+  "TrainingPanel": {
+   "real": "Vn",
+   "conf": "medium",
+   "ev": "handleChallengeTraining/handlePvpTraining/handleSkillTraining + 我的技能等级：/ai_training.png; parent=Rt.ElementStageView"
+  },
+  "ClanBroadcastPanel": {
+   "real": "fo",
+   "conf": "medium",
+   "ev": "onMessagesFetched + 历史广播/广播消息会保留; parent=Rt.ElementStageView"
+  },
+  "ActivityService": {
+   "real": "Is",
+   "conf": "medium",
+   "ev": "buyBattlePass/claimBattlePassReward/fillCheckin/handleLotteryResponse + 通行证/派对金库/7日签到/冲榜活动; parent=Rt.ElementComponent"
+  },
+  "MyLevelsPanel": {
+   "real": "nl",
+   "conf": "medium",
+   "ev": "createLevel/fetchUGCLevels/onAlbumAction + 地图额度已达上限/地图 0/; parent=el"
+  },
+  "LevelInfoEditPanel": {
+   "real": "al",
+   "conf": "medium",
+   "ev": "checkAutoLevelName/initTags/onNameAndTagUpload + 地图类型/地图名称/根据您选择的特点自动生成地图名; parent=Rt.ElementStageView"
+  },
+  "AiBattleController": {
+   "real": "ck",
+   "conf": "medium",
+   "ev": "createAIPlayer/createTargetBox/getAIParamKey/_successParams"
+  },
+  "ClanDetailPanel": {
+   "real": "za",
+   "conf": "medium",
+   "ev": "fetchClanMembers/onApplicationClicked/onCaptainInviteButtonClicked + 转让队长/退出战队后第二天才能加入新的战队/战队号; parent=Fa"
+  },
+  "ClanChatPanel": {
+   "real": "Wa",
+   "conf": "medium",
+   "ev": "canSendMessage/checkNoticeLocal/hideTextChatPanel + 队内公告/您已被禁言/请输入新的公告; parent=Fa"
+  },
+  "PlayerEventService": {
+   "real": "V_",
+   "conf": "medium",
+   "ev": "addScore/kill/killByShooty/killFromSquashed/reachFlag/sendLevelComponentEvent + PlayerLevelComponentMsgID; parent=Rt.ElementComponent"
+  },
+  "ProjectileEntity": {
+   "real": "Tv",
+   "conf": "medium",
+   "ev": "getIsProjectile/getShootVector/getTeleportDelay/getIsInsidePortal + statics collisionResultTemp"
+  },
+  "TrackService": {
+   "real": "We",
+   "conf": "medium",
+   "ev": "logLoginEvent/logToAliyun/onChargeRequest/onChargeSuccess/completeTrainingMission + tel/Taptap/Apple/2.1.47"
+  }
+ },
+ "enums": {
+  "S": {
+   "name": "DialogType",
+   "conf": "high",
+   "ev": "actionSheet=3/loading=2/modal=1/toast=0"
+  },
+  "yt": {
+   "name": "InitStep",
+   "conf": "high",
+   "ev": "assets=5/login=4/uiConfig=3/gameConfig=2/appConfig=1/none=0"
+  },
+  "wt": {
+   "name": "ProfileTab",
+   "conf": "high",
+   "ev": "inventory=4/emoji=3/appearance=2/skin=1/none=0"
+  },
+  "Mt": {
+   "name": "ProfileItemType",
+   "conf": "high",
+   "ev": "socialAvatar=4/authButton=3/emptyItem=2/item=1/none=0"
+  },
+  "Dt": {
+   "name": "ItemDuration",
+   "conf": "high",
+   "ev": "lifetime=2/consumable=1"
+  },
+  "Kt": {
+   "name": "PreloadType",
+   "conf": "high",
+   "ev": "gameconfig=4/sound=3/character=2/uijson=1/atlas=0"
+  },
+  "Qt": {
+   "name": "FeatureType",
+   "conf": "high",
+   "ev": "skintrial=27/freehorn=26/lottery=25/freegem=24/ugcpanorama=23/npc=22/dailylogin=21…（28 成员）"
+  },
+  "$t": {
+   "name": "AdState",
+   "conf": "high",
+   "ev": "showing=2/loading=1/none=0（紧邻 te/ee/ie 广告错误码）"
+  },
+  "te": {
+   "name": "AdErrorCode",
+   "conf": "high",
+   "ev": "NoSuitableAd=1004/InterError=1003/ServerError=1000"
+  },
+  "Pe": {
+   "name": "ScreenEdge",
+   "conf": "high",
+   "ev": "centerX=5/centerY=4/rightEdge=3/leftEdge=2/topEdge=1/bottomEdge=0"
+  },
+  "Ee": {
+   "name": "FetchState",
+   "conf": "high",
+   "ev": "failed=3/succeed=2/fetching=1/none=0"
+  },
+  "Ve": {
+   "name": "AccountType",
+   "conf": "high",
+   "ev": "restore=7/session=6/guest=5/taptap=4/apple=3/tel=2/nativewechat=1/none=0"
+  },
+  "Ge": {
+   "name": "SmsStep",
+   "conf": "high",
+   "ev": "verifyCode=2/getCode=1/getAccount=0"
+  },
+  "ze": {
+   "name": "LoginChannel",
+   "conf": "high",
+   "ev": "TapTap=9/Apple=8/Tel=7/Wechat=6/None=0"
+  },
+  "Xe": {
+   "name": "MatchFlowEvent",
+   "conf": "high",
+   "ev": "reMatch=7/exitMatch=6/endMatch=5/startMatch=4/exitRoom=3/enterRoom=2/loaded=1/launch=0"
+  },
+  "gi": {
+   "name": "CommentSort",
+   "conf": "high",
+   "ev": "like=2/time=1/none=0"
+  },
+  "qi": {
+   "name": "ChallengeCycle",
+   "conf": "high",
+   "ev": "weekly=2/daily=1/none=0"
+  },
+  "Pn": {
+   "name": "GameMode",
+   "conf": "high",
+   "ev": "challenge=4/pvp=3/league=2/skill=1/basic=0"
+  },
+  "En": {
+   "name": "MissionType",
+   "conf": "high",
+   "ev": "gamelive=12/pvpKing=11/marathon=10/joinDays=9/login=8/ugcLevelPassed=5/ugcLikes=4/spendCoins=1/pvpTop1=0（13 成员）"
+  },
+  "so": {
+   "name": "ReportReason",
+   "conf": "high",
+   "ev": "others=4/conflict=3/abuse=2/vulgar=1/violation=0"
+  },
+  "Mo": {
+   "name": "CardType",
+   "conf": "high",
+   "ev": "specialSkinTrial=5/danDefendCard=4/pvpScoreCard=3/coinCard=2/skinTrialCard=1/none=0"
+  },
+  "Oo": {
+   "name": "PushNoticeType",
+   "conf": "high",
+   "ev": "clanRoleChanged=16/clanKicked=15/clanInvite=12/giftReceived=8/badgeUnlocked=7/mail=5/levelUp=3/friendAdded=1（17 成员）"
+  },
+  "sa": {
+   "name": "RankType",
+   "conf": "high",
+   "ev": "vip=4/pvp=3/skill=2/creative=1/active=0/none=-1"
+  },
+  "va": {
+   "name": "AdFailReason",
+   "conf": "high",
+   "ev": "maxQuota=1/noSuitableAd=0"
+  },
+  "Va": {
+   "name": "ClanOp",
+   "conf": "high",
+   "ev": "getClans=20/blockUser=19/setViceCaptain=18/kickMember=17/transferRole=15/handleApplication=14/join=11/create=7…（21 成员）"
+  },
+  "Na": {
+   "name": "ClanPage",
+   "conf": "high",
+   "ev": "broadcast=6/mail=5/random=4/invite=3/search=2/clandetail=1/list=0"
+  },
+  "ps": {
+   "name": "ClanRole",
+   "conf": "high",
+   "ev": "viceCaptain=2/captain=1/none=0"
+  },
+  "fs": {
+   "name": "ChatType",
+   "conf": "high",
+   "ev": "friendPvp=5/teamPvp=4/ugc=3/emoji=2/text=1/none=0"
+  },
+  "gs": {
+   "name": "ActivityType",
+   "conf": "high",
+   "ev": "recharge=9/lottery=8/battlePass=7/checkin=6/football=5/challenge=4/douyinVideo=3/skinFree=2/newyear2022=1/rankRushv2=0（11 成员）"
+  },
+  "ks": {
+   "name": "ActivityState",
+   "conf": "high",
+   "ev": "end=4/reward=3/active=2/notOpen=1/none=0"
+  },
+  "pr": {
+   "name": "AlbumOp",
+   "conf": "high",
+   "ev": "sortAlbum=5/getAlbum=4/delete=3/update=2/create=1/getLocals=0"
+  },
+  "Tr": {
+   "name": "PlayMode",
+   "conf": "high",
+   "ev": "tutorial=4/record=3/replay=2/challengeWithGhost=1/none=0"
+  },
+  "Nr": {
+   "name": "LevelTag",
+   "conf": "high",
+   "ev": "coop=7/visual=6/newbie=5/run=4/auto=3/micro=2/puzzle=1/all=0"
+  },
+  "qr": {
+   "name": "LevelTab",
+   "conf": "high",
+   "ev": "replay=5/history=4/local=3/star=2/latest=1/none=0"
+  },
+  "Ih": {
+   "name": "FriendAction",
+   "conf": "high",
+   "ev": "delete=5/reject=4/add=3/invite=2/setting=1/info=0"
+  },
+  "Ah": {
+   "name": "FriendTab",
+   "conf": "high",
+   "ev": "application=2/friend=1/none=0"
+  },
+  "Hh": {
+   "name": "InviteType",
+   "conf": "high",
+   "ev": "clanCaptainInvite=3/clanInvite=2/teamPvp=1/friendPvp=0"
+  },
+  "Zh": {
+   "name": "Presence",
+   "conf": "high",
+   "ev": "online=2/ingame=1/offline=0"
+  },
+  "ic": {
+   "name": "PayChannel",
+   "conf": "high",
+   "ev": "alipay=1/wechatpay=0"
+  },
+  "cc": {
+   "name": "PayError",
+   "conf": "high",
+   "ev": "IsProcessing=51008/NoUncompletedOrder=51007/VerifyFailed=51006/InvalidProduct=51004/PayFailed=51001（8 成员）"
+  },
+  "ud": {
+   "name": "RankTier",
+   "conf": "high",
+   "ev": "epic=8/master=7/diamond=6/platinum=5/gold=4/silver=3/iron=2/bronze=1/newbie=0"
+  },
+  "hp": {
+   "name": "ServerError",
+   "conf": "high",
+   "ev": "79 个错误码: ErrChatRoomChannelRateLimited=8004/ErrClanNotCaptain=7011/ErrNickNameTooShort=7016…"
+  },
+  "gp": {
+   "name": "Quality",
+   "conf": "high",
+   "ev": "legendary=5/epic=4/rare=3/excellent=2/common=1/none=0"
+  },
+  "bp": {
+   "name": "RecordState",
+   "conf": "high",
+   "ev": "stopped=5/stopping=4/paused=3/recording=2/starting=1/none=0"
+  },
+  "Sp": {
+   "name": "PlayerAnim",
+   "conf": "high",
+   "ev": "shootbarrel=11/bubble=10/electrified=9/teleport=8/celebrate=6/dead=5/wallcling=4/run=3/falldown=2/jump=1/idle=0（12 成员）"
+  },
+  "Mp": {
+   "name": "SurfaceType",
+   "conf": "high",
+   "ev": "mud=2/ice=1/normal=0"
+  },
+  "u_": {
+   "name": "DeathReason",
+   "conf": "high",
+   "ev": "giveup=5/squash=4/electricity=3/hazard=2/outOfScope=1/none=0"
+  },
+  "w_": {
+   "name": "MoveState",
+   "conf": "high",
+   "ev": "unknown=6/halt=5/walljump=4/jump=3/waitForJump=2/walk=1/none=0"
+  },
+  "J_": {
+   "name": "ControlSource",
+   "conf": "high",
+   "ev": "npc=6/deadghost=5/ui=4/network=3/ghost=2/ai=1/input=0"
+  },
+  "tf": {
+   "name": "GameEvent",
+   "conf": "high",
+   "ev": "teleport=10/componentevent=9/ghost=8/match=7/edit=6/trigger=5/collider=4/move=3/network=2/ai=1/input=0（11 成员）"
+  },
+  "Nf": {
+   "name": "CollisionRole",
+   "conf": "high",
+   "ev": "onlyTakeUpSpace=3/doNotTakeUpSpace=2/onewayPlatform=1/platform=0"
+  },
+  "ff": {
+   "name": "ProjectileType",
+   "conf": "high",
+   "ev": "balloon=3/laserBullet=2/cannonBullet=1/arrow=0"
+  },
+  "Ef": {
+   "name": "EnvType",
+   "conf": "high",
+   "ev": "blocked=2/prod=1/alpha=0"
+  },
+  "$v": {
+   "name": "BalloonColor",
+   "conf": "high",
+   "ev": "count=10/black=9/cyan=8/coffee=7/orange=6/berry=5/green=4/lavender=3/red=2/yellow=1/blue=0（Balloon=ey @L151811 同位置）"
+  },
+  "ty": {
+   "name": "BalloonShape",
+   "conf": "high",
+   "ev": "count=3/rect=2/circle=1/triangle=0（@L151810 紧邻 Balloon）"
+  },
+  "Cv": {
+   "name": "LaserState",
+   "conf": "high",
+   "ev": "revertback=3/shootstill=2/shooting=1/disabled=0（LaserShooter=Gy 相关）"
+  },
+  "Ig": {
+   "name": "WidgetType",
+   "conf": "high",
+   "ev": "slider=4/action=3/toggle=2/radio=1/list=0"
+  },
+  "Tg": {
+   "name": "EditPropKey",
+   "conf": "high",
+   "ev": "34 成员: skin/action/switches/color/robotSpeed/spawn/move_dirY/rotateDir/swingAngle/spinMode/size/gap/height/connect/ease/waitTime/flip/spinSpeed…"
+  },
+  "Km": {
+   "name": "SpectateMode",
+   "conf": "high",
+   "ev": "observeplayer=3/observeposition=2/play=1/nonfollow=0"
+  },
+  "AC": {
+   "name": "RecordMode",
+   "conf": "high",
+   "ev": "replay=5/recordNative=4/recordToutiao=3/recordWechat=2/normal=1/none=0"
+  },
+  "kC": {
+   "name": "GamePhase",
+   "conf": "high",
+   "ev": "lose=4/win=3/play=2/edit=1/ready=0"
+  },
+  "DS": {
+   "name": "AppState",
+   "conf": "high",
+   "ev": "characterinit=7/quitgame=6/matchmaking=5/reloadgame=4/game=3/home=2/login=1/init=0"
+  },
+  "RS": {
+   "name": "UILayer",
+   "conf": "high",
+   "ev": "toast=7/tutorial=6/mask=5/effect=4/popup=3/ui=2/gameui=1/game=0"
+  },
+  "HS": {
+   "name": "PlatformType",
+   "conf": "high",
+   "ev": "kuaishou=6/bilibili=5/qq=4/standalone=3/toutiao=2/wechat=1/chrome=0"
+  },
+  "vw": {
+   "name": "RoomVisibility",
+   "conf": "high",
+   "ev": "private=1/public=0"
+  },
+  "mw": {
+   "name": "WinCondition",
+   "conf": "high",
+   "ev": "targetScore=1/fixedRound=0"
+  },
+  "Nb": {
+   "name": "TutorialStage",
+   "conf": "high",
+   "ev": "tutorialEnd=5/characterUnlock=4/matchmaking=3/matchmakingStart=2/character=1/home=0"
+  },
+  "lw": {
+   "name": "SocketState",
+   "conf": "high",
+   "ev": "closed=2/connected=1/connecting=0"
+  },
+  "Uk": {
+   "name": "ShareState",
+   "conf": "high",
+   "ev": "shared=2/sharing=1/notShared=0"
+  },
+  "ju": {
+   "name": "FeatureFlag",
+   "conf": "high",
+   "ev": "23 成员: ugc_delRecord/ugc_album/ugc_banLevel/noAntiAddiction/dailyChallenge_freeReward/dailyChallenge_freeSkip…"
+  },
+  "m": {
+   "name": "HAlign",
+   "conf": "medium",
+   "ev": "center=2/right=1/left=0"
+  },
+  "k": {
+   "name": "VAlign",
+   "conf": "medium",
+   "ev": "center=2/bottom=1/top=0"
+  },
+  "K": {
+   "name": "VoiceCallState",
+   "conf": "medium",
+   "ev": "closed=3/calling=2/connected=1/connecting=0"
+  },
+  "Q": {
+   "name": "ConnectResult",
+   "conf": "medium",
+   "ev": "Connecting=2/Timeout=1/OK=0"
+  },
+  "Z": {
+   "name": "FriendConnectCode",
+   "conf": "medium",
+   "ev": "ErrNoFriendQuota=1002/ErrInvalidParams=1001/Connecting=2/OverTime=1/Success=0"
+  },
+  "ht": {
+   "name": "AccountTipType",
+   "conf": "medium",
+   "ev": "privacy=3/tip=2/report=1/fix=0"
+  },
+  "kt": {
+   "name": "SlideDirection",
+   "conf": "medium",
+   "ev": "out=2/in=1/idle=0"
+  },
+  "bt": {
+   "name": "ItemFilter",
+   "conf": "medium",
+   "ev": "canbuy=3/unown=2/own=1/all=0"
+  },
+  "re": {
+   "name": "ProfileFieldType",
+   "conf": "medium",
+   "ev": "clanVip=6/regiestDays=5/character=4/playerLevel=3/follow=2/score=1/none=0"
+  },
+  "pe": {
+   "name": "WebNavType",
+   "conf": "medium",
+   "ev": "navigateBack=2/navigateForward=1/normal=0"
+  },
+  "be": {
+   "name": "EffectAnimType",
+   "conf": "medium",
+   "ev": "flydownWithNumber=4/flydown=3/quickFade=2/scaleOut=1/explodeOut=0"
+  },
+  "Ne": {
+   "name": "LoginStepState",
+   "conf": "medium",
+   "ev": "failed=3/success=2/start=1/none=0"
+  },
+  "je": {
+   "name": "QuitReason",
+   "conf": "medium",
+   "ev": "noHp=1/quit=0"
+  },
+  "Yi": {
+   "name": "ChallengeState",
+   "conf": "medium",
+   "ev": "reversed=3/end=2/live=1/none=0"
+  },
+  "nn": {
+   "name": "TaskType",
+   "conf": "medium",
+   "ev": "shop=6/cumulativeMission=5/dailyMission=4/watchLiveReward=3/liveReward=2/channel=1/none=0"
+  },
+  "cn": {
+   "name": "LiveTaskType",
+   "conf": "medium",
+   "ev": "liveUgcPvp=8/liveUgc=7/liveAudience=6/livePvpTeam=5/liveOneHourDays=4/liveMaxLikes=3/livePvp=2/livePvpWin=1/liveTime=0"
+  },
+  "Sn": {
+   "name": "PageNav",
+   "conf": "medium",
+   "ev": "next=2/current=1/previous=0"
+  },
+  "bo": {
+   "name": "LevelDetailTab",
+   "conf": "medium",
+   "ev": "history=2/intro=1/none=0"
+  },
+  "ro": {
+   "name": "ReportBehavior",
+   "conf": "medium",
+   "ev": "friendlyFire=3/hang=2/unfriendly=1/negative=0"
+  },
+  "Ga": {
+   "name": "ClanStatus",
+   "conf": "medium",
+   "ev": "locked=2/review=1/none=0"
+  },
+  "Ha": {
+   "name": "ClanEditField",
+   "conf": "medium",
+   "ev": "shortID=4/chat=3/intro=2/notice=1/name=0"
+  },
+  "Os": {
+   "name": "CheckinOp",
+   "conf": "medium",
+   "ev": "claimMax=2/fill=1/checkin=0"
+  },
+  "Ws": {
+   "name": "BattlePassOp",
+   "conf": "medium",
+   "ev": "claimMax=4/buyLevel=3/claimReward=2/buyBattlePass=1/fetch=0"
+  },
+  "Ar": {
+   "name": "LevelAdminOp",
+   "conf": "medium",
+   "ev": "deleteandreport=1/delete=0"
+  },
+  "Or": {
+   "name": "AdminOp",
+   "conf": "medium",
+   "ev": "deleteRecord=3/star=2/downWeight=1/banText=0"
+  },
+  "Fr": {
+   "name": "DifficultyFilter",
+   "conf": "medium",
+   "ev": "insane=4/hard=3/medium=2/easy=1/all=0"
+  },
+  "Wr": {
+   "name": "BubbleType",
+   "conf": "medium",
+   "ev": "RespawnPoint=1/Bubble=0"
+  },
+  "Rl": {
+   "name": "ChallengeStep",
+   "conf": "medium",
+   "ev": "difficultySelect=3/rewardClaim=2/challenge=1/none=0"
+  },
+  "Sh": {
+   "name": "TeamMode",
+   "conf": "medium",
+   "ev": "coop=3/team=2/normal=1/none=0"
+  },
+  "fc": {
+   "name": "GemProductType",
+   "conf": "medium",
+   "ev": "skinpack=5/clangem=4/gem_event=3/vip=2/newbie=1/gem=0"
+  },
+  "Vc": {
+   "name": "HudLayer",
+   "conf": "medium",
+   "ev": "control=1/ui=0"
+  },
+  "Gc": {
+   "name": "ProfileSection",
+   "conf": "medium",
+   "ev": "printing=7/stamp=6/character=5/emoji=4/appearance=3/title=2/home=1/none=0"
+  },
+  "qc": {
+   "name": "LevelCategory",
+   "conf": "medium",
+   "ev": "skill=5/creative=4/event=3/friend=2/world=1/none=0"
+  },
+  "td": {
+   "name": "LeagueMode",
+   "conf": "medium",
+   "ev": "leagueQuick=2/league=1/none=0"
+  },
+  "ed": {
+   "name": "LeagueSchedule",
+   "conf": "medium",
+   "ev": "weekend=2/workday=1/stop=0"
+  },
+  "cp": {
+   "name": "RedDotType",
+   "conf": "medium",
+   "ev": "douyingrouproom=12/ugcalbum=11/claninvite=10/douyinmatch=9/ugcreplay=7/teammatch=6/ugc=5/debris=4/replay=3/match=2/bank=1/none=0"
+  },
+  "Ip": {
+   "name": "PlayerState",
+   "conf": "medium",
+   "ev": "celebrate=4/dead=3/springjump=2/walljump=1/normal=0"
+  },
+  "cf": {
+   "name": "SystemType",
+   "conf": "medium",
+   "ev": "teleport=10/componentevent=9/ghost=8/match=7/edit=6/trigger=5/collider=4/move=3/network=2/ai=1/input=0（10 成员，@L135139 紧邻 PhysicsLayer）"
+  },
+  "pf": {
+   "name": "ComponentCategory",
+   "conf": "medium",
+   "ev": "skin=5/decoration=4/special=3/hazards=2/platform=1（@L135513 紧邻 ComponentType）"
+  },
+  "ig": {
+   "name": "TutorialHud",
+   "conf": "medium",
+   "ev": "count=6/wall_jump=5/jump_practice=4/long_jump_hint=3/jump_hint=2/clear_hud=1/input_tutorial=0"
+  },
+  "wm": {
+   "name": "SpeedLevel",
+   "conf": "medium",
+   "ev": "count=3/fast=2/medium=1/slow=0"
+  },
+  "Cm": {
+   "name": "TextDirection",
+   "conf": "medium",
+   "ev": "count=2/rightToLeft=1/leftToRight=0"
+  },
+  "nk": {
+   "name": "RoomMode",
+   "conf": "medium",
+   "ev": "football=8/ugcmultiplayer=7/ugcchallenge=6/matchreplay=5/matchaibattle=4/tutorialmatch=3/match=2/free=1/none=0"
+  },
+  "bC": {
+   "name": "GameBanner",
+   "conf": "medium",
+   "ev": "double=5/great=4/gameEnd=3/warning=2/battleStart=1/timeEnd=0"
+  },
+  "SC": {
+   "name": "PopupAnim",
+   "conf": "medium",
+   "ev": "fadeIn=1/scaleIn=0"
+  },
+  "TC": {
+   "name": "MatchType",
+   "conf": "medium",
+   "ev": "pvp=2/single=1/none=0"
+  },
+  "NC": {
+   "name": "PlatformKind",
+   "conf": "medium",
+   "ev": "zplatform=4/pushable=3/canHide=2/door=1/static=0"
+  },
+  "GC": {
+   "name": "GameViewId",
+   "conf": "medium",
+   "ev": "topbar=22/hpcountdown=21/ugcpvpend=20/ugcrecordend=16/ugcend=13/ugcedit=11/replayrank=9/replay=8/select=7/rank=5/lose=4/win=3/grid=1/game=0（23 成员）"
+  },
+  "pw": {
+   "name": "JoinMatchError",
+   "conf": "medium",
+   "ev": "cheat=4/matchFull=3/matchNotExist=2/matchOverTime=1/none=0"
+  },
+  "gw": {
+   "name": "RoomGameMode",
+   "conf": "medium",
+   "ev": "football=4/coop=3/card=2/creative=1/party=0"
+  },
+  "kw": {
+   "name": "MatchKind",
+   "conf": "medium",
+   "ev": "fakeRoom=4/battleAITraining=3/tutorial=2/friendly=1/normal=0"
+  },
+  "xw": {
+   "name": "RoomConfigField",
+   "conf": "medium",
+   "ev": "matchMode=3/teamMode=2/roomType=1/map=0"
+  },
+  "kS": {
+   "name": "GuidePage",
+   "conf": "medium",
+   "ev": "toppvp=8/training=7/tutorialLose=6/tutorialWin=5/friendlyMatch=4/clanChat=3/leagueHome=2/league=1/none=0"
+  },
+  "pS": {
+   "name": "SettingsEntry",
+   "conf": "medium",
+   "ev": "feedback=4/contact=3/record=2/gameclub=1/auth=0"
+  },
+  "MS": {
+   "name": "ChatEntry",
+   "conf": "medium",
+   "ev": "douyinGroupRoom=17/createOnChat=16/clanchatlist=15/createOnMatchFull=14/create=11/friend=8/rematch=7/search=4/invitation=3/im=2/shareCard=1/normal=0（18 成员）"
+  },
+  "iS": {
+   "name": "NoticeType",
+   "conf": "medium",
+   "ev": "redeem=5/live=4/connect=3/system=2/update=1/none=0"
+  },
+  "dC": {
+   "name": "RewardSource",
+   "conf": "medium",
+   "ev": "buy=7/vip=6/live=5/encourage=4/share=3/videoShare=2/video=1/none=0"
+  },
+  "nC": {
+   "name": "LevelBlockReason",
+   "conf": "medium",
+   "ev": "ban=5/notSupportRespawnPoint=4/notForPvp=3/blocked=2/playerLevel=1/none=0"
+  },
+  "rk": {
+   "name": "TutorialRobotState",
+   "conf": "medium",
+   "ev": "fail=4/success=3/jumping=2/walkToJumpPoint=1/none=0"
+  },
+  "uk": {
+   "name": "EditAddOp",
+   "conf": "medium",
+   "ev": "undoDelete=4/undoAdd=3/delete=2/addFromCache=1/none=0"
+  },
+  "gb": {
+   "name": "EntryMode",
+   "conf": "medium",
+   "ev": "pvp=4/training=3/newbie=2/dailychallenge=1/none=0"
+  },
+  "Yw": {
+   "name": "PermResult",
+   "conf": "medium",
+   "ev": "fail=2/deny=1/ok=0"
+  },
+  "sv": {
+   "name": "ColorPalette",
+   "conf": "medium",
+   "ev": "purple=7/yellow=6/coffee=5/count=4/orange=3/blue=2/white=1/black=0"
+  },
+  "og": {
+   "name": "HalloweenHudMini",
+   "conf": "medium",
+   "ev": "count=2/lantern=1/pumpkin=0"
+  },
+  "lg": {
+   "name": "HalloweenHud",
+   "conf": "medium",
+   "ev": "count=4/lantern=3/gem=2/score=1/pumpkin=0"
+  },
+  "ug": {
+   "name": "LockReason",
+   "conf": "medium",
+   "ev": "system=2/locked=1/none=0"
+  },
+  "mm": {
+   "name": "SizeLevel",
+   "conf": "medium",
+   "ev": "large=2/middle=1/small=0"
+  },
+  "pm": {
+   "name": "GemColor",
+   "conf": "medium",
+   "ev": "red=3/orange=2/yellow=1/blue=0"
+  },
+  "vd": {
+   "name": "Rarity",
+   "conf": "medium",
+   "ev": "rare=1/normal=0"
+  },
+  "Gl": {
+   "name": "RankListType",
+   "conf": "medium",
+   "ev": "friend=2/league=1/none=0"
+  },
+  "Ml": {
+   "name": "ChallengeEntry",
+   "conf": "medium",
+   "ev": "select=2/challenge=1/none=0"
+  },
+  "rl": {
+   "name": "RoomLoadState",
+   "conf": "medium",
+   "ev": "empty=2/full=1/normal=0"
+  },
+  "yc": {
+   "name": "RoomState",
+   "conf": "medium",
+   "ev": "end=4/full=3/playing=2/waiting=1/none=0"
+  },
+  "Dr": {
+   "name": "UserBlockState",
+   "conf": "medium",
+   "ev": "reported=2/blocked=1/none=0"
+  },
+  "Gr": {
+   "name": "DifficultyEx",
+   "conf": "medium",
+   "ev": "insane=4/hard=3/medium=2/easy=1/none=0（比 Difficulty 多 insane）"
+  },
+  "ee": {
+   "name": "RewardedAdError",
+   "conf": "medium",
+   "ev": "Max=120002/NoSuitableAd=1002（激励视频错误码）"
+  },
+  "ji": {
+   "name": "LevelSort",
+   "conf": "medium",
+   "ev": "reward=3/time=2/like=1/none=0"
+  },
+  "hn": {
+   "name": "LiveRewardCycle",
+   "conf": "medium",
+   "ev": "cumulativeLive=1/dailyLive=0"
+  },
+  "oo": {
+   "name": "RestrictScope",
+   "conf": "medium",
+   "ev": "ugcTextComment=6/ugcUpload=5/friendlyPvp=4/league=3/emoji=2/report=1/ugcComment=0（禁言/封禁范围）"
+  },
+  "lo": {
+   "name": "ReportScene",
+   "conf": "medium",
+   "ev": "badplay=4/goodplay=3/pvp_report=2/comment_report=1/pvp_disconnect=0"
+  },
+  "bs": {
+   "name": "LotteryOp",
+   "conf": "medium",
+   "ev": "claimMax=2/draw=1/sync=0"
+  },
+  "Us": {
+   "name": "RewardCenterTab",
+   "conf": "medium",
+   "ev": "checkin=3/bank=2/lottery=1/none=0"
+  },
+  "vr": {
+   "name": "EndReason",
+   "conf": "medium",
+   "ev": "dead=3/quit=2/restart=1/win=0"
+  },
+  "Rr": {
+   "name": "CommentAdminOp",
+   "conf": "medium",
+   "ev": "delete=3/sticky=2/ban=1/report=0"
+  },
+  "c_": {
+   "name": "TutorialStep",
+   "conf": "medium",
+   "ev": "football=3/coin=2/setup=1/reachToFlag=0"
+  },
+  "k_": {
+   "name": "InputSource",
+   "conf": "medium",
+   "ev": "touch=1/button=0"
+  },
+  "z_": {
+   "name": "PlayState",
+   "conf": "medium",
+   "ev": "revive=5/deadghost=4/edit=3/hide=2/disabled=1/run=0"
+  },
+  "$_": {
+   "name": "SettingGroup",
+   "conf": "medium",
+   "ev": "sound=3/headicon=2/effects=1/avatar=0"
+  },
+  "Mf": {
+   "name": "DynamicCategory",
+   "conf": "medium",
+   "ev": "noDynamic=2/noKillable=1/normal=0"
+  },
+  "Jk": {
+   "name": "RotateDir",
+   "conf": "medium",
+   "ev": "right=3/left=2/down=1/up=0"
+  },
+  "oC": {
+   "name": "PaletteFilter",
+   "conf": "medium",
+   "ev": "cache=5/decoration=4/special=3/hazards=2/platform=1/common=0/none=-1（组件面板过滤）"
+  },
+  "zC": {
+   "name": "GameSystem",
+   "conf": "medium",
+   "ev": "audio=17/dynamicBounds=16/rpc=15/levelNetwork=14/playNetwork=13/matchplay=12/ghostrecord=10/video=9/camera=7/drag=6…（18 成员）"
+  },
+  "jC": {
+   "name": "GameFlowState",
+   "conf": "medium",
+   "ev": "revive=7/standby=6/end=5/edit=4/play=3/observelevel=2/observeplayer=1/init=0"
+  },
+  "db": {
+   "name": "ProfileInfoTab",
+   "conf": "medium",
+   "ev": "relation=4/badge=3/pvp=2/level=1/none=0"
+  },
+  "WC": {
+   "real": "WC",
+   "conf": "high",
+   "ev": "disconnect_inObserveLevel=4/disconnect_afterPlayOutTween=3/disconnect_afterEnterRoom=2/timeout_connectRoom=1/none=0",
+   "name": "DisconnectReason"
+  },
+  "Ln": {
+   "real": "Ln",
+   "conf": "high",
+   "ev": "hard=3/medium=2/easy=1/none=0",
+   "name": "Difficulty"
+  }
+ }
+}

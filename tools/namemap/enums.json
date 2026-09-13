@@ -1,0 +1,11487 @@
+{
+ "note": "TS 编译枚举/纯字面量对象。named=true 为已核对命名；其余用 byMember 反查（成员名是明文的）。build-tool 可将 name 作为 path 段别名。",
+ "count": 220,
+ "namedCount": 173,
+ "byBinding": {
+  "m": {
+   "name": "HAlign",
+   "named": true,
+   "conf": "medium",
+   "line": 9963,
+   "memberCount": 3,
+   "members": {
+    "center": 2,
+    "right": 1,
+    "left": 0
+   }
+  },
+  "k": {
+   "name": "VAlign",
+   "named": true,
+   "conf": "medium",
+   "line": 9964,
+   "memberCount": 3,
+   "members": {
+    "center": 2,
+    "bottom": 1,
+    "top": 0
+   }
+  },
+  "w": {
+   "name": "Direction",
+   "named": true,
+   "conf": "curated",
+   "line": 9966,
+   "memberCount": 5,
+   "members": {
+    "left": 4,
+    "down": 3,
+    "right": 2,
+    "up": 1,
+    "none": 0
+   }
+  },
+  "S": {
+   "name": "DialogType",
+   "named": true,
+   "conf": "high",
+   "line": 24697,
+   "memberCount": 4,
+   "members": {
+    "actionSheet": 3,
+    "loading": 2,
+    "modal": 1,
+    "toast": 0
+   }
+  },
+  "K": {
+   "name": "VoiceCallState",
+   "named": true,
+   "conf": "medium",
+   "line": 26235,
+   "memberCount": 4,
+   "members": {
+    "closed": 3,
+    "calling": 2,
+    "connected": 1,
+    "connecting": 0
+   }
+  },
+  "Q": {
+   "name": "ConnectResult",
+   "named": true,
+   "conf": "medium",
+   "line": 26236,
+   "memberCount": 3,
+   "members": {
+    "Connecting": 2,
+    "Timeout": 1,
+    "OK": 0
+   }
+  },
+  "Z": {
+   "name": "FriendConnectCode",
+   "named": true,
+   "conf": "medium",
+   "line": 26306,
+   "memberCount": 5,
+   "members": {
+    "ErrNoFriendQuota": 1002,
+    "ErrInvalidParams": 1001,
+    "Connecting": 2,
+    "OverTime": 1,
+    "Success": 0
+   }
+  },
+  "ht": {
+   "name": "AccountTipType",
+   "named": true,
+   "conf": "medium",
+   "line": 27951,
+   "memberCount": 4,
+   "members": {
+    "privacy": 3,
+    "tip": 2,
+    "report": 1,
+    "fix": 0
+   }
+  },
+  "yt": {
+   "name": "InitStep",
+   "named": true,
+   "conf": "high",
+   "line": 28920,
+   "memberCount": 6,
+   "members": {
+    "assets": 5,
+    "login": 4,
+    "uiConfig": 3,
+    "gameConfig": 2,
+    "appConfig": 1,
+    "none": 0
+   }
+  },
+  "kt": {
+   "name": "SlideDirection",
+   "named": true,
+   "conf": "medium",
+   "line": 29728,
+   "memberCount": 3,
+   "members": {
+    "out": 2,
+    "in": 1,
+    "idle": 0
+   }
+  },
+  "wt": {
+   "name": "ProfileTab",
+   "named": true,
+   "conf": "high",
+   "line": 29993,
+   "memberCount": 5,
+   "members": {
+    "inventory": 4,
+    "emoji": 3,
+    "appearance": 2,
+    "skin": 1,
+    "none": 0
+   }
+  },
+  "bt": {
+   "name": "ItemFilter",
+   "named": true,
+   "conf": "medium",
+   "line": 29994,
+   "memberCount": 4,
+   "members": {
+    "canbuy": 3,
+    "unown": 2,
+    "own": 1,
+    "all": 0
+   }
+  },
+  "Mt": {
+   "name": "ProfileItemType",
+   "named": true,
+   "conf": "high",
+   "line": 30470,
+   "memberCount": 5,
+   "members": {
+    "socialAvatar": 4,
+    "authButton": 3,
+    "emptyItem": 2,
+    "item": 1,
+    "none": 0
+   }
+  },
+  "Dt": {
+   "name": "ItemDuration",
+   "named": true,
+   "conf": "high",
+   "line": 32440,
+   "memberCount": 2,
+   "members": {
+    "lifetime": 2,
+    "consumable": 1
+   }
+  },
+  "Kt": {
+   "name": "PreloadType",
+   "named": true,
+   "conf": "high",
+   "line": 35361,
+   "memberCount": 5,
+   "members": {
+    "gameconfig": 4,
+    "sound": 3,
+    "character": 2,
+    "uijson": 1,
+    "atlas": 0
+   }
+  },
+  "Qt": {
+   "name": "FeatureType",
+   "named": true,
+   "conf": "high",
+   "line": 35362,
+   "memberCount": 28,
+   "members": {
+    "skintrial": 27,
+    "freehorn": 26,
+    "lottery": 25,
+    "freegem": 24,
+    "ugcpanorama": 23,
+    "npc": 22,
+    "dailylogin": 21,
+    "annualreward": 20,
+    "annualreport": 19,
+    "pack": 18,
+    "ugcreplay": 17,
+    "revive": 16,
+    "unlockdailychallenge": 15,
+    "timespvpscore": 14,
+    "videopack": 13,
+    "dailychallenge": 12,
+    "newbietask": 11,
+    "ugcslot": 10,
+    "hp": 9,
+    "debris": 8,
+    "characterTrial": 7,
+    "vipComponent": 6,
+    "doublecoin": 5,
+    "leaguedoublecoin": 4,
+    "leagueprotect": 3,
+    "friendlymatchreward": 2,
+    "characterdebris": 1,
+    "bankfreecoin": 0
+   }
+  },
+  "$t": {
+   "name": "AdState",
+   "named": true,
+   "conf": "high",
+   "line": 35835,
+   "memberCount": 3,
+   "members": {
+    "showing": 2,
+    "loading": 1,
+    "none": 0
+   }
+  },
+  "te": {
+   "name": "AdErrorCode",
+   "named": true,
+   "conf": "high",
+   "line": 35836,
+   "memberCount": 3,
+   "members": {
+    "NoSuitableAd": 1004,
+    "InterError": 1003,
+    "ServerError": 1000
+   }
+  },
+  "ee": {
+   "name": "RewardedAdError",
+   "named": true,
+   "conf": "medium",
+   "line": 35837,
+   "memberCount": 2,
+   "members": {
+    "Max": 120002,
+    "NoSuitableAd": 1002
+   }
+  },
+  "ie": {
+   "name": "Enum_ie",
+   "named": false,
+   "conf": null,
+   "line": 35838,
+   "memberCount": 1,
+   "members": {
+    "NoSuitableAd": 20001
+   }
+  },
+  "re": {
+   "name": "ProfileFieldType",
+   "named": true,
+   "conf": "medium",
+   "line": 36377,
+   "memberCount": 7,
+   "members": {
+    "clanVip": 6,
+    "regiestDays": 5,
+    "character": 4,
+    "playerLevel": 3,
+    "follow": 2,
+    "score": 1,
+    "none": 0
+   }
+  },
+  "pe": {
+   "name": "WebNavType",
+   "named": true,
+   "conf": "medium",
+   "line": 36564,
+   "memberCount": 3,
+   "members": {
+    "navigateBack": 2,
+    "navigateForward": 1,
+    "normal": 0
+   }
+  },
+  "be": {
+   "name": "EffectAnimType",
+   "named": true,
+   "conf": "medium",
+   "line": 37285,
+   "memberCount": 5,
+   "members": {
+    "flydownWithNumber": 4,
+    "flydown": 3,
+    "quickFade": 2,
+    "scaleOut": 1,
+    "explodeOut": 0
+   }
+  },
+  "Pe": {
+   "name": "ScreenEdge",
+   "named": true,
+   "conf": "high",
+   "line": 37913,
+   "memberCount": 6,
+   "members": {
+    "centerX": 5,
+    "centerY": 4,
+    "rightEdge": 3,
+    "leftEdge": 2,
+    "topEdge": 1,
+    "bottomEdge": 0
+   }
+  },
+  "Ee": {
+   "name": "FetchState",
+   "named": true,
+   "conf": "high",
+   "line": 38130,
+   "memberCount": 4,
+   "members": {
+    "failed": 3,
+    "succeed": 2,
+    "fetching": 1,
+    "none": 0
+   }
+  },
+  "Ve": {
+   "name": "AccountType",
+   "named": true,
+   "conf": "high",
+   "line": 40007,
+   "memberCount": 8,
+   "members": {
+    "restore": 7,
+    "session": 6,
+    "guest": 5,
+    "taptap": 4,
+    "apple": 3,
+    "tel": 2,
+    "nativewechat": 1,
+    "none": 0
+   }
+  },
+  "Ne": {
+   "name": "LoginStepState",
+   "named": true,
+   "conf": "medium",
+   "line": 40008,
+   "memberCount": 4,
+   "members": {
+    "failed": 3,
+    "success": 2,
+    "start": 1,
+    "none": 0
+   }
+  },
+  "Ge": {
+   "name": "SmsStep",
+   "named": true,
+   "conf": "high",
+   "line": 40009,
+   "memberCount": 3,
+   "members": {
+    "verifyCode": 2,
+    "getCode": 1,
+    "getAccount": 0
+   }
+  },
+  "ze": {
+   "name": "LoginChannel",
+   "named": true,
+   "conf": "high",
+   "line": 40337,
+   "memberCount": 5,
+   "members": {
+    "TapTap": 9,
+    "Apple": 8,
+    "Tel": 7,
+    "Wechat": 6,
+    "None": 0
+   }
+  },
+  "je": {
+   "name": "QuitReason",
+   "named": true,
+   "conf": "medium",
+   "line": 40338,
+   "memberCount": 2,
+   "members": {
+    "noHp": 1,
+    "quit": 0
+   }
+  },
+  "Xe": {
+   "name": "MatchFlowEvent",
+   "named": true,
+   "conf": "high",
+   "line": 40652,
+   "memberCount": 8,
+   "members": {
+    "reMatch": 7,
+    "exitMatch": 6,
+    "endMatch": 5,
+    "startMatch": 4,
+    "exitRoom": 3,
+    "enterRoom": 2,
+    "loaded": 1,
+    "launch": 0
+   }
+  },
+  "ti": {
+   "name": "Enum_ti",
+   "named": false,
+   "conf": null,
+   "line": 41542,
+   "memberCount": 1,
+   "members": {
+    "Default": 0
+   }
+  },
+  "gi": {
+   "name": "CommentSort",
+   "named": true,
+   "conf": "high",
+   "line": 43570,
+   "memberCount": 3,
+   "members": {
+    "like": 2,
+    "time": 1,
+    "none": 0
+   }
+  },
+  "ji": {
+   "name": "LevelSort",
+   "named": true,
+   "conf": "medium",
+   "line": 47660,
+   "memberCount": 4,
+   "members": {
+    "reward": 3,
+    "time": 2,
+    "like": 1,
+    "none": 0
+   }
+  },
+  "qi": {
+   "name": "ChallengeCycle",
+   "named": true,
+   "conf": "high",
+   "line": 47815,
+   "memberCount": 3,
+   "members": {
+    "weekly": 2,
+    "daily": 1,
+    "none": 0
+   }
+  },
+  "Yi": {
+   "name": "ChallengeState",
+   "named": true,
+   "conf": "medium",
+   "line": 47816,
+   "memberCount": 4,
+   "members": {
+    "reversed": 3,
+    "end": 2,
+    "live": 1,
+    "none": 0
+   }
+  },
+  "nn": {
+   "name": "TaskType",
+   "named": true,
+   "conf": "medium",
+   "line": 49334,
+   "memberCount": 7,
+   "members": {
+    "shop": 6,
+    "cumulativeMission": 5,
+    "dailyMission": 4,
+    "watchLiveReward": 3,
+    "liveReward": 2,
+    "channel": 1,
+    "none": 0
+   }
+  },
+  "hn": {
+   "name": "LiveRewardCycle",
+   "named": true,
+   "conf": "medium",
+   "line": 49873,
+   "memberCount": 2,
+   "members": {
+    "cumulativeLive": 1,
+    "dailyLive": 0
+   }
+  },
+  "cn": {
+   "name": "LiveTaskType",
+   "named": true,
+   "conf": "medium",
+   "line": 49874,
+   "memberCount": 9,
+   "members": {
+    "liveUgcPvp": 8,
+    "liveUgc": 7,
+    "liveAudience": 6,
+    "livePvpTeam": 5,
+    "liveOneHourDays": 4,
+    "liveMaxLikes": 3,
+    "livePvp": 2,
+    "livePvpWin": 1,
+    "liveTime": 0
+   }
+  },
+  "Sn": {
+   "name": "PageNav",
+   "named": true,
+   "conf": "medium",
+   "line": 51298,
+   "memberCount": 3,
+   "members": {
+    "next": 2,
+    "current": 1,
+    "previous": 0
+   }
+  },
+  "Ln": {
+   "name": "Difficulty",
+   "named": true,
+   "conf": "high",
+   "line": 51555,
+   "memberCount": 4,
+   "members": {
+    "hard": 3,
+    "medium": 2,
+    "easy": 1,
+    "none": 0
+   }
+  },
+  "Pn": {
+   "name": "GameMode",
+   "named": true,
+   "conf": "high",
+   "line": 51556,
+   "memberCount": 5,
+   "members": {
+    "challenge": 4,
+    "pvp": 3,
+    "league": 2,
+    "skill": 1,
+    "basic": 0
+   }
+  },
+  "En": {
+   "name": "MissionType",
+   "named": true,
+   "conf": "high",
+   "line": 51824,
+   "memberCount": 13,
+   "members": {
+    "gamelive": 12,
+    "pvpKing": 11,
+    "marathon": 10,
+    "joinDays": 9,
+    "login": 8,
+    "anchor": 7,
+    "adMadman": 6,
+    "ugcLevelPassed": 5,
+    "ugcLikes": 4,
+    "dailyChallengePassed": 3,
+    "ugcLevelFeatured": 2,
+    "spendCoins": 1,
+    "pvpTop1": 0
+   }
+  },
+  "$n": {
+   "name": "Enum_$n",
+   "named": false,
+   "conf": null,
+   "line": 54741,
+   "memberCount": 2,
+   "members": {
+    "tmpl": 1,
+    "text": 0
+   }
+  },
+  "to": {
+   "name": "Enum_to",
+   "named": false,
+   "conf": null,
+   "line": 54742,
+   "memberCount": 1,
+   "members": {
+    "newUGCLevel": 0
+   }
+  },
+  "eo": {
+   "name": "Enum_eo",
+   "named": false,
+   "conf": null,
+   "line": 54743,
+   "memberCount": 1,
+   "members": {
+    "global": 0
+   }
+  },
+  "no": {
+   "name": "Enum_no",
+   "named": false,
+   "conf": null,
+   "line": 54852,
+   "memberCount": 1,
+   "members": {
+    "levelText": 0
+   }
+  },
+  "oo": {
+   "name": "RestrictScope",
+   "named": true,
+   "conf": "medium",
+   "line": 54853,
+   "memberCount": 7,
+   "members": {
+    "ugcTextComment": 6,
+    "ugcUpload": 5,
+    "friendlyPvp": 4,
+    "league": 3,
+    "emoji": 2,
+    "report": 1,
+    "ugcComment": 0
+   }
+  },
+  "ao": {
+   "name": "Enum_ao",
+   "named": false,
+   "conf": null,
+   "line": 54854,
+   "memberCount": 6,
+   "members": {
+    "ban": 5,
+    "guest": 4,
+    "createdDay": 3,
+    "level": 2,
+    "score": 1,
+    "none": 0
+   }
+  },
+  "so": {
+   "name": "ReportReason",
+   "named": true,
+   "conf": "high",
+   "line": 54855,
+   "memberCount": 5,
+   "members": {
+    "others": 4,
+    "conflict": 3,
+    "abuse": 2,
+    "vulgar": 1,
+    "violation": 0
+   }
+  },
+  "ro": {
+   "name": "ReportBehavior",
+   "named": true,
+   "conf": "medium",
+   "line": 54856,
+   "memberCount": 4,
+   "members": {
+    "friendlyFire": 3,
+    "hang": 2,
+    "unfriendly": 1,
+    "negative": 0
+   }
+  },
+  "lo": {
+   "name": "ReportScene",
+   "named": true,
+   "conf": "medium",
+   "line": 54857,
+   "memberCount": 5,
+   "members": {
+    "badplay": 4,
+    "goodplay": 3,
+    "pvp_report": 2,
+    "comment_report": 1,
+    "pvp_disconnect": 0
+   }
+  },
+  "bo": {
+   "name": "LevelDetailTab",
+   "named": true,
+   "conf": "medium",
+   "line": 56056,
+   "memberCount": 3,
+   "members": {
+    "history": 2,
+    "intro": 1,
+    "none": 0
+   }
+  },
+  "To": {
+   "name": "Enum_To",
+   "named": false,
+   "conf": null,
+   "line": 56432,
+   "memberCount": 2,
+   "members": {
+    "count": 1,
+    "time": 0
+   }
+  },
+  "Mo": {
+   "name": "CardType",
+   "named": true,
+   "conf": "high",
+   "line": 56433,
+   "memberCount": 6,
+   "members": {
+    "specialSkinTrial": 5,
+    "danDefendCard": 4,
+    "pvpScoreCard": 3,
+    "coinCard": 2,
+    "skinTrialCard": 1,
+    "none": 0
+   }
+  },
+  "Oo": {
+   "name": "PushNoticeType",
+   "named": true,
+   "conf": "high",
+   "line": 57075,
+   "memberCount": 17,
+   "members": {
+    "clanRoleChanged": 16,
+    "clanKicked": 15,
+    "clanRejected": 14,
+    "clanApplied": 13,
+    "clanInvite": 12,
+    "relationDel": 11,
+    "relationAdd": 10,
+    "relationInvite": 9,
+    "giftReceived": 8,
+    "badgeUnlocked": 7,
+    "ugcpvpNewRecord": 6,
+    "mail": 5,
+    "rpChanged": 4,
+    "levelUp": 3,
+    "ugcNewRecord": 2,
+    "friendAdded": 1,
+    "none": 0
+   }
+  },
+  "sa": {
+   "name": "RankType",
+   "named": true,
+   "conf": "high",
+   "line": 60203,
+   "memberCount": 6,
+   "members": {
+    "vip": 4,
+    "pvp": 3,
+    "skill": 2,
+    "creative": 1,
+    "active": 0,
+    "none": -1
+   }
+  },
+  "va": {
+   "name": "AdFailReason",
+   "named": true,
+   "conf": "high",
+   "line": 61465,
+   "memberCount": 2,
+   "members": {
+    "maxQuota": 1,
+    "noSuitableAd": 0
+   }
+  },
+  "La": {
+   "name": "Enum_La",
+   "named": false,
+   "conf": null,
+   "line": 62935,
+   "memberCount": 3,
+   "members": {
+    "chat": 2,
+    "home": 1,
+    "none": 0
+   }
+  },
+  "Va": {
+   "name": "ClanOp",
+   "named": true,
+   "conf": "high",
+   "line": 64046,
+   "memberCount": 21,
+   "members": {
+    "getClans": 20,
+    "blockUser": 19,
+    "setViceCaptain": 18,
+    "kickMember": 17,
+    "updateNotice": 16,
+    "transferRole": 15,
+    "handleApplication": 14,
+    "leave": 13,
+    "update": 12,
+    "join": 11,
+    "invite": 10,
+    "getMembers": 9,
+    "getClan": 8,
+    "create": 7,
+    "checkName": 6,
+    "updateShortID": 5,
+    "updateName": 4,
+    "clanSearch": 3,
+    "clanList": 2,
+    "getClanID": 1,
+    "none": 0
+   }
+  },
+  "Na": {
+   "name": "ClanPage",
+   "named": true,
+   "conf": "high",
+   "line": 64047,
+   "memberCount": 7,
+   "members": {
+    "broadcast": 6,
+    "mail": 5,
+    "random": 4,
+    "invite": 3,
+    "search": 2,
+    "clandetail": 1,
+    "list": 0
+   }
+  },
+  "Ga": {
+   "name": "ClanStatus",
+   "named": true,
+   "conf": "medium",
+   "line": 64048,
+   "memberCount": 3,
+   "members": {
+    "locked": 2,
+    "review": 1,
+    "none": 0
+   }
+  },
+  "Ha": {
+   "name": "ClanEditField",
+   "named": true,
+   "conf": "medium",
+   "line": 64049,
+   "memberCount": 5,
+   "members": {
+    "shortID": 4,
+    "chat": 3,
+    "intro": 2,
+    "notice": 1,
+    "name": 0
+   }
+  },
+  "ps": {
+   "name": "ClanRole",
+   "named": true,
+   "conf": "high",
+   "line": 70581,
+   "memberCount": 3,
+   "members": {
+    "viceCaptain": 2,
+    "captain": 1,
+    "none": 0
+   }
+  },
+  "fs": {
+   "name": "ChatType",
+   "named": true,
+   "conf": "high",
+   "line": 71053,
+   "memberCount": 6,
+   "members": {
+    "friendPvp": 5,
+    "teamPvp": 4,
+    "ugc": 3,
+    "emoji": 2,
+    "text": 1,
+    "none": 0
+   }
+  },
+  "gs": {
+   "name": "ActivityType",
+   "named": true,
+   "conf": "high",
+   "line": 71402,
+   "memberCount": 11,
+   "members": {
+    "length": 10,
+    "recharge": 9,
+    "lottery": 8,
+    "battlePass": 7,
+    "checkin": 6,
+    "football": 5,
+    "challenge": 4,
+    "douyinVideo": 3,
+    "skinFree": 2,
+    "newyear2022": 1,
+    "rankRushv2": 0
+   }
+  },
+  "ks": {
+   "name": "ActivityState",
+   "named": true,
+   "conf": "high",
+   "line": 71607,
+   "memberCount": 5,
+   "members": {
+    "end": 4,
+    "reward": 3,
+    "active": 2,
+    "notOpen": 1,
+    "none": 0
+   }
+  },
+  "bs": {
+   "name": "LotteryOp",
+   "named": true,
+   "conf": "medium",
+   "line": 71861,
+   "memberCount": 3,
+   "members": {
+    "claimMax": 2,
+    "draw": 1,
+    "sync": 0
+   }
+  },
+  "xs": {
+   "name": "Enum_xs",
+   "named": false,
+   "conf": null,
+   "line": 72024,
+   "memberCount": 2,
+   "members": {
+    "buyPass": 1,
+    "fetch": 0
+   }
+  },
+  "Bs": {
+   "name": "Enum_Bs",
+   "named": false,
+   "conf": null,
+   "line": 73085,
+   "memberCount": 4,
+   "members": {
+    "rare": 3,
+    "free": 2,
+    "intro": 1,
+    "none": 0
+   }
+  },
+  "Os": {
+   "name": "CheckinOp",
+   "named": true,
+   "conf": "medium",
+   "line": 73867,
+   "memberCount": 3,
+   "members": {
+    "claimMax": 2,
+    "fill": 1,
+    "checkin": 0
+   }
+  },
+  "Us": {
+   "name": "RewardCenterTab",
+   "named": true,
+   "conf": "medium",
+   "line": 74010,
+   "memberCount": 4,
+   "members": {
+    "checkin": 3,
+    "bank": 2,
+    "lottery": 1,
+    "none": 0
+   }
+  },
+  "Ws": {
+   "name": "BattlePassOp",
+   "named": true,
+   "conf": "medium",
+   "line": 74927,
+   "memberCount": 5,
+   "members": {
+    "claimMax": 4,
+    "buyLevel": 3,
+    "claimReward": 2,
+    "buyBattlePass": 1,
+    "fetch": 0
+   }
+  },
+  "Zs": {
+   "name": "Enum_Zs",
+   "named": false,
+   "conf": null,
+   "line": 76169,
+   "memberCount": 2,
+   "members": {
+    "intro": 1,
+    "name": 0
+   }
+  },
+  "pr": {
+   "name": "AlbumOp",
+   "named": true,
+   "conf": "high",
+   "line": 78357,
+   "memberCount": 6,
+   "members": {
+    "sortAlbum": 5,
+    "getAlbum": 4,
+    "delete": 3,
+    "update": 2,
+    "create": 1,
+    "getLocals": 0
+   }
+  },
+  "vr": {
+   "name": "EndReason",
+   "named": true,
+   "conf": "medium",
+   "line": 78755,
+   "memberCount": 4,
+   "members": {
+    "dead": 3,
+    "quit": 2,
+    "restart": 1,
+    "win": 0
+   }
+  },
+  "Tr": {
+   "name": "PlayMode",
+   "named": true,
+   "conf": "high",
+   "line": 81148,
+   "memberCount": 5,
+   "members": {
+    "tutorial": 4,
+    "record": 3,
+    "replay": 2,
+    "challengeWithGhost": 1,
+    "none": 0
+   }
+  },
+  "Dr": {
+   "name": "UserBlockState",
+   "named": true,
+   "conf": "medium",
+   "line": 84757,
+   "memberCount": 3,
+   "members": {
+    "reported": 2,
+    "blocked": 1,
+    "none": 0
+   }
+  },
+  "Rr": {
+   "name": "CommentAdminOp",
+   "named": true,
+   "conf": "medium",
+   "line": 84758,
+   "memberCount": 4,
+   "members": {
+    "delete": 3,
+    "sticky": 2,
+    "ban": 1,
+    "report": 0
+   }
+  },
+  "Ar": {
+   "name": "LevelAdminOp",
+   "named": true,
+   "conf": "medium",
+   "line": 84759,
+   "memberCount": 2,
+   "members": {
+    "deleteandreport": 1,
+    "delete": 0
+   }
+  },
+  "Or": {
+   "name": "AdminOp",
+   "named": true,
+   "conf": "medium",
+   "line": 84760,
+   "memberCount": 4,
+   "members": {
+    "deleteRecord": 3,
+    "star": 2,
+    "downWeight": 1,
+    "banText": 0
+   }
+  },
+  "Fr": {
+   "name": "DifficultyFilter",
+   "named": true,
+   "conf": "medium",
+   "line": 84761,
+   "memberCount": 5,
+   "members": {
+    "insane": 4,
+    "hard": 3,
+    "medium": 2,
+    "easy": 1,
+    "all": 0
+   }
+  },
+  "Ur": {
+   "name": "Enum_Ur",
+   "named": false,
+   "conf": null,
+   "line": 84762,
+   "memberCount": 3,
+   "members": {
+    "pvponly": 2,
+    "all": 1,
+    "latest": 0
+   }
+  },
+  "Vr": {
+   "name": "Enum_Vr",
+   "named": false,
+   "conf": null,
+   "line": 84763,
+   "memberCount": 2,
+   "members": {
+    "like": 1,
+    "time": 0
+   }
+  },
+  "Nr": {
+   "name": "LevelTag",
+   "named": true,
+   "conf": "high",
+   "line": 84764,
+   "memberCount": 8,
+   "members": {
+    "coop": 7,
+    "visual": 6,
+    "newbie": 5,
+    "run": 4,
+    "auto": 3,
+    "micro": 2,
+    "puzzle": 1,
+    "all": 0
+   }
+  },
+  "Gr": {
+   "name": "DifficultyEx",
+   "named": true,
+   "conf": "medium",
+   "line": 84765,
+   "memberCount": 5,
+   "members": {
+    "insane": 4,
+    "hard": 3,
+    "medium": 2,
+    "easy": 1,
+    "none": 0
+   }
+  },
+  "Hr": {
+   "name": "Enum_Hr",
+   "named": false,
+   "conf": null,
+   "line": 84766,
+   "memberCount": 3,
+   "members": {
+    "text": 2,
+    "stamp": 1,
+    "none": 0
+   }
+  },
+  "Wr": {
+   "name": "BubbleType",
+   "named": true,
+   "conf": "medium",
+   "line": 85000,
+   "memberCount": 2,
+   "members": {
+    "RespawnPoint": 1,
+    "Bubble": 0
+   }
+  },
+  "qr": {
+   "name": "LevelTab",
+   "named": true,
+   "conf": "high",
+   "line": 85769,
+   "memberCount": 6,
+   "members": {
+    "replay": 5,
+    "history": 4,
+    "local": 3,
+    "star": 2,
+    "latest": 1,
+    "none": 0
+   }
+  },
+  "Kr": {
+   "name": "Enum_Kr",
+   "named": false,
+   "conf": null,
+   "line": 85840,
+   "memberCount": 2,
+   "members": {
+    "tags": 1,
+    "name": 0
+   }
+  },
+  "rl": {
+   "name": "RoomLoadState",
+   "named": true,
+   "conf": "medium",
+   "line": 87854,
+   "memberCount": 3,
+   "members": {
+    "empty": 2,
+    "full": 1,
+    "normal": 0
+   }
+  },
+  "pl": {
+   "name": "Enum_pl",
+   "named": false,
+   "conf": null,
+   "line": 89427,
+   "memberCount": 3,
+   "members": {
+    "end": 2,
+    "comment": 1,
+    "total": 0
+   }
+  },
+  "Ml": {
+   "name": "ChallengeEntry",
+   "named": true,
+   "conf": "medium",
+   "line": 92087,
+   "memberCount": 3,
+   "members": {
+    "select": 2,
+    "challenge": 1,
+    "none": 0
+   }
+  },
+  "Rl": {
+   "name": "ChallengeStep",
+   "named": true,
+   "conf": "medium",
+   "line": 92875,
+   "memberCount": 4,
+   "members": {
+    "difficultySelect": 3,
+    "rewardClaim": 2,
+    "challenge": 1,
+    "none": 0
+   }
+  },
+  "Gl": {
+   "name": "RankListType",
+   "named": true,
+   "conf": "medium",
+   "line": 94566,
+   "memberCount": 3,
+   "members": {
+    "friend": 2,
+    "league": 1,
+    "none": 0
+   }
+  },
+  "nh": {
+   "name": "Enum_nh",
+   "named": false,
+   "conf": null,
+   "line": 97346,
+   "memberCount": 2,
+   "members": {
+    "image": 1,
+    "word": 0
+   }
+  },
+  "Sh": {
+   "name": "TeamMode",
+   "named": true,
+   "conf": "medium",
+   "line": 98689,
+   "memberCount": 4,
+   "members": {
+    "coop": 3,
+    "team": 2,
+    "normal": 1,
+    "none": 0
+   }
+  },
+  "Ih": {
+   "name": "FriendAction",
+   "named": true,
+   "conf": "high",
+   "line": 98920,
+   "memberCount": 6,
+   "members": {
+    "delete": 5,
+    "reject": 4,
+    "add": 3,
+    "invite": 2,
+    "setting": 1,
+    "info": 0
+   }
+  },
+  "Ah": {
+   "name": "FriendTab",
+   "named": true,
+   "conf": "high",
+   "line": 99657,
+   "memberCount": 3,
+   "members": {
+    "application": 2,
+    "friend": 1,
+    "none": 0
+   }
+  },
+  "Hh": {
+   "name": "InviteType",
+   "named": true,
+   "conf": "high",
+   "line": 100657,
+   "memberCount": 4,
+   "members": {
+    "clanCaptainInvite": 3,
+    "clanInvite": 2,
+    "teamPvp": 1,
+    "friendPvp": 0
+   }
+  },
+  "zh": {
+   "name": "Enum_zh",
+   "named": false,
+   "conf": null,
+   "line": 100658,
+   "memberCount": 1,
+   "members": {
+    "friend": 0
+   }
+  },
+  "Zh": {
+   "name": "Presence",
+   "named": true,
+   "conf": "high",
+   "line": 102223,
+   "memberCount": 3,
+   "members": {
+    "online": 2,
+    "ingame": 1,
+    "offline": 0
+   }
+  },
+  "ic": {
+   "name": "PayChannel",
+   "named": true,
+   "conf": "high",
+   "line": 102747,
+   "memberCount": 2,
+   "members": {
+    "alipay": 1,
+    "wechatpay": 0
+   }
+  },
+  "cc": {
+   "name": "PayError",
+   "named": true,
+   "conf": "high",
+   "line": 104016,
+   "memberCount": 8,
+   "members": {
+    "IsProcessing": 51008,
+    "NoUncompletedOrder": 51007,
+    "VerifyFailed": 51006,
+    "VerifyRequestFailed": 51005,
+    "InvalidProduct": 51004,
+    "NoPermission": 51003,
+    "ParamInvalid": 51002,
+    "PayFailed": 51001
+   }
+  },
+  "fc": {
+   "name": "GemProductType",
+   "named": true,
+   "conf": "medium",
+   "line": 104941,
+   "memberCount": 6,
+   "members": {
+    "skinpack": 5,
+    "clangem": 4,
+    "gem_event": 3,
+    "vip": 2,
+    "newbie": 1,
+    "gem": 0
+   }
+  },
+  "yc": {
+   "name": "RoomState",
+   "named": true,
+   "conf": "medium",
+   "line": 105117,
+   "memberCount": 5,
+   "members": {
+    "end": 4,
+    "full": 3,
+    "playing": 2,
+    "waiting": 1,
+    "none": 0
+   }
+  },
+  "Ac": {
+   "name": "Enum_Ac",
+   "named": false,
+   "conf": null,
+   "line": 106793,
+   "memberCount": 1,
+   "members": {
+    "all": 0
+   }
+  },
+  "Fc": {
+   "name": "Enum_Fc",
+   "named": false,
+   "conf": null,
+   "line": 106867,
+   "memberCount": 2,
+   "members": {
+    "count": 1,
+    "training_control": 0
+   }
+  },
+  "Vc": {
+   "name": "HudLayer",
+   "named": true,
+   "conf": "medium",
+   "line": 107199,
+   "memberCount": 2,
+   "members": {
+    "control": 1,
+    "ui": 0
+   }
+  },
+  "Gc": {
+   "name": "ProfileSection",
+   "named": true,
+   "conf": "medium",
+   "line": 107355,
+   "memberCount": 8,
+   "members": {
+    "printing": 7,
+    "stamp": 6,
+    "character": 5,
+    "emoji": 4,
+    "appearance": 3,
+    "title": 2,
+    "home": 1,
+    "none": 0
+   }
+  },
+  "qc": {
+   "name": "LevelCategory",
+   "named": true,
+   "conf": "medium",
+   "line": 108151,
+   "memberCount": 6,
+   "members": {
+    "skill": 5,
+    "creative": 4,
+    "event": 3,
+    "friend": 2,
+    "world": 1,
+    "none": 0
+   }
+  },
+  "Yc": {
+   "name": "Enum_Yc",
+   "named": false,
+   "conf": null,
+   "line": 108152,
+   "memberCount": 2,
+   "members": {
+    "week": 1,
+    "all": 0
+   }
+  },
+  "ju": {
+   "name": "FeatureFlag",
+   "named": true,
+   "conf": "high",
+   "line": 113816,
+   "memberCount": 23,
+   "members": {
+    "ugc_delRecord": 22,
+    "ugc_album": 21,
+    "ugc_moreReport": 20,
+    "ugc_banLevel": 19,
+    "ugc_downWeight": 18,
+    "ugc_banComment": 17,
+    "ugc_delComment": 16,
+    "ugc_starLevel": 15,
+    "ugc_viewCode": 14,
+    "ugc_viewPanarama": 13,
+    "ugc_viewReplay": 12,
+    "room_allMap": 11,
+    "room_free": 10,
+    "noAntiAddiction": 9,
+    "dailyChallenge_freeReward": 8,
+    "dailyChallenge_freeSkip": 7,
+    "dailyChallenge_noCD": 6,
+    "ugc_freePanorama": 5,
+    "ugc_noInterstitialAd": 4,
+    "ugc_freeReplay": 3,
+    "ugc_longHP": 2,
+    "ugc_freeComponent": 1,
+    "ugc_unlimitedHP": 0
+   }
+  },
+  "Wu": {
+   "name": "Enum_Wu",
+   "named": false,
+   "conf": null,
+   "line": 113817,
+   "memberCount": 2,
+   "members": {
+    "Full": 1,
+    "Limited": 0
+   }
+  },
+  "td": {
+   "name": "LeagueMode",
+   "named": true,
+   "conf": "medium",
+   "line": 114761,
+   "memberCount": 3,
+   "members": {
+    "leagueQuick": 2,
+    "league": 1,
+    "none": 0
+   }
+  },
+  "ed": {
+   "name": "LeagueSchedule",
+   "named": true,
+   "conf": "medium",
+   "line": 114762,
+   "memberCount": 3,
+   "members": {
+    "weekend": 2,
+    "workday": 1,
+    "stop": 0
+   }
+  },
+  "ud": {
+   "name": "RankTier",
+   "named": true,
+   "conf": "high",
+   "line": 115818,
+   "memberCount": 9,
+   "members": {
+    "epic": 8,
+    "master": 7,
+    "diamond": 6,
+    "platinum": 5,
+    "gold": 4,
+    "silver": 3,
+    "iron": 2,
+    "bronze": 1,
+    "newbie": 0
+   }
+  },
+  "dd": {
+   "name": "Enum_dd",
+   "named": false,
+   "conf": null,
+   "line": 115819,
+   "memberCount": 2,
+   "members": {
+    "moreRounds": 1,
+    "rotate": 0
+   }
+  },
+  "vd": {
+   "name": "Rarity",
+   "named": true,
+   "conf": "medium",
+   "line": 116513,
+   "memberCount": 2,
+   "members": {
+    "rare": 1,
+    "normal": 0
+   }
+  },
+  "sp": {
+   "name": "Enum_sp",
+   "named": false,
+   "conf": null,
+   "line": 122321,
+   "memberCount": 1,
+   "members": {
+    "ShareVideoCount": 1
+   }
+  },
+  "hp": {
+   "name": "ServerError",
+   "named": true,
+   "conf": "high",
+   "line": 122462,
+   "memberCount": 79,
+   "members": {
+    "ErrChatRoomChannelRateLimited": 8004,
+    "ErrChatSendRateLimited": 8002,
+    "ErrChatBlocked": 8001,
+    "ErrNickNameTooShort": 7016,
+    "ErrClanRandJoinFailed": 7015,
+    "ErrClanJoinCD": 7014,
+    "ErrClanNoPermission": 7013,
+    "ErrClanUnexistApplicant": 7012,
+    "ErrClanNotCaptain": 7011,
+    "ErrClanJoinApprovel": 7010,
+    "ErrClanJoinLevelNeed": 7009,
+    "ErrClanJoinNotAllow": 7008,
+    "ErrClanFull": 7007,
+    "ErrClanAlreadyIsMember": 7006,
+    "ErrNotEnoughClanGem": 7005,
+    "ErrClanDuplicatedShortID": 7004,
+    "ErrClanDuplicatedName": 7003,
+    "ErrClanInvalidShortID": 7002,
+    "ErrClanInvalidName": 7001,
+    "ErrClanInvalidID": 7000,
+    "ErrNoMatchRooms": 6001,
+    "ErrInvalidMatchRooms": 6000,
+    "ErrRechargeGuest": 5003,
+    "ErrRechargeMonthQuota": 5002,
+    "ErrRechargeSingleQuota": 5001,
+    "ErrRechargeUnder8": 5000,
+    "ErrInvalidVersion": 4000,
+    "ErrUGCLevelUploadDailyLimit": 3003,
+    "ErrInvalidTextElem": 3001,
+    "ErrInvalidToken": 2026,
+    "ErrWaitingAuthRealName": 2022,
+    "ErrDuplicateIDNumbers": 2021,
+    "ErrDuplicateNickName": 2015,
+    "ErrRequestIsFrequent": 2014,
+    "ErrPhoneNumberAlreadyBinded": 2013,
+    "ErrInvalidSMSVerifyCode": 2012,
+    "ErrAlreadyBinded": 2009,
+    "ErrInvalidAuthCode": 2007,
+    "ErrGenerateFailed": 2006,
+    "ErrInvalidIdNumbers": 2004,
+    "ErrNickNameTooLong": 2003,
+    "ErrInvalidLogin": 2001,
+    "ErrInvalidAccount": 2000,
+    "ErrAlbumNoPermission": 1142,
+    "ErrRelationDelCD": 1141,
+    "ErrRelationInvited": 1140,
+    "ErrNotEnoughIntimacy": 1139,
+    "ErrFriendRelationFull": 1138,
+    "ErrRelationExist": 1137,
+    "ErrRelationFull": 1136,
+    "ErrNotFriend": 1135,
+    "ErrCDKeyExpired": 1133,
+    "ErrCDKeyAlreadyUsedByOtherOne": 1132,
+    "ErrCDKeyAlreadyUsed": 1131,
+    "ErrCDKeyChannelLimited": 1130,
+    "ErrCDKeyNotExist": 1129,
+    "ErrUGCChallengeSkipLimited": 1110,
+    "ErrReportMax": 1107,
+    "ErrCommentMax": 1106,
+    "ErrIllegalWords": 1103,
+    "ErrNotHaveUGCEditSlot": 1101,
+    "ErrNotHaveUGCUploadSlot": 1100,
+    "ErrUGCUploaded": 1099,
+    "ErrCannotHelp": 1093,
+    "ErrRewardClaimeFailed": 1051,
+    "ErrRewardClaimed": 1050,
+    "ErrNotHaveDanDefendQuato": 1080,
+    "ErrNotEnoughLevel": 1024,
+    "ErrNotEnoughGems": 1016,
+    "ErrNotEnoughItem": 1010,
+    "ErrNotEnoughCoin": 1003,
+    "ErrUnexistAccount": 1002,
+    "ErrInvalidParams": 1001,
+    "ErrPanic": 1000,
+    "ErrInvalidClientVersion": 103,
+    "ErrSessionExpired": 102,
+    "ErrServerStopped": 101,
+    "OverTime": 1,
+    "Success": 0
+   }
+  },
+  "cp": {
+   "name": "RedDotType",
+   "named": true,
+   "conf": "medium",
+   "line": 122463,
+   "memberCount": 13,
+   "members": {
+    "douyingrouproom": 12,
+    "ugcalbum": 11,
+    "claninvite": 10,
+    "douyinmatch": 9,
+    "qqmatchmaking": 8,
+    "ugcreplay": 7,
+    "teammatch": 6,
+    "ugc": 5,
+    "debris": 4,
+    "replay": 3,
+    "match": 2,
+    "bank": 1,
+    "none": 0
+   }
+  },
+  "gp": {
+   "name": "Quality",
+   "named": true,
+   "conf": "high",
+   "line": 125272,
+   "memberCount": 6,
+   "members": {
+    "legendary": 5,
+    "epic": 4,
+    "rare": 3,
+    "excellent": 2,
+    "common": 1,
+    "none": 0
+   }
+  },
+  "bp": {
+   "name": "RecordState",
+   "named": true,
+   "conf": "high",
+   "line": 125923,
+   "memberCount": 6,
+   "members": {
+    "stopped": 5,
+    "stopping": 4,
+    "paused": 3,
+    "recording": 2,
+    "starting": 1,
+    "none": 0
+   }
+  },
+  "Sp": {
+   "name": "PlayerAnim",
+   "named": true,
+   "conf": "high",
+   "line": 125924,
+   "memberCount": 12,
+   "members": {
+    "shootbarrel": 11,
+    "bubble": 10,
+    "electrified": 9,
+    "teleport": 8,
+    "personality": 7,
+    "celebrate": 6,
+    "dead": 5,
+    "wallcling": 4,
+    "run": 3,
+    "falldown": 2,
+    "jump": 1,
+    "idle": 0
+   }
+  },
+  "xp": {
+   "name": "Enum_xp",
+   "named": false,
+   "conf": null,
+   "line": 125925,
+   "memberCount": 1,
+   "members": {
+    "reversed": 16
+   }
+  },
+  "Ip": {
+   "name": "PlayerState",
+   "named": true,
+   "conf": "medium",
+   "line": 125926,
+   "memberCount": 5,
+   "members": {
+    "celebrate": 4,
+    "dead": 3,
+    "springjump": 2,
+    "walljump": 1,
+    "normal": 0
+   }
+  },
+  "Tp": {
+   "name": "Enum_Tp",
+   "named": false,
+   "conf": null,
+   "line": 125927,
+   "memberCount": 4,
+   "members": {
+    "celebrating": 3,
+    "dead": 2,
+    "idle": 1,
+    "none": 0
+   }
+  },
+  "Mp": {
+   "name": "SurfaceType",
+   "named": true,
+   "conf": "high",
+   "line": 125928,
+   "memberCount": 3,
+   "members": {
+    "mud": 2,
+    "ice": 1,
+    "normal": 0
+   }
+  },
+  "c_": {
+   "name": "TutorialStep",
+   "named": true,
+   "conf": "medium",
+   "line": 128505,
+   "memberCount": 4,
+   "members": {
+    "football": 3,
+    "coin": 2,
+    "setup": 1,
+    "reachToFlag": 0
+   }
+  },
+  "u_": {
+   "name": "DeathReason",
+   "named": true,
+   "conf": "high",
+   "line": 128506,
+   "memberCount": 6,
+   "members": {
+    "giveup": 5,
+    "squash": 4,
+    "electricity": 3,
+    "hazard": 2,
+    "outOfScope": 1,
+    "none": 0
+   }
+  },
+  "k_": {
+   "name": "InputSource",
+   "named": true,
+   "conf": "medium",
+   "line": 130114,
+   "memberCount": 2,
+   "members": {
+    "touch": 1,
+    "button": 0
+   }
+  },
+  "w_": {
+   "name": "MoveState",
+   "named": true,
+   "conf": "high",
+   "line": 130831,
+   "memberCount": 7,
+   "members": {
+    "unknown": 6,
+    "halt": 5,
+    "walljump": 4,
+    "jump": 3,
+    "waitForJump": 2,
+    "walk": 1,
+    "none": 0
+   }
+  },
+  "z_": {
+   "name": "PlayState",
+   "named": true,
+   "conf": "medium",
+   "line": 133148,
+   "memberCount": 6,
+   "members": {
+    "revive": 5,
+    "deadghost": 4,
+    "edit": 3,
+    "hide": 2,
+    "disabled": 1,
+    "run": 0
+   }
+  },
+  "J_": {
+   "name": "ControlSource",
+   "named": true,
+   "conf": "high",
+   "line": 134540,
+   "memberCount": 7,
+   "members": {
+    "npc": 6,
+    "deadghost": 5,
+    "ui": 4,
+    "network": 3,
+    "ghost": 2,
+    "ai": 1,
+    "input": 0
+   }
+  },
+  "Z_": {
+   "name": "Enum_Z_",
+   "named": false,
+   "conf": null,
+   "line": 134541,
+   "memberCount": 2,
+   "members": {
+    "match": 1,
+    "default": 0
+   }
+  },
+  "$_": {
+   "name": "SettingGroup",
+   "named": true,
+   "conf": "medium",
+   "line": 134542,
+   "memberCount": 4,
+   "members": {
+    "sound": 3,
+    "headicon": 2,
+    "effects": 1,
+    "avatar": 0
+   }
+  },
+  "tf": {
+   "name": "GameEvent",
+   "named": true,
+   "conf": "high",
+   "line": 134543,
+   "memberCount": 11,
+   "members": {
+    "teleport": 10,
+    "componentevent": 9,
+    "ghost": 8,
+    "match": 7,
+    "edit": 6,
+    "trigger": 5,
+    "collider": 4,
+    "move": 3,
+    "network": 2,
+    "ai": 1,
+    "input": 0
+   }
+  },
+  "hf": {
+   "name": "PhysicsLayer",
+   "named": true,
+   "conf": "curated",
+   "line": 135138,
+   "memberCount": 20,
+   "members": {
+    "invinciblePlayerCollideWith": 6710,
+    "robotCollideWith": 6710,
+    "playerColldeWith": 39486,
+    "boxingglove": 32768,
+    "balloon": 16384,
+    "pvpNetworkPlayer": 8192,
+    "robot": 4096,
+    "shootbarrel": 2048,
+    "footballGoal": 1024,
+    "concretePlayer": 512,
+    "ghostPlayer": 256,
+    "projectile": 128,
+    "playerNotColldeWith": 64,
+    "movableTriggerable": 32,
+    "playerTriggerable": 16,
+    "hazard": 8,
+    "platform": 4,
+    "oneWayPlatform": 2,
+    "player": 1,
+    "none": 0
+   }
+  },
+  "cf": {
+   "name": "SystemType",
+   "named": true,
+   "conf": "medium",
+   "line": 135139,
+   "memberCount": 10,
+   "members": {
+    "balloon": 20,
+    "characterwander": 19,
+    "charactermover": 18,
+    "footballgoal": 17,
+    "ice": 16,
+    "repeatmove": 15,
+    "levelcomponentcontext": 14,
+    "playercontext": 13,
+    "collision": 12,
+    "trigger": 11
+   }
+  },
+  "pf": {
+   "name": "ComponentCategory",
+   "named": true,
+   "conf": "medium",
+   "line": 135513,
+   "memberCount": 5,
+   "members": {
+    "skin": 5,
+    "decoration": 4,
+    "special": 3,
+    "hazards": 2,
+    "platform": 1
+   }
+  },
+  "_f": {
+   "name": "ComponentType",
+   "named": true,
+   "conf": "curated",
+   "line": 135514,
+   "memberCount": 53,
+   "members": {
+    "levelskin": 10000,
+    "parallax": 204,
+    "bgm": 203,
+    "actiontrigger": 202,
+    "theme": 201,
+    "sky": 200,
+    "otherPlayer": 103,
+    "boss": 102,
+    "goalArea": 101,
+    "startArea": 100,
+    "modifier": 80,
+    "gem": 41,
+    "npc": 40,
+    "shootbarrel": 39,
+    "ferriswheel": 38,
+    "path": 37,
+    "pressureswitch": 36,
+    "jellyfish": 35,
+    "nowallblock": 34,
+    "doublelift": 33,
+    "respawnpoint": 32,
+    "triggerinvisible": 31,
+    "alt": 30,
+    "superblock": 29,
+    "onedirblock": 28,
+    "stomper": 27,
+    "door": 26,
+    "onoffswitch": 25,
+    "onewayblock": 24,
+    "airjump": 23,
+    "portal": 22,
+    "landmine": 21,
+    "checkpoint": 20,
+    "pushableplatform": 19,
+    "treasurechest": 18,
+    "squaredplatform": 17,
+    "onewayplatform": 16,
+    "circlecollider": 15,
+    "scene": 14,
+    "shooty": 13,
+    "iceOrMud": 12,
+    "crumbingblock": 11,
+    "spring": 10,
+    "deco": 9,
+    "scoreItem": 8,
+    "bomb": 7,
+    "hazard": 6,
+    "moveplatform": 5,
+    "roundplatform": 4,
+    "platform": 3,
+    "boxcollider": 2,
+    "bundle": 1,
+    "none": 0
+   }
+  },
+  "ff": {
+   "name": "ProjectileType",
+   "named": true,
+   "conf": "high",
+   "line": 135515,
+   "memberCount": 4,
+   "members": {
+    "balloon": 3,
+    "laserBullet": 2,
+    "cannonBullet": 1,
+    "arrow": 0
+   }
+  },
+  "Mf": {
+   "name": "DynamicCategory",
+   "named": true,
+   "conf": "medium",
+   "line": 136227,
+   "memberCount": 3,
+   "members": {
+    "noDynamic": 2,
+    "noKillable": 1,
+    "normal": 0
+   }
+  },
+  "Pf": {
+   "name": "RotateMode",
+   "named": true,
+   "conf": "curated",
+   "line": 136462,
+   "memberCount": 3,
+   "members": {
+    "flip": 2,
+    "rotate": 1,
+    "none": 0
+   }
+  },
+  "Bf": {
+   "name": "EditableScope",
+   "named": true,
+   "conf": "curated",
+   "line": 136463,
+   "memberCount": 4,
+   "members": {
+    "both": 3,
+    "challengeOnly": 2,
+    "pvpOnly": 1,
+    "none": 0
+   }
+  },
+  "Ef": {
+   "name": "EnvType",
+   "named": true,
+   "conf": "high",
+   "line": 136464,
+   "memberCount": 3,
+   "members": {
+    "blocked": 2,
+    "prod": 1,
+    "alpha": 0
+   }
+  },
+  "Nf": {
+   "name": "CollisionRole",
+   "named": true,
+   "conf": "high",
+   "line": 138766,
+   "memberCount": 4,
+   "members": {
+    "onlyTakeUpSpace": 3,
+    "doNotTakeUpSpace": 2,
+    "onewayPlatform": 1,
+    "platform": 0
+   }
+  },
+  "sv": {
+   "name": "ColorPalette",
+   "named": true,
+   "conf": "medium",
+   "line": 141930,
+   "memberCount": 8,
+   "members": {
+    "purple": 7,
+    "yellow": 6,
+    "coffee": 5,
+    "count": 4,
+    "orange": 3,
+    "blue": 2,
+    "white": 1,
+    "black": 0
+   }
+  },
+  "Cv": {
+   "name": "LaserState",
+   "named": true,
+   "conf": "high",
+   "line": 144430,
+   "memberCount": 4,
+   "members": {
+    "revertback": 3,
+    "shootstill": 2,
+    "shooting": 1,
+    "disabled": 0
+   }
+  },
+  "$v": {
+   "name": "BalloonColor",
+   "named": true,
+   "conf": "high",
+   "line": 151809,
+   "memberCount": 11,
+   "members": {
+    "count": 10,
+    "black": 9,
+    "cyan": 8,
+    "coffee": 7,
+    "orange": 6,
+    "berry": 5,
+    "green": 4,
+    "lavender": 3,
+    "red": 2,
+    "yellow": 1,
+    "blue": 0
+   }
+  },
+  "ty": {
+   "name": "BalloonShape",
+   "named": true,
+   "conf": "high",
+   "line": 151810,
+   "memberCount": 4,
+   "members": {
+    "count": 3,
+    "rect": 2,
+    "circle": 1,
+    "triangle": 0
+   }
+  },
+  "gy": {
+   "name": "Enum_gy",
+   "named": false,
+   "conf": null,
+   "line": 155859,
+   "memberCount": 10,
+   "members": {
+    "count": 9,
+    "black": 8,
+    "purple": 7,
+    "coffee": 6,
+    "blue": 5,
+    "green": 4,
+    "yellow": 3,
+    "orange": 2,
+    "red": 1,
+    "silver": 0
+   }
+  },
+  "my": {
+   "name": "Enum_my",
+   "named": false,
+   "conf": null,
+   "line": 155860,
+   "memberCount": 2,
+   "members": {
+    "none": 1,
+    "full": 0
+   }
+  },
+  "Qy": {
+   "name": "Enum_Qy",
+   "named": false,
+   "conf": null,
+   "line": 163352,
+   "memberCount": 2,
+   "members": {
+    "swing": 1,
+    "spin": 0
+   }
+  },
+  "ig": {
+   "name": "TutorialHud",
+   "named": true,
+   "conf": "medium",
+   "line": 164781,
+   "memberCount": 7,
+   "members": {
+    "count": 6,
+    "wall_jump": 5,
+    "jump_practice": 4,
+    "long_jump_hint": 3,
+    "jump_hint": 2,
+    "clear_hud": 1,
+    "input_tutorial": 0
+   }
+  },
+  "og": {
+   "name": "HalloweenHudMini",
+   "named": true,
+   "conf": "medium",
+   "line": 165370,
+   "memberCount": 3,
+   "members": {
+    "count": 2,
+    "lantern": 1,
+    "pumpkin": 0
+   }
+  },
+  "lg": {
+   "name": "HalloweenHud",
+   "named": true,
+   "conf": "medium",
+   "line": 166318,
+   "memberCount": 5,
+   "members": {
+    "count": 4,
+    "lantern": 3,
+    "gem": 2,
+    "score": 1,
+    "pumpkin": 0
+   }
+  },
+  "ug": {
+   "name": "LockReason",
+   "named": true,
+   "conf": "medium",
+   "line": 167046,
+   "memberCount": 3,
+   "members": {
+    "system": 2,
+    "locked": 1,
+    "none": 0
+   }
+  },
+  "Ig": {
+   "name": "WidgetType",
+   "named": true,
+   "conf": "high",
+   "line": 168965,
+   "memberCount": 5,
+   "members": {
+    "slider": 4,
+    "action": 3,
+    "toggle": 2,
+    "radio": 1,
+    "list": 0
+   }
+  },
+  "Tg": {
+   "name": "EditPropKey",
+   "named": true,
+   "conf": "high",
+   "line": 168966,
+   "memberCount": 34,
+   "members": {
+    "skin": 33,
+    "action": 32,
+    "switches": 31,
+    "color": 30,
+    "robotSpeed": 29,
+    "item": 28,
+    "defaultState": 27,
+    "spawn": 26,
+    "move_dirY": 25,
+    "move_dirX": 24,
+    "moveTime": 23,
+    "moveY": 22,
+    "moveX": 21,
+    "move_gridY": 20,
+    "move_gridX": 19,
+    "rotateDir": 18,
+    "rotateType": 17,
+    "swingAngle": 16,
+    "spinMode": 15,
+    "size": 14,
+    "gap": 13,
+    "height": 12,
+    "connect": 11,
+    "ease": 10,
+    "waitTime": 9,
+    "flip": 8,
+    "spinSpeed": 7,
+    "moveSpeed": 6,
+    "swingSpeed": 5,
+    "speed": 4,
+    "pathClosed": 3,
+    "count": 2,
+    "startAngle": 1,
+    "insertNode": 0
+   }
+  },
+  "pm": {
+   "name": "GemColor",
+   "named": true,
+   "conf": "medium",
+   "line": 172992,
+   "memberCount": 4,
+   "members": {
+    "red": 3,
+    "orange": 2,
+    "yellow": 1,
+    "blue": 0
+   }
+  },
+  "mm": {
+   "name": "SizeLevel",
+   "named": true,
+   "conf": "medium",
+   "line": 173561,
+   "memberCount": 3,
+   "members": {
+    "large": 2,
+    "middle": 1,
+    "small": 0
+   }
+  },
+  "Cm": {
+   "name": "TextDirection",
+   "named": true,
+   "conf": "medium",
+   "line": 173717,
+   "memberCount": 3,
+   "members": {
+    "count": 2,
+    "rightToLeft": 1,
+    "leftToRight": 0
+   }
+  },
+  "wm": {
+   "name": "SpeedLevel",
+   "named": true,
+   "conf": "medium",
+   "line": 173718,
+   "memberCount": 4,
+   "members": {
+    "count": 3,
+    "fast": 2,
+    "medium": 1,
+    "slow": 0
+   }
+  },
+  "jm": {
+   "name": "Enum_jm",
+   "named": false,
+   "conf": null,
+   "line": 176862,
+   "memberCount": 1,
+   "members": {
+    "skin": 0
+   }
+  },
+  "Wm": {
+   "name": "Enum_Wm",
+   "named": false,
+   "conf": null,
+   "line": 176863,
+   "memberCount": 1,
+   "members": {
+    "effects": 0
+   }
+  },
+  "Km": {
+   "name": "SpectateMode",
+   "named": true,
+   "conf": "high",
+   "line": 178539,
+   "memberCount": 4,
+   "members": {
+    "observeplayer": 3,
+    "observeposition": 2,
+    "play": 1,
+    "nonfollow": 0
+   }
+  },
+  "Qm": {
+   "name": "Enum_Qm",
+   "named": false,
+   "conf": null,
+   "line": 178540,
+   "memberCount": 1,
+   "members": {
+    "region": 0
+   }
+  },
+  "nk": {
+   "name": "RoomMode",
+   "named": true,
+   "conf": "medium",
+   "line": 179186,
+   "memberCount": 9,
+   "members": {
+    "football": 8,
+    "ugcmultiplayer": 7,
+    "ugcchallenge": 6,
+    "matchreplay": 5,
+    "matchaibattle": 4,
+    "tutorialmatch": 3,
+    "match": 2,
+    "free": 1,
+    "none": 0
+   }
+  },
+  "rk": {
+   "name": "TutorialRobotState",
+   "named": true,
+   "conf": "medium",
+   "line": 179975,
+   "memberCount": 5,
+   "members": {
+    "fail": 4,
+    "success": 3,
+    "jumping": 2,
+    "walkToJumpPoint": 1,
+    "none": 0
+   }
+  },
+  "uk": {
+   "name": "EditAddOp",
+   "named": true,
+   "conf": "medium",
+   "line": 181195,
+   "memberCount": 5,
+   "members": {
+    "undoDelete": 4,
+    "undoAdd": 3,
+    "delete": 2,
+    "addFromCache": 1,
+    "none": 0
+   }
+  },
+  "Uk": {
+   "name": "ShareState",
+   "named": true,
+   "conf": "high",
+   "line": 188596,
+   "memberCount": 3,
+   "members": {
+    "shared": 2,
+    "sharing": 1,
+    "notShared": 0
+   }
+  },
+  "Jk": {
+   "name": "RotateDir",
+   "named": true,
+   "conf": "medium",
+   "line": 190739,
+   "memberCount": 4,
+   "members": {
+    "right": 3,
+    "left": 2,
+    "down": 1,
+    "up": 0
+   }
+  },
+  "nC": {
+   "name": "LevelBlockReason",
+   "named": true,
+   "conf": "medium",
+   "line": 191344,
+   "memberCount": 6,
+   "members": {
+    "ban": 5,
+    "notSupportRespawnPoint": 4,
+    "notForPvp": 3,
+    "blocked": 2,
+    "playerLevel": 1,
+    "none": 0
+   }
+  },
+  "oC": {
+   "name": "PaletteFilter",
+   "named": true,
+   "conf": "medium",
+   "line": 191345,
+   "memberCount": 7,
+   "members": {
+    "cache": 5,
+    "decoration": 4,
+    "special": 3,
+    "hazards": 2,
+    "platform": 1,
+    "common": 0,
+    "none": -1
+   }
+  },
+  "dC": {
+   "name": "RewardSource",
+   "named": true,
+   "conf": "medium",
+   "line": 193419,
+   "memberCount": 8,
+   "members": {
+    "buy": 7,
+    "vip": 6,
+    "live": 5,
+    "encourage": 4,
+    "share": 3,
+    "videoShare": 2,
+    "video": 1,
+    "none": 0
+   }
+  },
+  "fC": {
+   "name": "Enum_fC",
+   "named": false,
+   "conf": null,
+   "line": 194452,
+   "memberCount": 4,
+   "members": {
+    "football": 3,
+    "score": 2,
+    "treasurechest": 1,
+    "none": 0
+   }
+  },
+  "kC": {
+   "name": "GamePhase",
+   "named": true,
+   "conf": "high",
+   "line": 196182,
+   "memberCount": 5,
+   "members": {
+    "lose": 4,
+    "win": 3,
+    "play": 2,
+    "edit": 1,
+    "ready": 0
+   }
+  },
+  "bC": {
+   "name": "GameBanner",
+   "named": true,
+   "conf": "medium",
+   "line": 196749,
+   "memberCount": 6,
+   "members": {
+    "double": 5,
+    "great": 4,
+    "gameEnd": 3,
+    "warning": 2,
+    "battleStart": 1,
+    "timeEnd": 0
+   }
+  },
+  "SC": {
+   "name": "PopupAnim",
+   "named": true,
+   "conf": "medium",
+   "line": 196750,
+   "memberCount": 2,
+   "members": {
+    "fadeIn": 1,
+    "scaleIn": 0
+   }
+  },
+  "TC": {
+   "name": "MatchType",
+   "named": true,
+   "conf": "medium",
+   "line": 197193,
+   "memberCount": 3,
+   "members": {
+    "pvp": 2,
+    "single": 1,
+    "none": 0
+   }
+  },
+  "AC": {
+   "name": "RecordMode",
+   "named": true,
+   "conf": "high",
+   "line": 200949,
+   "memberCount": 6,
+   "members": {
+    "replay": 5,
+    "recordNative": 4,
+    "recordToutiao": 3,
+    "recordWechat": 2,
+    "normal": 1,
+    "none": 0
+   }
+  },
+  "VC": {
+   "name": "ZOrder",
+   "named": true,
+   "conf": "curated",
+   "line": 201852,
+   "memberCount": 19,
+   "members": {
+    "gizmo": 30000,
+    "attachable": 25000,
+    "foreground": 20000,
+    "effects": 10500,
+    "projectile": 10010,
+    "humanPlayer": 10001,
+    "player": 10000,
+    "movetrigger": 8000,
+    "trigger": 6000,
+    "door": 5800,
+    "canHide": 5200,
+    "pushable": 5000,
+    "moveplatform": 4000,
+    "platform": 200,
+    "scene": 5,
+    "grid": 4,
+    "background": 2,
+    "cloud": 1,
+    "sky": 0
+   }
+  },
+  "NC": {
+   "name": "PlatformKind",
+   "named": true,
+   "conf": "medium",
+   "line": 201853,
+   "memberCount": 5,
+   "members": {
+    "zplatform": 4,
+    "pushable": 3,
+    "canHide": 2,
+    "door": 1,
+    "static": 0
+   }
+  },
+  "GC": {
+   "name": "GameViewId",
+   "named": true,
+   "conf": "medium",
+   "line": 201854,
+   "memberCount": 23,
+   "members": {
+    "topbar": 22,
+    "hpcountdown": 21,
+    "ugcpvpend": 20,
+    "ugcpvp": 19,
+    "ugclevelsetting": 18,
+    "pause": 17,
+    "ugcrecordend": 16,
+    "dailychallengeend": 15,
+    "tutorialend": 14,
+    "ugcend": 13,
+    "ugcchallenge": 12,
+    "ugcedit": 11,
+    "friendlymatchreward": 10,
+    "replayrank": 9,
+    "replay": 8,
+    "select": 7,
+    "danup": 6,
+    "rank": 5,
+    "lose": 4,
+    "win": 3,
+    "componentslist": 2,
+    "grid": 1,
+    "game": 0
+   }
+  },
+  "HC": {
+   "name": "Enum_HC",
+   "named": false,
+   "conf": null,
+   "line": 201855,
+   "memberCount": 1,
+   "members": {
+    "game": 0
+   }
+  },
+  "zC": {
+   "name": "GameSystem",
+   "named": true,
+   "conf": "medium",
+   "line": 201856,
+   "memberCount": 18,
+   "members": {
+    "audio": 17,
+    "dynamicBounds": 16,
+    "rpc": 15,
+    "levelNetwork": 14,
+    "playNetwork": 13,
+    "matchplay": 12,
+    "matchprep": 11,
+    "ghostrecord": 10,
+    "video": 9,
+    "path": 8,
+    "camera": 7,
+    "drag": 6,
+    "editNetwork": 5,
+    "editAI": 4,
+    "editTouch": 3,
+    "players": 2,
+    "level": 1,
+    "game": 0
+   }
+  },
+  "jC": {
+   "name": "GameFlowState",
+   "named": true,
+   "conf": "medium",
+   "line": 201857,
+   "memberCount": 8,
+   "members": {
+    "revive": 7,
+    "standby": 6,
+    "end": 5,
+    "edit": 4,
+    "play": 3,
+    "observelevel": 2,
+    "observeplayer": 1,
+    "init": 0
+   }
+  },
+  "WC": {
+   "name": "DisconnectReason",
+   "named": true,
+   "conf": "high",
+   "line": 201858,
+   "memberCount": 5,
+   "members": {
+    "disconnect_inObserveLevel": 4,
+    "disconnect_afterPlayOutTween": 3,
+    "disconnect_afterEnterRoom": 2,
+    "timeout_connectRoom": 1,
+    "none": 0
+   }
+  },
+  "lw": {
+   "name": "SocketState",
+   "named": true,
+   "conf": "high",
+   "line": 205466,
+   "memberCount": 3,
+   "members": {
+    "closed": 2,
+    "connected": 1,
+    "connecting": 0
+   }
+  },
+  "pw": {
+   "name": "JoinMatchError",
+   "named": true,
+   "conf": "medium",
+   "line": 205824,
+   "memberCount": 5,
+   "members": {
+    "cheat": 4,
+    "matchFull": 3,
+    "matchNotExist": 2,
+    "matchOverTime": 1,
+    "none": 0
+   }
+  },
+  "vw": {
+   "name": "RoomVisibility",
+   "named": true,
+   "conf": "high",
+   "line": 206075,
+   "memberCount": 2,
+   "members": {
+    "private": 1,
+    "public": 0
+   }
+  },
+  "yw": {
+   "name": "Enum_yw",
+   "named": false,
+   "conf": null,
+   "line": 206076,
+   "memberCount": 2,
+   "members": {
+    "team": 1,
+    "none": 0
+   }
+  },
+  "gw": {
+   "name": "RoomGameMode",
+   "named": true,
+   "conf": "medium",
+   "line": 206077,
+   "memberCount": 5,
+   "members": {
+    "football": 4,
+    "coop": 3,
+    "card": 2,
+    "creative": 1,
+    "party": 0
+   }
+  },
+  "mw": {
+   "name": "WinCondition",
+   "named": true,
+   "conf": "high",
+   "line": 206078,
+   "memberCount": 2,
+   "members": {
+    "targetScore": 1,
+    "fixedRound": 0
+   }
+  },
+  "kw": {
+   "name": "MatchKind",
+   "named": true,
+   "conf": "medium",
+   "line": 206079,
+   "memberCount": 5,
+   "members": {
+    "fakeRoom": 4,
+    "battleAITraining": 3,
+    "tutorial": 2,
+    "friendly": 1,
+    "normal": 0
+   }
+  },
+  "xw": {
+   "name": "RoomConfigField",
+   "named": true,
+   "conf": "medium",
+   "line": 207392,
+   "memberCount": 4,
+   "members": {
+    "matchMode": 3,
+    "teamMode": 2,
+    "roomType": 1,
+    "map": 0
+   }
+  },
+  "Tw": {
+   "name": "Enum_Tw",
+   "named": false,
+   "conf": null,
+   "line": 208037,
+   "memberCount": 9,
+   "members": {
+    "end": 8,
+    "assets": 7,
+    "friend": 6,
+    "ugcChallenge": 5,
+    "ugcCreate": 4,
+    "intimacy": 3,
+    "total": 2,
+    "cover": 1,
+    "none": 0
+   }
+  },
+  "Dw": {
+   "name": "Enum_Dw",
+   "named": false,
+   "conf": null,
+   "line": 210140,
+   "memberCount": 5,
+   "members": {
+    "taptap": 4,
+    "apple": 3,
+    "tel": 2,
+    "nativewechat": 1,
+    "none": 0
+   }
+  },
+  "Ww": {
+   "name": "Enum_Ww",
+   "named": false,
+   "conf": null,
+   "line": 211793,
+   "memberCount": 1,
+   "members": {
+    "length": 0
+   }
+  },
+  "Yw": {
+   "name": "PermResult",
+   "named": true,
+   "conf": "medium",
+   "line": 212146,
+   "memberCount": 3,
+   "members": {
+    "fail": 2,
+    "deny": 1,
+    "ok": 0
+   }
+  },
+  "Zw": {
+   "name": "Enum_Zw",
+   "named": false,
+   "conf": null,
+   "line": 212485,
+   "memberCount": 4,
+   "members": {
+    "http": 3,
+    "item": 2,
+    "default": 1,
+    "none": 0
+   }
+  },
+  "db": {
+   "name": "ProfileInfoTab",
+   "named": true,
+   "conf": "medium",
+   "line": 215258,
+   "memberCount": 5,
+   "members": {
+    "relation": 4,
+    "badge": 3,
+    "pvp": 2,
+    "level": 1,
+    "none": 0
+   }
+  },
+  "fb": {
+   "name": "Enum_fb",
+   "named": false,
+   "conf": null,
+   "line": 215947,
+   "memberCount": 4,
+   "members": {
+    "hazard": 3,
+    "zero": 2,
+    "first": 1,
+    "reachflag": 0
+   }
+  },
+  "gb": {
+   "name": "EntryMode",
+   "named": true,
+   "conf": "medium",
+   "line": 216160,
+   "memberCount": 5,
+   "members": {
+    "pvp": 4,
+    "training": 3,
+    "newbie": 2,
+    "dailychallenge": 1,
+    "none": 0
+   }
+  },
+  "mb": {
+   "name": "Enum_mb",
+   "named": false,
+   "conf": null,
+   "line": 216161,
+   "memberCount": 2,
+   "members": {
+    "normal": 1,
+    "newbie": 0
+   }
+  },
+  "Nb": {
+   "name": "TutorialStage",
+   "named": true,
+   "conf": "high",
+   "line": 220632,
+   "memberCount": 6,
+   "members": {
+    "tutorialEnd": 5,
+    "characterUnlock": 4,
+    "matchmaking": 3,
+    "matchmakingStart": 2,
+    "character": 1,
+    "home": 0
+   }
+  },
+  "$b": {
+   "name": "Enum_$b",
+   "named": false,
+   "conf": null,
+   "line": 223855,
+   "memberCount": 4,
+   "members": {
+    "darkblue": 3,
+    "red": 2,
+    "yellow": 1,
+    "blue": 0
+   }
+  },
+  "iS": {
+   "name": "NoticeType",
+   "named": true,
+   "conf": "medium",
+   "line": 224159,
+   "memberCount": 6,
+   "members": {
+    "redeem": 5,
+    "live": 4,
+    "connect": 3,
+    "system": 2,
+    "update": 1,
+    "none": 0
+   }
+  },
+  "hS": {
+   "name": "Enum_hS",
+   "named": false,
+   "conf": null,
+   "line": 225770,
+   "memberCount": 4,
+   "members": {
+    "currency": 3,
+    "title": 2,
+    "back": 1,
+    "home": 0
+   }
+  },
+  "pS": {
+   "name": "SettingsEntry",
+   "named": true,
+   "conf": "medium",
+   "line": 226382,
+   "memberCount": 5,
+   "members": {
+    "feedback": 4,
+    "contact": 3,
+    "record": 2,
+    "gameclub": 1,
+    "auth": 0
+   }
+  },
+  "kS": {
+   "name": "GuidePage",
+   "named": true,
+   "conf": "medium",
+   "line": 227522,
+   "memberCount": 9,
+   "members": {
+    "toppvp": 8,
+    "training": 7,
+    "tutorialLose": 6,
+    "tutorialWin": 5,
+    "friendlyMatch": 4,
+    "clanChat": 3,
+    "leagueHome": 2,
+    "league": 1,
+    "none": 0
+   }
+  },
+  "MS": {
+   "name": "ChatEntry",
+   "named": true,
+   "conf": "medium",
+   "line": 228865,
+   "memberCount": 18,
+   "members": {
+    "douyinGroupRoom": 17,
+    "createOnChat": 16,
+    "clanchatlist": 15,
+    "createOnMatchFull": 14,
+    "createOnMatchStart": 13,
+    "createOnMatchEnd": 12,
+    "create": 11,
+    "list": 10,
+    "random": 9,
+    "friend": 8,
+    "rematch": 7,
+    "outpush": 6,
+    "push": 5,
+    "search": 4,
+    "invitation": 3,
+    "im": 2,
+    "shareCard": 1,
+    "normal": 0
+   }
+  },
+  "PS": {
+   "name": "Enum_PS",
+   "named": false,
+   "conf": null,
+   "line": 229694,
+   "memberCount": 38,
+   "members": {
+    "relation": 37,
+    "gift": 36,
+    "currency": 35,
+    "mission": 34,
+    "vip": 33,
+    "gamelive": 32,
+    "badge": 31,
+    "douyinvideo": 30,
+    "training": 29,
+    "decal": 28,
+    "honesty": 27,
+    "chat": 26,
+    "inventory": 25,
+    "shop": 24,
+    "dailychallenge": 23,
+    "characterskin": 22,
+    "pack": 21,
+    "mail": 20,
+    "userlevel": 19,
+    "userdaily": 18,
+    "event": 17,
+    "clan": 16,
+    "border": 15,
+    "ugcalbum": 14,
+    "ugc": 13,
+    "matchhistory": 12,
+    "emoji": 11,
+    "friend": 10,
+    "lobby": 9,
+    "recharge": 8,
+    "title": 7,
+    "bank": 6,
+    "social": 5,
+    "league": 4,
+    "character": 3,
+    "matchroom": 2,
+    "matchmaking": 1,
+    "profile": 0
+   }
+  },
+  "BS": {
+   "name": "Enum_BS",
+   "named": false,
+   "conf": null,
+   "line": 229695,
+   "memberCount": 51,
+   "members": {
+    "relation": 50,
+    "gift": 49,
+    "mission": 48,
+    "vip": 47,
+    "gamelive": 46,
+    "roomlist": 45,
+    "volpchat": 44,
+    "query": 43,
+    "badge": 42,
+    "douyinvideo": 41,
+    "training": 40,
+    "honesty": 39,
+    "chat": 38,
+    "inventory": 37,
+    "shop": 36,
+    "dailychallenge": 35,
+    "characterskin": 34,
+    "pack": 33,
+    "userlevel": 32,
+    "mail": 31,
+    "userdaily": 30,
+    "event": 29,
+    "clan": 28,
+    "border": 27,
+    "ugcalbum": 26,
+    "ugc": 25,
+    "matchhistory": 24,
+    "emoji": 23,
+    "friend": 22,
+    "videorecord": 21,
+    "lobby": 20,
+    "userdetail": 19,
+    "recharge": 18,
+    "title": 17,
+    "tutorial": 16,
+    "reddot": 15,
+    "bank": 14,
+    "social": 13,
+    "league": 12,
+    "uistack": 11,
+    "character": 10,
+    "score": 9,
+    "popup": 8,
+    "matchroom": 7,
+    "matchmaking": 6,
+    "lifecycle": 5,
+    "share": 4,
+    "usermsg": 3,
+    "request": 2,
+    "user": 1,
+    "auth": 0
+   }
+  },
+  "ES": {
+   "name": "ScreenId",
+   "named": true,
+   "conf": "curated",
+   "line": 229696,
+   "memberCount": 152,
+   "members": {
+    "skinpackbuy": 151,
+    "skintrial": 150,
+    "douyinsidebarvisitpopup": 149,
+    "albumedit": 148,
+    "albumlevellist": 147,
+    "albumdetail": 146,
+    "albumlist": 145,
+    "albumcreate": 144,
+    "hornbuy": 143,
+    "accountdelete": 142,
+    "clantransferrole": 141,
+    "clanapplication": 140,
+    "clandetail": 139,
+    "clanbadges": 138,
+    "clanugcinvite": 137,
+    "claninvite": 136,
+    "recharegeitembuy": 135,
+    "clanupdpateid": 134,
+    "clanupdatename": 133,
+    "clansearch": 132,
+    "clancreate": 131,
+    "clan": 130,
+    "clanlist": 129,
+    "packhistory": 128,
+    "giftgive": 127,
+    "gift": 126,
+    "relation": 125,
+    "event": 124,
+    "pvpfriendadd": 123,
+    "itemcommon": 122,
+    "tip": 121,
+    "recharge": 120,
+    "charactershare": 119,
+    "redeem": 118,
+    "newbiepack": 117,
+    "paycode": 116,
+    "pay": 115,
+    "battlepassreward": 114,
+    "textintro": 113,
+    "gemuse": 112,
+    "battlepassbuy": 111,
+    "battlepass": 110,
+    "currencyconfirm": 109,
+    "checkin": 108,
+    "levelbgmedit": 107,
+    "currencyexchange": 106,
+    "toppvp": 105,
+    "userdetailpopup": 104,
+    "itemdetail": 103,
+    "gamelive": 102,
+    "guest": 101,
+    "vipbuy": 100,
+    "gameliveintro": 99,
+    "connect": 98,
+    "mobileupdate": 97,
+    "realnameinfo": 96,
+    "mobileinfo": 95,
+    "report": 94,
+    "accountbind": 93,
+    "accountinfo": 92,
+    "antiaddiction": 91,
+    "login": 90,
+    "privacy": 89,
+    "roomlist": 88,
+    "badgeunlock": 87,
+    "badgedetail": 86,
+    "badge": 85,
+    "videopack": 84,
+    "pvproomsearch": 83,
+    "douyinvideorank": 82,
+    "douyinvisitpopup": 81,
+    "commonalert": 80,
+    "traininglevels": 79,
+    "training": 78,
+    "decalpopup": 77,
+    "honestypopup": 76,
+    "ugcpanorama": 75,
+    "ugctemplate": 74,
+    "npcalert": 73,
+    "ugcbroadcastlist": 72,
+    "ugcbroadcast": 71,
+    "textedit": 70,
+    "ugcmarklist": 69,
+    "leagueinventoryuse": 68,
+    "inventoryuse": 67,
+    "annualreport": 66,
+    "shopitembuy": 65,
+    "packweekbuy": 64,
+    "packbuy": 63,
+    "packmultireward": 62,
+    "packdetail": 61,
+    "packreward": 60,
+    "banner": 59,
+    "updategender": 58,
+    "updatename": 57,
+    "nickname": 56,
+    "mobilebind": 55,
+    "restorealert": 54,
+    "accountrestore": 53,
+    "restorecode": 52,
+    "mobilelogin": 51,
+    "realname": 50,
+    "rankrushintro": 49,
+    "rankrushevent": 48,
+    "revive": 47,
+    "teamMatchmaking": 46,
+    "dailychallenge": 45,
+    "expweeklyrank": 44,
+    "ugccommentlist": 43,
+    "ugcstamp": 42,
+    "ugctextcomment": 41,
+    "qqsticky": 40,
+    "userlevelup": 39,
+    "expintro": 38,
+    "mail": 37,
+    "ugcuploadslot": 36,
+    "hppopup": 35,
+    "ugclistpopup": 34,
+    "ugcuploadnameandtag": 33,
+    "ugcsearch": 32,
+    "ugc": 31,
+    "freecoinpopup": 30,
+    "characterunlock": 29,
+    "debrishelppopup": 28,
+    "debrisunlockpopup": 27,
+    "danintro": 26,
+    "matchhistory": 25,
+    "pvpinvitation": 24,
+    "onlinefriend": 23,
+    "bottombar": 22,
+    "friend": 21,
+    "friendsearch": 20,
+    "leagueseason": 19,
+    "leaguerewardintro": 18,
+    "tutorialpopup": 17,
+    "tutorial": 16,
+    "shop": 15,
+    "topbar": 14,
+    "favTips": 13,
+    "bgm": 12,
+    "doublecoin": 11,
+    "notice": 10,
+    "characterinit": 9,
+    "settings": 8,
+    "social": 7,
+    "league": 6,
+    "alert": 5,
+    "uiscene": 4,
+    "friendlyMatchmaking": 3,
+    "matchmaking": 2,
+    "home": 1,
+    "auth": 0
+   }
+  },
+  "DS": {
+   "name": "AppState",
+   "named": true,
+   "conf": "high",
+   "line": 229697,
+   "memberCount": 8,
+   "members": {
+    "characterinit": 7,
+    "quitgame": 6,
+    "matchmaking": 5,
+    "reloadgame": 4,
+    "game": 3,
+    "home": 2,
+    "login": 1,
+    "init": 0
+   }
+  },
+  "RS": {
+   "name": "UILayer",
+   "named": true,
+   "conf": "high",
+   "line": 229698,
+   "memberCount": 8,
+   "members": {
+    "toast": 7,
+    "tutorial": 6,
+    "mask": 5,
+    "effect": 4,
+    "popup": 3,
+    "ui": 2,
+    "gameui": 1,
+    "game": 0
+   }
+  },
+  "HS": {
+   "name": "PlatformType",
+   "named": true,
+   "conf": "high",
+   "line": 231769,
+   "memberCount": 7,
+   "members": {
+    "kuaishou": 6,
+    "bilibili": 5,
+    "qq": 4,
+    "standalone": 3,
+    "toutiao": 2,
+    "wechat": 1,
+    "chrome": 0
+   }
+  }
+ },
+ "byMember": {
+  "center": [
+   {
+    "binding": "m",
+    "name": "HAlign"
+   },
+   {
+    "binding": "k",
+    "name": "VAlign"
+   }
+  ],
+  "right": [
+   {
+    "binding": "m",
+    "name": "HAlign"
+   },
+   {
+    "binding": "w",
+    "name": "Direction"
+   },
+   {
+    "binding": "Jk",
+    "name": "RotateDir"
+   }
+  ],
+  "left": [
+   {
+    "binding": "m",
+    "name": "HAlign"
+   },
+   {
+    "binding": "w",
+    "name": "Direction"
+   },
+   {
+    "binding": "Jk",
+    "name": "RotateDir"
+   }
+  ],
+  "bottom": [
+   {
+    "binding": "k",
+    "name": "VAlign"
+   }
+  ],
+  "top": [
+   {
+    "binding": "k",
+    "name": "VAlign"
+   }
+  ],
+  "down": [
+   {
+    "binding": "w",
+    "name": "Direction"
+   },
+   {
+    "binding": "Jk",
+    "name": "RotateDir"
+   }
+  ],
+  "up": [
+   {
+    "binding": "w",
+    "name": "Direction"
+   },
+   {
+    "binding": "Jk",
+    "name": "RotateDir"
+   }
+  ],
+  "none": [
+   {
+    "binding": "w",
+    "name": "Direction"
+   },
+   {
+    "binding": "yt",
+    "name": "InitStep"
+   },
+   {
+    "binding": "wt",
+    "name": "ProfileTab"
+   },
+   {
+    "binding": "Mt",
+    "name": "ProfileItemType"
+   },
+   {
+    "binding": "$t",
+    "name": "AdState"
+   },
+   {
+    "binding": "re",
+    "name": "ProfileFieldType"
+   },
+   {
+    "binding": "Ee",
+    "name": "FetchState"
+   },
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   },
+   {
+    "binding": "Ne",
+    "name": "LoginStepState"
+   },
+   {
+    "binding": "gi",
+    "name": "CommentSort"
+   },
+   {
+    "binding": "ji",
+    "name": "LevelSort"
+   },
+   {
+    "binding": "qi",
+    "name": "ChallengeCycle"
+   },
+   {
+    "binding": "Yi",
+    "name": "ChallengeState"
+   },
+   {
+    "binding": "nn",
+    "name": "TaskType"
+   },
+   {
+    "binding": "Ln",
+    "name": "Difficulty"
+   },
+   {
+    "binding": "ao",
+    "name": "Enum_ao"
+   },
+   {
+    "binding": "bo",
+    "name": "LevelDetailTab"
+   },
+   {
+    "binding": "Mo",
+    "name": "CardType"
+   },
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   },
+   {
+    "binding": "sa",
+    "name": "RankType"
+   },
+   {
+    "binding": "La",
+    "name": "Enum_La"
+   },
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   },
+   {
+    "binding": "Ga",
+    "name": "ClanStatus"
+   },
+   {
+    "binding": "ps",
+    "name": "ClanRole"
+   },
+   {
+    "binding": "fs",
+    "name": "ChatType"
+   },
+   {
+    "binding": "ks",
+    "name": "ActivityState"
+   },
+   {
+    "binding": "Bs",
+    "name": "Enum_Bs"
+   },
+   {
+    "binding": "Us",
+    "name": "RewardCenterTab"
+   },
+   {
+    "binding": "Tr",
+    "name": "PlayMode"
+   },
+   {
+    "binding": "Dr",
+    "name": "UserBlockState"
+   },
+   {
+    "binding": "Gr",
+    "name": "DifficultyEx"
+   },
+   {
+    "binding": "Hr",
+    "name": "Enum_Hr"
+   },
+   {
+    "binding": "qr",
+    "name": "LevelTab"
+   },
+   {
+    "binding": "Ml",
+    "name": "ChallengeEntry"
+   },
+   {
+    "binding": "Rl",
+    "name": "ChallengeStep"
+   },
+   {
+    "binding": "Gl",
+    "name": "RankListType"
+   },
+   {
+    "binding": "Sh",
+    "name": "TeamMode"
+   },
+   {
+    "binding": "Ah",
+    "name": "FriendTab"
+   },
+   {
+    "binding": "yc",
+    "name": "RoomState"
+   },
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   },
+   {
+    "binding": "qc",
+    "name": "LevelCategory"
+   },
+   {
+    "binding": "td",
+    "name": "LeagueMode"
+   },
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   },
+   {
+    "binding": "gp",
+    "name": "Quality"
+   },
+   {
+    "binding": "bp",
+    "name": "RecordState"
+   },
+   {
+    "binding": "Tp",
+    "name": "Enum_Tp"
+   },
+   {
+    "binding": "u_",
+    "name": "DeathReason"
+   },
+   {
+    "binding": "w_",
+    "name": "MoveState"
+   },
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   },
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "Pf",
+    "name": "RotateMode"
+   },
+   {
+    "binding": "Bf",
+    "name": "EditableScope"
+   },
+   {
+    "binding": "my",
+    "name": "Enum_my"
+   },
+   {
+    "binding": "ug",
+    "name": "LockReason"
+   },
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   },
+   {
+    "binding": "rk",
+    "name": "TutorialRobotState"
+   },
+   {
+    "binding": "uk",
+    "name": "EditAddOp"
+   },
+   {
+    "binding": "nC",
+    "name": "LevelBlockReason"
+   },
+   {
+    "binding": "oC",
+    "name": "PaletteFilter"
+   },
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   },
+   {
+    "binding": "fC",
+    "name": "Enum_fC"
+   },
+   {
+    "binding": "TC",
+    "name": "MatchType"
+   },
+   {
+    "binding": "AC",
+    "name": "RecordMode"
+   },
+   {
+    "binding": "WC",
+    "name": "DisconnectReason"
+   },
+   {
+    "binding": "pw",
+    "name": "JoinMatchError"
+   },
+   {
+    "binding": "yw",
+    "name": "Enum_yw"
+   },
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   },
+   {
+    "binding": "Dw",
+    "name": "Enum_Dw"
+   },
+   {
+    "binding": "Zw",
+    "name": "Enum_Zw"
+   },
+   {
+    "binding": "db",
+    "name": "ProfileInfoTab"
+   },
+   {
+    "binding": "gb",
+    "name": "EntryMode"
+   },
+   {
+    "binding": "iS",
+    "name": "NoticeType"
+   },
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   }
+  ],
+  "actionSheet": [
+   {
+    "binding": "S",
+    "name": "DialogType"
+   }
+  ],
+  "loading": [
+   {
+    "binding": "S",
+    "name": "DialogType"
+   },
+   {
+    "binding": "$t",
+    "name": "AdState"
+   }
+  ],
+  "modal": [
+   {
+    "binding": "S",
+    "name": "DialogType"
+   }
+  ],
+  "toast": [
+   {
+    "binding": "S",
+    "name": "DialogType"
+   },
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "closed": [
+   {
+    "binding": "K",
+    "name": "VoiceCallState"
+   },
+   {
+    "binding": "lw",
+    "name": "SocketState"
+   }
+  ],
+  "calling": [
+   {
+    "binding": "K",
+    "name": "VoiceCallState"
+   }
+  ],
+  "connected": [
+   {
+    "binding": "K",
+    "name": "VoiceCallState"
+   },
+   {
+    "binding": "lw",
+    "name": "SocketState"
+   }
+  ],
+  "connecting": [
+   {
+    "binding": "K",
+    "name": "VoiceCallState"
+   },
+   {
+    "binding": "lw",
+    "name": "SocketState"
+   }
+  ],
+  "Connecting": [
+   {
+    "binding": "Q",
+    "name": "ConnectResult"
+   },
+   {
+    "binding": "Z",
+    "name": "FriendConnectCode"
+   }
+  ],
+  "Timeout": [
+   {
+    "binding": "Q",
+    "name": "ConnectResult"
+   }
+  ],
+  "OK": [
+   {
+    "binding": "Q",
+    "name": "ConnectResult"
+   }
+  ],
+  "ErrNoFriendQuota": [
+   {
+    "binding": "Z",
+    "name": "FriendConnectCode"
+   }
+  ],
+  "ErrInvalidParams": [
+   {
+    "binding": "Z",
+    "name": "FriendConnectCode"
+   },
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "OverTime": [
+   {
+    "binding": "Z",
+    "name": "FriendConnectCode"
+   },
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "Success": [
+   {
+    "binding": "Z",
+    "name": "FriendConnectCode"
+   },
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "privacy": [
+   {
+    "binding": "ht",
+    "name": "AccountTipType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "tip": [
+   {
+    "binding": "ht",
+    "name": "AccountTipType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "report": [
+   {
+    "binding": "ht",
+    "name": "AccountTipType"
+   },
+   {
+    "binding": "oo",
+    "name": "RestrictScope"
+   },
+   {
+    "binding": "Rr",
+    "name": "CommentAdminOp"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "fix": [
+   {
+    "binding": "ht",
+    "name": "AccountTipType"
+   }
+  ],
+  "assets": [
+   {
+    "binding": "yt",
+    "name": "InitStep"
+   },
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   }
+  ],
+  "login": [
+   {
+    "binding": "yt",
+    "name": "InitStep"
+   },
+   {
+    "binding": "En",
+    "name": "MissionType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   },
+   {
+    "binding": "DS",
+    "name": "AppState"
+   }
+  ],
+  "uiConfig": [
+   {
+    "binding": "yt",
+    "name": "InitStep"
+   }
+  ],
+  "gameConfig": [
+   {
+    "binding": "yt",
+    "name": "InitStep"
+   }
+  ],
+  "appConfig": [
+   {
+    "binding": "yt",
+    "name": "InitStep"
+   }
+  ],
+  "out": [
+   {
+    "binding": "kt",
+    "name": "SlideDirection"
+   }
+  ],
+  "in": [
+   {
+    "binding": "kt",
+    "name": "SlideDirection"
+   }
+  ],
+  "idle": [
+   {
+    "binding": "kt",
+    "name": "SlideDirection"
+   },
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   },
+   {
+    "binding": "Tp",
+    "name": "Enum_Tp"
+   }
+  ],
+  "inventory": [
+   {
+    "binding": "wt",
+    "name": "ProfileTab"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "emoji": [
+   {
+    "binding": "wt",
+    "name": "ProfileTab"
+   },
+   {
+    "binding": "oo",
+    "name": "RestrictScope"
+   },
+   {
+    "binding": "fs",
+    "name": "ChatType"
+   },
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "appearance": [
+   {
+    "binding": "wt",
+    "name": "ProfileTab"
+   },
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   }
+  ],
+  "skin": [
+   {
+    "binding": "wt",
+    "name": "ProfileTab"
+   },
+   {
+    "binding": "pf",
+    "name": "ComponentCategory"
+   },
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   },
+   {
+    "binding": "jm",
+    "name": "Enum_jm"
+   }
+  ],
+  "canbuy": [
+   {
+    "binding": "bt",
+    "name": "ItemFilter"
+   }
+  ],
+  "unown": [
+   {
+    "binding": "bt",
+    "name": "ItemFilter"
+   }
+  ],
+  "own": [
+   {
+    "binding": "bt",
+    "name": "ItemFilter"
+   }
+  ],
+  "all": [
+   {
+    "binding": "bt",
+    "name": "ItemFilter"
+   },
+   {
+    "binding": "Fr",
+    "name": "DifficultyFilter"
+   },
+   {
+    "binding": "Ur",
+    "name": "Enum_Ur"
+   },
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   },
+   {
+    "binding": "Ac",
+    "name": "Enum_Ac"
+   },
+   {
+    "binding": "Yc",
+    "name": "Enum_Yc"
+   }
+  ],
+  "socialAvatar": [
+   {
+    "binding": "Mt",
+    "name": "ProfileItemType"
+   }
+  ],
+  "authButton": [
+   {
+    "binding": "Mt",
+    "name": "ProfileItemType"
+   }
+  ],
+  "emptyItem": [
+   {
+    "binding": "Mt",
+    "name": "ProfileItemType"
+   }
+  ],
+  "item": [
+   {
+    "binding": "Mt",
+    "name": "ProfileItemType"
+   },
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   },
+   {
+    "binding": "Zw",
+    "name": "Enum_Zw"
+   }
+  ],
+  "lifetime": [
+   {
+    "binding": "Dt",
+    "name": "ItemDuration"
+   }
+  ],
+  "consumable": [
+   {
+    "binding": "Dt",
+    "name": "ItemDuration"
+   }
+  ],
+  "gameconfig": [
+   {
+    "binding": "Kt",
+    "name": "PreloadType"
+   }
+  ],
+  "sound": [
+   {
+    "binding": "Kt",
+    "name": "PreloadType"
+   },
+   {
+    "binding": "$_",
+    "name": "SettingGroup"
+   }
+  ],
+  "character": [
+   {
+    "binding": "Kt",
+    "name": "PreloadType"
+   },
+   {
+    "binding": "re",
+    "name": "ProfileFieldType"
+   },
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   },
+   {
+    "binding": "Nb",
+    "name": "TutorialStage"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "uijson": [
+   {
+    "binding": "Kt",
+    "name": "PreloadType"
+   }
+  ],
+  "atlas": [
+   {
+    "binding": "Kt",
+    "name": "PreloadType"
+   }
+  ],
+  "skintrial": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "freehorn": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "lottery": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   },
+   {
+    "binding": "Us",
+    "name": "RewardCenterTab"
+   }
+  ],
+  "freegem": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "ugcpanorama": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "npc": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "J_",
+    "name": "ControlSource"
+   },
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "dailylogin": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "annualreward": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "annualreport": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "pack": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "ugcreplay": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   }
+  ],
+  "revive": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "z_",
+    "name": "PlayState"
+   },
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "unlockdailychallenge": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "timespvpscore": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "videopack": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "dailychallenge": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "gb",
+    "name": "EntryMode"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "newbietask": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "ugcslot": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "hp": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "debris": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   }
+  ],
+  "characterTrial": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "vipComponent": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "doublecoin": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "leaguedoublecoin": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "leagueprotect": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "friendlymatchreward": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   },
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "characterdebris": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "bankfreecoin": [
+   {
+    "binding": "Qt",
+    "name": "FeatureType"
+   }
+  ],
+  "showing": [
+   {
+    "binding": "$t",
+    "name": "AdState"
+   }
+  ],
+  "NoSuitableAd": [
+   {
+    "binding": "te",
+    "name": "AdErrorCode"
+   },
+   {
+    "binding": "ee",
+    "name": "RewardedAdError"
+   },
+   {
+    "binding": "ie",
+    "name": "Enum_ie"
+   }
+  ],
+  "InterError": [
+   {
+    "binding": "te",
+    "name": "AdErrorCode"
+   }
+  ],
+  "ServerError": [
+   {
+    "binding": "te",
+    "name": "AdErrorCode"
+   }
+  ],
+  "Max": [
+   {
+    "binding": "ee",
+    "name": "RewardedAdError"
+   }
+  ],
+  "clanVip": [
+   {
+    "binding": "re",
+    "name": "ProfileFieldType"
+   }
+  ],
+  "regiestDays": [
+   {
+    "binding": "re",
+    "name": "ProfileFieldType"
+   }
+  ],
+  "playerLevel": [
+   {
+    "binding": "re",
+    "name": "ProfileFieldType"
+   },
+   {
+    "binding": "nC",
+    "name": "LevelBlockReason"
+   }
+  ],
+  "follow": [
+   {
+    "binding": "re",
+    "name": "ProfileFieldType"
+   }
+  ],
+  "score": [
+   {
+    "binding": "re",
+    "name": "ProfileFieldType"
+   },
+   {
+    "binding": "ao",
+    "name": "Enum_ao"
+   },
+   {
+    "binding": "lg",
+    "name": "HalloweenHud"
+   },
+   {
+    "binding": "fC",
+    "name": "Enum_fC"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "navigateBack": [
+   {
+    "binding": "pe",
+    "name": "WebNavType"
+   }
+  ],
+  "navigateForward": [
+   {
+    "binding": "pe",
+    "name": "WebNavType"
+   }
+  ],
+  "normal": [
+   {
+    "binding": "pe",
+    "name": "WebNavType"
+   },
+   {
+    "binding": "rl",
+    "name": "RoomLoadState"
+   },
+   {
+    "binding": "Sh",
+    "name": "TeamMode"
+   },
+   {
+    "binding": "vd",
+    "name": "Rarity"
+   },
+   {
+    "binding": "Ip",
+    "name": "PlayerState"
+   },
+   {
+    "binding": "Mp",
+    "name": "SurfaceType"
+   },
+   {
+    "binding": "Mf",
+    "name": "DynamicCategory"
+   },
+   {
+    "binding": "AC",
+    "name": "RecordMode"
+   },
+   {
+    "binding": "kw",
+    "name": "MatchKind"
+   },
+   {
+    "binding": "mb",
+    "name": "Enum_mb"
+   },
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "flydownWithNumber": [
+   {
+    "binding": "be",
+    "name": "EffectAnimType"
+   }
+  ],
+  "flydown": [
+   {
+    "binding": "be",
+    "name": "EffectAnimType"
+   }
+  ],
+  "quickFade": [
+   {
+    "binding": "be",
+    "name": "EffectAnimType"
+   }
+  ],
+  "scaleOut": [
+   {
+    "binding": "be",
+    "name": "EffectAnimType"
+   }
+  ],
+  "explodeOut": [
+   {
+    "binding": "be",
+    "name": "EffectAnimType"
+   }
+  ],
+  "centerX": [
+   {
+    "binding": "Pe",
+    "name": "ScreenEdge"
+   }
+  ],
+  "centerY": [
+   {
+    "binding": "Pe",
+    "name": "ScreenEdge"
+   }
+  ],
+  "rightEdge": [
+   {
+    "binding": "Pe",
+    "name": "ScreenEdge"
+   }
+  ],
+  "leftEdge": [
+   {
+    "binding": "Pe",
+    "name": "ScreenEdge"
+   }
+  ],
+  "topEdge": [
+   {
+    "binding": "Pe",
+    "name": "ScreenEdge"
+   }
+  ],
+  "bottomEdge": [
+   {
+    "binding": "Pe",
+    "name": "ScreenEdge"
+   }
+  ],
+  "failed": [
+   {
+    "binding": "Ee",
+    "name": "FetchState"
+   },
+   {
+    "binding": "Ne",
+    "name": "LoginStepState"
+   }
+  ],
+  "succeed": [
+   {
+    "binding": "Ee",
+    "name": "FetchState"
+   }
+  ],
+  "fetching": [
+   {
+    "binding": "Ee",
+    "name": "FetchState"
+   }
+  ],
+  "restore": [
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   }
+  ],
+  "session": [
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   }
+  ],
+  "guest": [
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   },
+   {
+    "binding": "ao",
+    "name": "Enum_ao"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "taptap": [
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   },
+   {
+    "binding": "Dw",
+    "name": "Enum_Dw"
+   }
+  ],
+  "apple": [
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   },
+   {
+    "binding": "Dw",
+    "name": "Enum_Dw"
+   }
+  ],
+  "tel": [
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   },
+   {
+    "binding": "Dw",
+    "name": "Enum_Dw"
+   }
+  ],
+  "nativewechat": [
+   {
+    "binding": "Ve",
+    "name": "AccountType"
+   },
+   {
+    "binding": "Dw",
+    "name": "Enum_Dw"
+   }
+  ],
+  "success": [
+   {
+    "binding": "Ne",
+    "name": "LoginStepState"
+   },
+   {
+    "binding": "rk",
+    "name": "TutorialRobotState"
+   }
+  ],
+  "start": [
+   {
+    "binding": "Ne",
+    "name": "LoginStepState"
+   }
+  ],
+  "verifyCode": [
+   {
+    "binding": "Ge",
+    "name": "SmsStep"
+   }
+  ],
+  "getCode": [
+   {
+    "binding": "Ge",
+    "name": "SmsStep"
+   }
+  ],
+  "getAccount": [
+   {
+    "binding": "Ge",
+    "name": "SmsStep"
+   }
+  ],
+  "TapTap": [
+   {
+    "binding": "ze",
+    "name": "LoginChannel"
+   }
+  ],
+  "Apple": [
+   {
+    "binding": "ze",
+    "name": "LoginChannel"
+   }
+  ],
+  "Tel": [
+   {
+    "binding": "ze",
+    "name": "LoginChannel"
+   }
+  ],
+  "Wechat": [
+   {
+    "binding": "ze",
+    "name": "LoginChannel"
+   }
+  ],
+  "None": [
+   {
+    "binding": "ze",
+    "name": "LoginChannel"
+   }
+  ],
+  "noHp": [
+   {
+    "binding": "je",
+    "name": "QuitReason"
+   }
+  ],
+  "quit": [
+   {
+    "binding": "je",
+    "name": "QuitReason"
+   },
+   {
+    "binding": "vr",
+    "name": "EndReason"
+   }
+  ],
+  "reMatch": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "exitMatch": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "endMatch": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "startMatch": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "exitRoom": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "enterRoom": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "loaded": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "launch": [
+   {
+    "binding": "Xe",
+    "name": "MatchFlowEvent"
+   }
+  ],
+  "Default": [
+   {
+    "binding": "ti",
+    "name": "Enum_ti"
+   }
+  ],
+  "like": [
+   {
+    "binding": "gi",
+    "name": "CommentSort"
+   },
+   {
+    "binding": "ji",
+    "name": "LevelSort"
+   },
+   {
+    "binding": "Vr",
+    "name": "Enum_Vr"
+   }
+  ],
+  "time": [
+   {
+    "binding": "gi",
+    "name": "CommentSort"
+   },
+   {
+    "binding": "ji",
+    "name": "LevelSort"
+   },
+   {
+    "binding": "To",
+    "name": "Enum_To"
+   },
+   {
+    "binding": "Vr",
+    "name": "Enum_Vr"
+   }
+  ],
+  "reward": [
+   {
+    "binding": "ji",
+    "name": "LevelSort"
+   },
+   {
+    "binding": "ks",
+    "name": "ActivityState"
+   }
+  ],
+  "weekly": [
+   {
+    "binding": "qi",
+    "name": "ChallengeCycle"
+   }
+  ],
+  "daily": [
+   {
+    "binding": "qi",
+    "name": "ChallengeCycle"
+   }
+  ],
+  "reversed": [
+   {
+    "binding": "Yi",
+    "name": "ChallengeState"
+   },
+   {
+    "binding": "xp",
+    "name": "Enum_xp"
+   }
+  ],
+  "end": [
+   {
+    "binding": "Yi",
+    "name": "ChallengeState"
+   },
+   {
+    "binding": "ks",
+    "name": "ActivityState"
+   },
+   {
+    "binding": "pl",
+    "name": "Enum_pl"
+   },
+   {
+    "binding": "yc",
+    "name": "RoomState"
+   },
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   },
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   }
+  ],
+  "live": [
+   {
+    "binding": "Yi",
+    "name": "ChallengeState"
+   },
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   },
+   {
+    "binding": "iS",
+    "name": "NoticeType"
+   }
+  ],
+  "shop": [
+   {
+    "binding": "nn",
+    "name": "TaskType"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "cumulativeMission": [
+   {
+    "binding": "nn",
+    "name": "TaskType"
+   }
+  ],
+  "dailyMission": [
+   {
+    "binding": "nn",
+    "name": "TaskType"
+   }
+  ],
+  "watchLiveReward": [
+   {
+    "binding": "nn",
+    "name": "TaskType"
+   }
+  ],
+  "liveReward": [
+   {
+    "binding": "nn",
+    "name": "TaskType"
+   }
+  ],
+  "channel": [
+   {
+    "binding": "nn",
+    "name": "TaskType"
+   }
+  ],
+  "cumulativeLive": [
+   {
+    "binding": "hn",
+    "name": "LiveRewardCycle"
+   }
+  ],
+  "dailyLive": [
+   {
+    "binding": "hn",
+    "name": "LiveRewardCycle"
+   }
+  ],
+  "liveUgcPvp": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "liveUgc": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "liveAudience": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "livePvpTeam": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "liveOneHourDays": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "liveMaxLikes": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "livePvp": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "livePvpWin": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "liveTime": [
+   {
+    "binding": "cn",
+    "name": "LiveTaskType"
+   }
+  ],
+  "next": [
+   {
+    "binding": "Sn",
+    "name": "PageNav"
+   }
+  ],
+  "current": [
+   {
+    "binding": "Sn",
+    "name": "PageNav"
+   }
+  ],
+  "previous": [
+   {
+    "binding": "Sn",
+    "name": "PageNav"
+   }
+  ],
+  "hard": [
+   {
+    "binding": "Ln",
+    "name": "Difficulty"
+   },
+   {
+    "binding": "Fr",
+    "name": "DifficultyFilter"
+   },
+   {
+    "binding": "Gr",
+    "name": "DifficultyEx"
+   }
+  ],
+  "medium": [
+   {
+    "binding": "Ln",
+    "name": "Difficulty"
+   },
+   {
+    "binding": "Fr",
+    "name": "DifficultyFilter"
+   },
+   {
+    "binding": "Gr",
+    "name": "DifficultyEx"
+   },
+   {
+    "binding": "wm",
+    "name": "SpeedLevel"
+   }
+  ],
+  "easy": [
+   {
+    "binding": "Ln",
+    "name": "Difficulty"
+   },
+   {
+    "binding": "Fr",
+    "name": "DifficultyFilter"
+   },
+   {
+    "binding": "Gr",
+    "name": "DifficultyEx"
+   }
+  ],
+  "challenge": [
+   {
+    "binding": "Pn",
+    "name": "GameMode"
+   },
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   },
+   {
+    "binding": "Ml",
+    "name": "ChallengeEntry"
+   },
+   {
+    "binding": "Rl",
+    "name": "ChallengeStep"
+   }
+  ],
+  "pvp": [
+   {
+    "binding": "Pn",
+    "name": "GameMode"
+   },
+   {
+    "binding": "sa",
+    "name": "RankType"
+   },
+   {
+    "binding": "TC",
+    "name": "MatchType"
+   },
+   {
+    "binding": "db",
+    "name": "ProfileInfoTab"
+   },
+   {
+    "binding": "gb",
+    "name": "EntryMode"
+   }
+  ],
+  "league": [
+   {
+    "binding": "Pn",
+    "name": "GameMode"
+   },
+   {
+    "binding": "oo",
+    "name": "RestrictScope"
+   },
+   {
+    "binding": "Gl",
+    "name": "RankListType"
+   },
+   {
+    "binding": "td",
+    "name": "LeagueMode"
+   },
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "skill": [
+   {
+    "binding": "Pn",
+    "name": "GameMode"
+   },
+   {
+    "binding": "sa",
+    "name": "RankType"
+   },
+   {
+    "binding": "qc",
+    "name": "LevelCategory"
+   }
+  ],
+  "basic": [
+   {
+    "binding": "Pn",
+    "name": "GameMode"
+   }
+  ],
+  "gamelive": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "pvpKing": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "marathon": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "joinDays": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "anchor": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "adMadman": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "ugcLevelPassed": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "ugcLikes": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "dailyChallengePassed": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "ugcLevelFeatured": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "spendCoins": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "pvpTop1": [
+   {
+    "binding": "En",
+    "name": "MissionType"
+   }
+  ],
+  "tmpl": [
+   {
+    "binding": "$n",
+    "name": "Enum_$n"
+   }
+  ],
+  "text": [
+   {
+    "binding": "$n",
+    "name": "Enum_$n"
+   },
+   {
+    "binding": "fs",
+    "name": "ChatType"
+   },
+   {
+    "binding": "Hr",
+    "name": "Enum_Hr"
+   }
+  ],
+  "newUGCLevel": [
+   {
+    "binding": "to",
+    "name": "Enum_to"
+   }
+  ],
+  "global": [
+   {
+    "binding": "eo",
+    "name": "Enum_eo"
+   }
+  ],
+  "levelText": [
+   {
+    "binding": "no",
+    "name": "Enum_no"
+   }
+  ],
+  "ugcTextComment": [
+   {
+    "binding": "oo",
+    "name": "RestrictScope"
+   }
+  ],
+  "ugcUpload": [
+   {
+    "binding": "oo",
+    "name": "RestrictScope"
+   }
+  ],
+  "friendlyPvp": [
+   {
+    "binding": "oo",
+    "name": "RestrictScope"
+   }
+  ],
+  "ugcComment": [
+   {
+    "binding": "oo",
+    "name": "RestrictScope"
+   }
+  ],
+  "ban": [
+   {
+    "binding": "ao",
+    "name": "Enum_ao"
+   },
+   {
+    "binding": "Rr",
+    "name": "CommentAdminOp"
+   },
+   {
+    "binding": "nC",
+    "name": "LevelBlockReason"
+   }
+  ],
+  "createdDay": [
+   {
+    "binding": "ao",
+    "name": "Enum_ao"
+   }
+  ],
+  "level": [
+   {
+    "binding": "ao",
+    "name": "Enum_ao"
+   },
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   },
+   {
+    "binding": "db",
+    "name": "ProfileInfoTab"
+   }
+  ],
+  "others": [
+   {
+    "binding": "so",
+    "name": "ReportReason"
+   }
+  ],
+  "conflict": [
+   {
+    "binding": "so",
+    "name": "ReportReason"
+   }
+  ],
+  "abuse": [
+   {
+    "binding": "so",
+    "name": "ReportReason"
+   }
+  ],
+  "vulgar": [
+   {
+    "binding": "so",
+    "name": "ReportReason"
+   }
+  ],
+  "violation": [
+   {
+    "binding": "so",
+    "name": "ReportReason"
+   }
+  ],
+  "friendlyFire": [
+   {
+    "binding": "ro",
+    "name": "ReportBehavior"
+   }
+  ],
+  "hang": [
+   {
+    "binding": "ro",
+    "name": "ReportBehavior"
+   }
+  ],
+  "unfriendly": [
+   {
+    "binding": "ro",
+    "name": "ReportBehavior"
+   }
+  ],
+  "negative": [
+   {
+    "binding": "ro",
+    "name": "ReportBehavior"
+   }
+  ],
+  "badplay": [
+   {
+    "binding": "lo",
+    "name": "ReportScene"
+   }
+  ],
+  "goodplay": [
+   {
+    "binding": "lo",
+    "name": "ReportScene"
+   }
+  ],
+  "pvp_report": [
+   {
+    "binding": "lo",
+    "name": "ReportScene"
+   }
+  ],
+  "comment_report": [
+   {
+    "binding": "lo",
+    "name": "ReportScene"
+   }
+  ],
+  "pvp_disconnect": [
+   {
+    "binding": "lo",
+    "name": "ReportScene"
+   }
+  ],
+  "history": [
+   {
+    "binding": "bo",
+    "name": "LevelDetailTab"
+   },
+   {
+    "binding": "qr",
+    "name": "LevelTab"
+   }
+  ],
+  "intro": [
+   {
+    "binding": "bo",
+    "name": "LevelDetailTab"
+   },
+   {
+    "binding": "Ha",
+    "name": "ClanEditField"
+   },
+   {
+    "binding": "Bs",
+    "name": "Enum_Bs"
+   },
+   {
+    "binding": "Zs",
+    "name": "Enum_Zs"
+   }
+  ],
+  "count": [
+   {
+    "binding": "To",
+    "name": "Enum_To"
+   },
+   {
+    "binding": "Fc",
+    "name": "Enum_Fc"
+   },
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   },
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "ty",
+    "name": "BalloonShape"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   },
+   {
+    "binding": "ig",
+    "name": "TutorialHud"
+   },
+   {
+    "binding": "og",
+    "name": "HalloweenHudMini"
+   },
+   {
+    "binding": "lg",
+    "name": "HalloweenHud"
+   },
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   },
+   {
+    "binding": "Cm",
+    "name": "TextDirection"
+   },
+   {
+    "binding": "wm",
+    "name": "SpeedLevel"
+   }
+  ],
+  "specialSkinTrial": [
+   {
+    "binding": "Mo",
+    "name": "CardType"
+   }
+  ],
+  "danDefendCard": [
+   {
+    "binding": "Mo",
+    "name": "CardType"
+   }
+  ],
+  "pvpScoreCard": [
+   {
+    "binding": "Mo",
+    "name": "CardType"
+   }
+  ],
+  "coinCard": [
+   {
+    "binding": "Mo",
+    "name": "CardType"
+   }
+  ],
+  "skinTrialCard": [
+   {
+    "binding": "Mo",
+    "name": "CardType"
+   }
+  ],
+  "clanRoleChanged": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "clanKicked": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "clanRejected": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "clanApplied": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "clanInvite": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   },
+   {
+    "binding": "Hh",
+    "name": "InviteType"
+   }
+  ],
+  "relationDel": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "relationAdd": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "relationInvite": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "giftReceived": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "badgeUnlocked": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "ugcpvpNewRecord": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "mail": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   },
+   {
+    "binding": "Na",
+    "name": "ClanPage"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "rpChanged": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "levelUp": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "ugcNewRecord": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "friendAdded": [
+   {
+    "binding": "Oo",
+    "name": "PushNoticeType"
+   }
+  ],
+  "vip": [
+   {
+    "binding": "sa",
+    "name": "RankType"
+   },
+   {
+    "binding": "fc",
+    "name": "GemProductType"
+   },
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "creative": [
+   {
+    "binding": "sa",
+    "name": "RankType"
+   },
+   {
+    "binding": "qc",
+    "name": "LevelCategory"
+   },
+   {
+    "binding": "gw",
+    "name": "RoomGameMode"
+   }
+  ],
+  "active": [
+   {
+    "binding": "sa",
+    "name": "RankType"
+   },
+   {
+    "binding": "ks",
+    "name": "ActivityState"
+   }
+  ],
+  "maxQuota": [
+   {
+    "binding": "va",
+    "name": "AdFailReason"
+   }
+  ],
+  "noSuitableAd": [
+   {
+    "binding": "va",
+    "name": "AdFailReason"
+   }
+  ],
+  "chat": [
+   {
+    "binding": "La",
+    "name": "Enum_La"
+   },
+   {
+    "binding": "Ha",
+    "name": "ClanEditField"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "home": [
+   {
+    "binding": "La",
+    "name": "Enum_La"
+   },
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   },
+   {
+    "binding": "Nb",
+    "name": "TutorialStage"
+   },
+   {
+    "binding": "hS",
+    "name": "Enum_hS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   },
+   {
+    "binding": "DS",
+    "name": "AppState"
+   }
+  ],
+  "getClans": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "blockUser": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "setViceCaptain": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "kickMember": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "updateNotice": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "transferRole": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "handleApplication": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "leave": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "update": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   },
+   {
+    "binding": "pr",
+    "name": "AlbumOp"
+   },
+   {
+    "binding": "iS",
+    "name": "NoticeType"
+   }
+  ],
+  "join": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "invite": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   },
+   {
+    "binding": "Na",
+    "name": "ClanPage"
+   },
+   {
+    "binding": "Ih",
+    "name": "FriendAction"
+   }
+  ],
+  "getMembers": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "getClan": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "create": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   },
+   {
+    "binding": "pr",
+    "name": "AlbumOp"
+   },
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "checkName": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "updateShortID": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "updateName": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "clanSearch": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "clanList": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "getClanID": [
+   {
+    "binding": "Va",
+    "name": "ClanOp"
+   }
+  ],
+  "broadcast": [
+   {
+    "binding": "Na",
+    "name": "ClanPage"
+   }
+  ],
+  "random": [
+   {
+    "binding": "Na",
+    "name": "ClanPage"
+   },
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "search": [
+   {
+    "binding": "Na",
+    "name": "ClanPage"
+   },
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "clandetail": [
+   {
+    "binding": "Na",
+    "name": "ClanPage"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "list": [
+   {
+    "binding": "Na",
+    "name": "ClanPage"
+   },
+   {
+    "binding": "Ig",
+    "name": "WidgetType"
+   },
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "locked": [
+   {
+    "binding": "Ga",
+    "name": "ClanStatus"
+   },
+   {
+    "binding": "ug",
+    "name": "LockReason"
+   }
+  ],
+  "review": [
+   {
+    "binding": "Ga",
+    "name": "ClanStatus"
+   }
+  ],
+  "shortID": [
+   {
+    "binding": "Ha",
+    "name": "ClanEditField"
+   }
+  ],
+  "notice": [
+   {
+    "binding": "Ha",
+    "name": "ClanEditField"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "name": [
+   {
+    "binding": "Ha",
+    "name": "ClanEditField"
+   },
+   {
+    "binding": "Zs",
+    "name": "Enum_Zs"
+   },
+   {
+    "binding": "Kr",
+    "name": "Enum_Kr"
+   }
+  ],
+  "viceCaptain": [
+   {
+    "binding": "ps",
+    "name": "ClanRole"
+   }
+  ],
+  "captain": [
+   {
+    "binding": "ps",
+    "name": "ClanRole"
+   }
+  ],
+  "friendPvp": [
+   {
+    "binding": "fs",
+    "name": "ChatType"
+   },
+   {
+    "binding": "Hh",
+    "name": "InviteType"
+   }
+  ],
+  "teamPvp": [
+   {
+    "binding": "fs",
+    "name": "ChatType"
+   },
+   {
+    "binding": "Hh",
+    "name": "InviteType"
+   }
+  ],
+  "ugc": [
+   {
+    "binding": "fs",
+    "name": "ChatType"
+   },
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "length": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   },
+   {
+    "binding": "Ww",
+    "name": "Enum_Ww"
+   }
+  ],
+  "recharge": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "battlePass": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   }
+  ],
+  "checkin": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   },
+   {
+    "binding": "Os",
+    "name": "CheckinOp"
+   },
+   {
+    "binding": "Us",
+    "name": "RewardCenterTab"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "football": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   },
+   {
+    "binding": "c_",
+    "name": "TutorialStep"
+   },
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   },
+   {
+    "binding": "fC",
+    "name": "Enum_fC"
+   },
+   {
+    "binding": "gw",
+    "name": "RoomGameMode"
+   }
+  ],
+  "douyinVideo": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   }
+  ],
+  "skinFree": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   }
+  ],
+  "newyear2022": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   }
+  ],
+  "rankRushv2": [
+   {
+    "binding": "gs",
+    "name": "ActivityType"
+   }
+  ],
+  "notOpen": [
+   {
+    "binding": "ks",
+    "name": "ActivityState"
+   }
+  ],
+  "claimMax": [
+   {
+    "binding": "bs",
+    "name": "LotteryOp"
+   },
+   {
+    "binding": "Os",
+    "name": "CheckinOp"
+   },
+   {
+    "binding": "Ws",
+    "name": "BattlePassOp"
+   }
+  ],
+  "draw": [
+   {
+    "binding": "bs",
+    "name": "LotteryOp"
+   }
+  ],
+  "sync": [
+   {
+    "binding": "bs",
+    "name": "LotteryOp"
+   }
+  ],
+  "buyPass": [
+   {
+    "binding": "xs",
+    "name": "Enum_xs"
+   }
+  ],
+  "fetch": [
+   {
+    "binding": "xs",
+    "name": "Enum_xs"
+   },
+   {
+    "binding": "Ws",
+    "name": "BattlePassOp"
+   }
+  ],
+  "rare": [
+   {
+    "binding": "Bs",
+    "name": "Enum_Bs"
+   },
+   {
+    "binding": "vd",
+    "name": "Rarity"
+   },
+   {
+    "binding": "gp",
+    "name": "Quality"
+   }
+  ],
+  "free": [
+   {
+    "binding": "Bs",
+    "name": "Enum_Bs"
+   },
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   }
+  ],
+  "fill": [
+   {
+    "binding": "Os",
+    "name": "CheckinOp"
+   }
+  ],
+  "bank": [
+   {
+    "binding": "Us",
+    "name": "RewardCenterTab"
+   },
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "buyLevel": [
+   {
+    "binding": "Ws",
+    "name": "BattlePassOp"
+   }
+  ],
+  "claimReward": [
+   {
+    "binding": "Ws",
+    "name": "BattlePassOp"
+   }
+  ],
+  "buyBattlePass": [
+   {
+    "binding": "Ws",
+    "name": "BattlePassOp"
+   }
+  ],
+  "sortAlbum": [
+   {
+    "binding": "pr",
+    "name": "AlbumOp"
+   }
+  ],
+  "getAlbum": [
+   {
+    "binding": "pr",
+    "name": "AlbumOp"
+   }
+  ],
+  "delete": [
+   {
+    "binding": "pr",
+    "name": "AlbumOp"
+   },
+   {
+    "binding": "Rr",
+    "name": "CommentAdminOp"
+   },
+   {
+    "binding": "Ar",
+    "name": "LevelAdminOp"
+   },
+   {
+    "binding": "Ih",
+    "name": "FriendAction"
+   },
+   {
+    "binding": "uk",
+    "name": "EditAddOp"
+   }
+  ],
+  "getLocals": [
+   {
+    "binding": "pr",
+    "name": "AlbumOp"
+   }
+  ],
+  "dead": [
+   {
+    "binding": "vr",
+    "name": "EndReason"
+   },
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   },
+   {
+    "binding": "Ip",
+    "name": "PlayerState"
+   },
+   {
+    "binding": "Tp",
+    "name": "Enum_Tp"
+   }
+  ],
+  "restart": [
+   {
+    "binding": "vr",
+    "name": "EndReason"
+   }
+  ],
+  "win": [
+   {
+    "binding": "vr",
+    "name": "EndReason"
+   },
+   {
+    "binding": "kC",
+    "name": "GamePhase"
+   },
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "tutorial": [
+   {
+    "binding": "Tr",
+    "name": "PlayMode"
+   },
+   {
+    "binding": "kw",
+    "name": "MatchKind"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   },
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "record": [
+   {
+    "binding": "Tr",
+    "name": "PlayMode"
+   },
+   {
+    "binding": "pS",
+    "name": "SettingsEntry"
+   }
+  ],
+  "replay": [
+   {
+    "binding": "Tr",
+    "name": "PlayMode"
+   },
+   {
+    "binding": "qr",
+    "name": "LevelTab"
+   },
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   },
+   {
+    "binding": "AC",
+    "name": "RecordMode"
+   },
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "challengeWithGhost": [
+   {
+    "binding": "Tr",
+    "name": "PlayMode"
+   }
+  ],
+  "reported": [
+   {
+    "binding": "Dr",
+    "name": "UserBlockState"
+   }
+  ],
+  "blocked": [
+   {
+    "binding": "Dr",
+    "name": "UserBlockState"
+   },
+   {
+    "binding": "Ef",
+    "name": "EnvType"
+   },
+   {
+    "binding": "nC",
+    "name": "LevelBlockReason"
+   }
+  ],
+  "sticky": [
+   {
+    "binding": "Rr",
+    "name": "CommentAdminOp"
+   }
+  ],
+  "deleteandreport": [
+   {
+    "binding": "Ar",
+    "name": "LevelAdminOp"
+   }
+  ],
+  "deleteRecord": [
+   {
+    "binding": "Or",
+    "name": "AdminOp"
+   }
+  ],
+  "star": [
+   {
+    "binding": "Or",
+    "name": "AdminOp"
+   },
+   {
+    "binding": "qr",
+    "name": "LevelTab"
+   }
+  ],
+  "downWeight": [
+   {
+    "binding": "Or",
+    "name": "AdminOp"
+   }
+  ],
+  "banText": [
+   {
+    "binding": "Or",
+    "name": "AdminOp"
+   }
+  ],
+  "insane": [
+   {
+    "binding": "Fr",
+    "name": "DifficultyFilter"
+   },
+   {
+    "binding": "Gr",
+    "name": "DifficultyEx"
+   }
+  ],
+  "pvponly": [
+   {
+    "binding": "Ur",
+    "name": "Enum_Ur"
+   }
+  ],
+  "latest": [
+   {
+    "binding": "Ur",
+    "name": "Enum_Ur"
+   },
+   {
+    "binding": "qr",
+    "name": "LevelTab"
+   }
+  ],
+  "coop": [
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   },
+   {
+    "binding": "Sh",
+    "name": "TeamMode"
+   },
+   {
+    "binding": "gw",
+    "name": "RoomGameMode"
+   }
+  ],
+  "visual": [
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   }
+  ],
+  "newbie": [
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   },
+   {
+    "binding": "fc",
+    "name": "GemProductType"
+   },
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   },
+   {
+    "binding": "gb",
+    "name": "EntryMode"
+   },
+   {
+    "binding": "mb",
+    "name": "Enum_mb"
+   }
+  ],
+  "run": [
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   },
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   },
+   {
+    "binding": "z_",
+    "name": "PlayState"
+   }
+  ],
+  "auto": [
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   }
+  ],
+  "micro": [
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   }
+  ],
+  "puzzle": [
+   {
+    "binding": "Nr",
+    "name": "LevelTag"
+   }
+  ],
+  "stamp": [
+   {
+    "binding": "Hr",
+    "name": "Enum_Hr"
+   },
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   }
+  ],
+  "RespawnPoint": [
+   {
+    "binding": "Wr",
+    "name": "BubbleType"
+   }
+  ],
+  "Bubble": [
+   {
+    "binding": "Wr",
+    "name": "BubbleType"
+   }
+  ],
+  "local": [
+   {
+    "binding": "qr",
+    "name": "LevelTab"
+   }
+  ],
+  "tags": [
+   {
+    "binding": "Kr",
+    "name": "Enum_Kr"
+   }
+  ],
+  "empty": [
+   {
+    "binding": "rl",
+    "name": "RoomLoadState"
+   }
+  ],
+  "full": [
+   {
+    "binding": "rl",
+    "name": "RoomLoadState"
+   },
+   {
+    "binding": "yc",
+    "name": "RoomState"
+   },
+   {
+    "binding": "my",
+    "name": "Enum_my"
+   }
+  ],
+  "comment": [
+   {
+    "binding": "pl",
+    "name": "Enum_pl"
+   }
+  ],
+  "total": [
+   {
+    "binding": "pl",
+    "name": "Enum_pl"
+   },
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   }
+  ],
+  "select": [
+   {
+    "binding": "Ml",
+    "name": "ChallengeEntry"
+   },
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "difficultySelect": [
+   {
+    "binding": "Rl",
+    "name": "ChallengeStep"
+   }
+  ],
+  "rewardClaim": [
+   {
+    "binding": "Rl",
+    "name": "ChallengeStep"
+   }
+  ],
+  "friend": [
+   {
+    "binding": "Gl",
+    "name": "RankListType"
+   },
+   {
+    "binding": "Ah",
+    "name": "FriendTab"
+   },
+   {
+    "binding": "zh",
+    "name": "Enum_zh"
+   },
+   {
+    "binding": "qc",
+    "name": "LevelCategory"
+   },
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   },
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "image": [
+   {
+    "binding": "nh",
+    "name": "Enum_nh"
+   }
+  ],
+  "word": [
+   {
+    "binding": "nh",
+    "name": "Enum_nh"
+   }
+  ],
+  "team": [
+   {
+    "binding": "Sh",
+    "name": "TeamMode"
+   },
+   {
+    "binding": "yw",
+    "name": "Enum_yw"
+   }
+  ],
+  "reject": [
+   {
+    "binding": "Ih",
+    "name": "FriendAction"
+   }
+  ],
+  "add": [
+   {
+    "binding": "Ih",
+    "name": "FriendAction"
+   }
+  ],
+  "setting": [
+   {
+    "binding": "Ih",
+    "name": "FriendAction"
+   }
+  ],
+  "info": [
+   {
+    "binding": "Ih",
+    "name": "FriendAction"
+   }
+  ],
+  "application": [
+   {
+    "binding": "Ah",
+    "name": "FriendTab"
+   }
+  ],
+  "clanCaptainInvite": [
+   {
+    "binding": "Hh",
+    "name": "InviteType"
+   }
+  ],
+  "online": [
+   {
+    "binding": "Zh",
+    "name": "Presence"
+   }
+  ],
+  "ingame": [
+   {
+    "binding": "Zh",
+    "name": "Presence"
+   }
+  ],
+  "offline": [
+   {
+    "binding": "Zh",
+    "name": "Presence"
+   }
+  ],
+  "alipay": [
+   {
+    "binding": "ic",
+    "name": "PayChannel"
+   }
+  ],
+  "wechatpay": [
+   {
+    "binding": "ic",
+    "name": "PayChannel"
+   }
+  ],
+  "IsProcessing": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "NoUncompletedOrder": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "VerifyFailed": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "VerifyRequestFailed": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "InvalidProduct": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "NoPermission": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "ParamInvalid": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "PayFailed": [
+   {
+    "binding": "cc",
+    "name": "PayError"
+   }
+  ],
+  "skinpack": [
+   {
+    "binding": "fc",
+    "name": "GemProductType"
+   }
+  ],
+  "clangem": [
+   {
+    "binding": "fc",
+    "name": "GemProductType"
+   }
+  ],
+  "gem_event": [
+   {
+    "binding": "fc",
+    "name": "GemProductType"
+   }
+  ],
+  "gem": [
+   {
+    "binding": "fc",
+    "name": "GemProductType"
+   },
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "lg",
+    "name": "HalloweenHud"
+   }
+  ],
+  "playing": [
+   {
+    "binding": "yc",
+    "name": "RoomState"
+   }
+  ],
+  "waiting": [
+   {
+    "binding": "yc",
+    "name": "RoomState"
+   }
+  ],
+  "training_control": [
+   {
+    "binding": "Fc",
+    "name": "Enum_Fc"
+   }
+  ],
+  "control": [
+   {
+    "binding": "Vc",
+    "name": "HudLayer"
+   }
+  ],
+  "ui": [
+   {
+    "binding": "Vc",
+    "name": "HudLayer"
+   },
+   {
+    "binding": "J_",
+    "name": "ControlSource"
+   },
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "printing": [
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   }
+  ],
+  "title": [
+   {
+    "binding": "Gc",
+    "name": "ProfileSection"
+   },
+   {
+    "binding": "hS",
+    "name": "Enum_hS"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "event": [
+   {
+    "binding": "qc",
+    "name": "LevelCategory"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "world": [
+   {
+    "binding": "qc",
+    "name": "LevelCategory"
+   }
+  ],
+  "week": [
+   {
+    "binding": "Yc",
+    "name": "Enum_Yc"
+   }
+  ],
+  "ugc_delRecord": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_album": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_moreReport": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_banLevel": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_downWeight": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_banComment": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_delComment": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_starLevel": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_viewCode": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_viewPanarama": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_viewReplay": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "room_allMap": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "room_free": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "noAntiAddiction": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "dailyChallenge_freeReward": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "dailyChallenge_freeSkip": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "dailyChallenge_noCD": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_freePanorama": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_noInterstitialAd": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_freeReplay": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_longHP": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_freeComponent": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "ugc_unlimitedHP": [
+   {
+    "binding": "ju",
+    "name": "FeatureFlag"
+   }
+  ],
+  "Full": [
+   {
+    "binding": "Wu",
+    "name": "Enum_Wu"
+   }
+  ],
+  "Limited": [
+   {
+    "binding": "Wu",
+    "name": "Enum_Wu"
+   }
+  ],
+  "leagueQuick": [
+   {
+    "binding": "td",
+    "name": "LeagueMode"
+   }
+  ],
+  "weekend": [
+   {
+    "binding": "ed",
+    "name": "LeagueSchedule"
+   }
+  ],
+  "workday": [
+   {
+    "binding": "ed",
+    "name": "LeagueSchedule"
+   }
+  ],
+  "stop": [
+   {
+    "binding": "ed",
+    "name": "LeagueSchedule"
+   }
+  ],
+  "epic": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   },
+   {
+    "binding": "gp",
+    "name": "Quality"
+   }
+  ],
+  "master": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   }
+  ],
+  "diamond": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   }
+  ],
+  "platinum": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   }
+  ],
+  "gold": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   }
+  ],
+  "silver": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   }
+  ],
+  "iron": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   }
+  ],
+  "bronze": [
+   {
+    "binding": "ud",
+    "name": "RankTier"
+   }
+  ],
+  "moreRounds": [
+   {
+    "binding": "dd",
+    "name": "Enum_dd"
+   }
+  ],
+  "rotate": [
+   {
+    "binding": "dd",
+    "name": "Enum_dd"
+   },
+   {
+    "binding": "Pf",
+    "name": "RotateMode"
+   }
+  ],
+  "ShareVideoCount": [
+   {
+    "binding": "sp",
+    "name": "Enum_sp"
+   }
+  ],
+  "ErrChatRoomChannelRateLimited": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrChatSendRateLimited": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrChatBlocked": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNickNameTooShort": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanRandJoinFailed": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanJoinCD": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanNoPermission": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanUnexistApplicant": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanNotCaptain": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanJoinApprovel": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanJoinLevelNeed": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanJoinNotAllow": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanFull": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanAlreadyIsMember": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotEnoughClanGem": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanDuplicatedShortID": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanDuplicatedName": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanInvalidShortID": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanInvalidName": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrClanInvalidID": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNoMatchRooms": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidMatchRooms": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRechargeGuest": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRechargeMonthQuota": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRechargeSingleQuota": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRechargeUnder8": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidVersion": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrUGCLevelUploadDailyLimit": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidTextElem": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidToken": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrWaitingAuthRealName": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrDuplicateIDNumbers": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrDuplicateNickName": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRequestIsFrequent": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrPhoneNumberAlreadyBinded": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidSMSVerifyCode": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrAlreadyBinded": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidAuthCode": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrGenerateFailed": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidIdNumbers": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNickNameTooLong": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidLogin": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidAccount": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrAlbumNoPermission": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRelationDelCD": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRelationInvited": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotEnoughIntimacy": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrFriendRelationFull": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRelationExist": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRelationFull": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotFriend": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrCDKeyExpired": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrCDKeyAlreadyUsedByOtherOne": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrCDKeyAlreadyUsed": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrCDKeyChannelLimited": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrCDKeyNotExist": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrUGCChallengeSkipLimited": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrReportMax": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrCommentMax": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrIllegalWords": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotHaveUGCEditSlot": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotHaveUGCUploadSlot": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrUGCUploaded": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrCannotHelp": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRewardClaimeFailed": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrRewardClaimed": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotHaveDanDefendQuato": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotEnoughLevel": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotEnoughGems": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotEnoughItem": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrNotEnoughCoin": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrUnexistAccount": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrPanic": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrInvalidClientVersion": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrSessionExpired": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "ErrServerStopped": [
+   {
+    "binding": "hp",
+    "name": "ServerError"
+   }
+  ],
+  "douyingrouproom": [
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   }
+  ],
+  "ugcalbum": [
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "claninvite": [
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "douyinmatch": [
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   }
+  ],
+  "qqmatchmaking": [
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   }
+  ],
+  "teammatch": [
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   }
+  ],
+  "match": [
+   {
+    "binding": "cp",
+    "name": "RedDotType"
+   },
+   {
+    "binding": "Z_",
+    "name": "Enum_Z_"
+   },
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   },
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   }
+  ],
+  "legendary": [
+   {
+    "binding": "gp",
+    "name": "Quality"
+   }
+  ],
+  "excellent": [
+   {
+    "binding": "gp",
+    "name": "Quality"
+   }
+  ],
+  "common": [
+   {
+    "binding": "gp",
+    "name": "Quality"
+   },
+   {
+    "binding": "oC",
+    "name": "PaletteFilter"
+   }
+  ],
+  "stopped": [
+   {
+    "binding": "bp",
+    "name": "RecordState"
+   }
+  ],
+  "stopping": [
+   {
+    "binding": "bp",
+    "name": "RecordState"
+   }
+  ],
+  "paused": [
+   {
+    "binding": "bp",
+    "name": "RecordState"
+   }
+  ],
+  "recording": [
+   {
+    "binding": "bp",
+    "name": "RecordState"
+   }
+  ],
+  "starting": [
+   {
+    "binding": "bp",
+    "name": "RecordState"
+   }
+  ],
+  "shootbarrel": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   },
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   },
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "bubble": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   }
+  ],
+  "electrified": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   }
+  ],
+  "teleport": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   },
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "personality": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   }
+  ],
+  "celebrate": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   },
+   {
+    "binding": "Ip",
+    "name": "PlayerState"
+   }
+  ],
+  "wallcling": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   }
+  ],
+  "falldown": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   }
+  ],
+  "jump": [
+   {
+    "binding": "Sp",
+    "name": "PlayerAnim"
+   },
+   {
+    "binding": "w_",
+    "name": "MoveState"
+   }
+  ],
+  "springjump": [
+   {
+    "binding": "Ip",
+    "name": "PlayerState"
+   }
+  ],
+  "walljump": [
+   {
+    "binding": "Ip",
+    "name": "PlayerState"
+   },
+   {
+    "binding": "w_",
+    "name": "MoveState"
+   }
+  ],
+  "celebrating": [
+   {
+    "binding": "Tp",
+    "name": "Enum_Tp"
+   }
+  ],
+  "mud": [
+   {
+    "binding": "Mp",
+    "name": "SurfaceType"
+   }
+  ],
+  "ice": [
+   {
+    "binding": "Mp",
+    "name": "SurfaceType"
+   },
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "coin": [
+   {
+    "binding": "c_",
+    "name": "TutorialStep"
+   }
+  ],
+  "setup": [
+   {
+    "binding": "c_",
+    "name": "TutorialStep"
+   }
+  ],
+  "reachToFlag": [
+   {
+    "binding": "c_",
+    "name": "TutorialStep"
+   }
+  ],
+  "giveup": [
+   {
+    "binding": "u_",
+    "name": "DeathReason"
+   }
+  ],
+  "squash": [
+   {
+    "binding": "u_",
+    "name": "DeathReason"
+   }
+  ],
+  "electricity": [
+   {
+    "binding": "u_",
+    "name": "DeathReason"
+   }
+  ],
+  "hazard": [
+   {
+    "binding": "u_",
+    "name": "DeathReason"
+   },
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   },
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "fb",
+    "name": "Enum_fb"
+   }
+  ],
+  "outOfScope": [
+   {
+    "binding": "u_",
+    "name": "DeathReason"
+   }
+  ],
+  "touch": [
+   {
+    "binding": "k_",
+    "name": "InputSource"
+   }
+  ],
+  "button": [
+   {
+    "binding": "k_",
+    "name": "InputSource"
+   }
+  ],
+  "unknown": [
+   {
+    "binding": "w_",
+    "name": "MoveState"
+   }
+  ],
+  "halt": [
+   {
+    "binding": "w_",
+    "name": "MoveState"
+   }
+  ],
+  "waitForJump": [
+   {
+    "binding": "w_",
+    "name": "MoveState"
+   }
+  ],
+  "walk": [
+   {
+    "binding": "w_",
+    "name": "MoveState"
+   }
+  ],
+  "deadghost": [
+   {
+    "binding": "z_",
+    "name": "PlayState"
+   },
+   {
+    "binding": "J_",
+    "name": "ControlSource"
+   }
+  ],
+  "edit": [
+   {
+    "binding": "z_",
+    "name": "PlayState"
+   },
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   },
+   {
+    "binding": "kC",
+    "name": "GamePhase"
+   },
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   }
+  ],
+  "hide": [
+   {
+    "binding": "z_",
+    "name": "PlayState"
+   }
+  ],
+  "disabled": [
+   {
+    "binding": "z_",
+    "name": "PlayState"
+   },
+   {
+    "binding": "Cv",
+    "name": "LaserState"
+   }
+  ],
+  "network": [
+   {
+    "binding": "J_",
+    "name": "ControlSource"
+   },
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "ghost": [
+   {
+    "binding": "J_",
+    "name": "ControlSource"
+   },
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "ai": [
+   {
+    "binding": "J_",
+    "name": "ControlSource"
+   },
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "input": [
+   {
+    "binding": "J_",
+    "name": "ControlSource"
+   },
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "default": [
+   {
+    "binding": "Z_",
+    "name": "Enum_Z_"
+   },
+   {
+    "binding": "Zw",
+    "name": "Enum_Zw"
+   }
+  ],
+  "headicon": [
+   {
+    "binding": "$_",
+    "name": "SettingGroup"
+   }
+  ],
+  "effects": [
+   {
+    "binding": "$_",
+    "name": "SettingGroup"
+   },
+   {
+    "binding": "Wm",
+    "name": "Enum_Wm"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "avatar": [
+   {
+    "binding": "$_",
+    "name": "SettingGroup"
+   }
+  ],
+  "componentevent": [
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "trigger": [
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   },
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "collider": [
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "move": [
+   {
+    "binding": "tf",
+    "name": "GameEvent"
+   }
+  ],
+  "invinciblePlayerCollideWith": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "robotCollideWith": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "playerColldeWith": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "boxingglove": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "balloon": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   },
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   },
+   {
+    "binding": "ff",
+    "name": "ProjectileType"
+   }
+  ],
+  "pvpNetworkPlayer": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "robot": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "footballGoal": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "concretePlayer": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "ghostPlayer": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "projectile": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "playerNotColldeWith": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "movableTriggerable": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "playerTriggerable": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "platform": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   },
+   {
+    "binding": "pf",
+    "name": "ComponentCategory"
+   },
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "Nf",
+    "name": "CollisionRole"
+   },
+   {
+    "binding": "oC",
+    "name": "PaletteFilter"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "oneWayPlatform": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   }
+  ],
+  "player": [
+   {
+    "binding": "hf",
+    "name": "PhysicsLayer"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "characterwander": [
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "charactermover": [
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "footballgoal": [
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "repeatmove": [
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "levelcomponentcontext": [
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "playercontext": [
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "collision": [
+   {
+    "binding": "cf",
+    "name": "SystemType"
+   }
+  ],
+  "decoration": [
+   {
+    "binding": "pf",
+    "name": "ComponentCategory"
+   },
+   {
+    "binding": "oC",
+    "name": "PaletteFilter"
+   }
+  ],
+  "special": [
+   {
+    "binding": "pf",
+    "name": "ComponentCategory"
+   },
+   {
+    "binding": "oC",
+    "name": "PaletteFilter"
+   }
+  ],
+  "hazards": [
+   {
+    "binding": "pf",
+    "name": "ComponentCategory"
+   },
+   {
+    "binding": "oC",
+    "name": "PaletteFilter"
+   }
+  ],
+  "levelskin": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "parallax": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "bgm": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "actiontrigger": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "theme": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "sky": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "otherPlayer": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "boss": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "goalArea": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "startArea": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "modifier": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "ferriswheel": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "path": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "pressureswitch": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "jellyfish": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "nowallblock": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "doublelift": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "respawnpoint": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "triggerinvisible": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "alt": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "superblock": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "onedirblock": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "stomper": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "door": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   },
+   {
+    "binding": "NC",
+    "name": "PlatformKind"
+   }
+  ],
+  "onoffswitch": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "onewayblock": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "airjump": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "portal": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "landmine": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "checkpoint": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "pushableplatform": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "treasurechest": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "fC",
+    "name": "Enum_fC"
+   }
+  ],
+  "squaredplatform": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "onewayplatform": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "circlecollider": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "scene": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "shooty": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "iceOrMud": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "crumbingblock": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "spring": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "deco": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "scoreItem": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "bomb": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "moveplatform": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   },
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "roundplatform": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "boxcollider": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "bundle": [
+   {
+    "binding": "_f",
+    "name": "ComponentType"
+   }
+  ],
+  "laserBullet": [
+   {
+    "binding": "ff",
+    "name": "ProjectileType"
+   }
+  ],
+  "cannonBullet": [
+   {
+    "binding": "ff",
+    "name": "ProjectileType"
+   }
+  ],
+  "arrow": [
+   {
+    "binding": "ff",
+    "name": "ProjectileType"
+   }
+  ],
+  "noDynamic": [
+   {
+    "binding": "Mf",
+    "name": "DynamicCategory"
+   }
+  ],
+  "noKillable": [
+   {
+    "binding": "Mf",
+    "name": "DynamicCategory"
+   }
+  ],
+  "flip": [
+   {
+    "binding": "Pf",
+    "name": "RotateMode"
+   },
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "both": [
+   {
+    "binding": "Bf",
+    "name": "EditableScope"
+   }
+  ],
+  "challengeOnly": [
+   {
+    "binding": "Bf",
+    "name": "EditableScope"
+   }
+  ],
+  "pvpOnly": [
+   {
+    "binding": "Bf",
+    "name": "EditableScope"
+   }
+  ],
+  "prod": [
+   {
+    "binding": "Ef",
+    "name": "EnvType"
+   }
+  ],
+  "alpha": [
+   {
+    "binding": "Ef",
+    "name": "EnvType"
+   }
+  ],
+  "onlyTakeUpSpace": [
+   {
+    "binding": "Nf",
+    "name": "CollisionRole"
+   }
+  ],
+  "doNotTakeUpSpace": [
+   {
+    "binding": "Nf",
+    "name": "CollisionRole"
+   }
+  ],
+  "onewayPlatform": [
+   {
+    "binding": "Nf",
+    "name": "CollisionRole"
+   }
+  ],
+  "purple": [
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   }
+  ],
+  "yellow": [
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   },
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   },
+   {
+    "binding": "pm",
+    "name": "GemColor"
+   },
+   {
+    "binding": "$b",
+    "name": "Enum_$b"
+   }
+  ],
+  "coffee": [
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   },
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   }
+  ],
+  "orange": [
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   },
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   },
+   {
+    "binding": "pm",
+    "name": "GemColor"
+   }
+  ],
+  "blue": [
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   },
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   },
+   {
+    "binding": "pm",
+    "name": "GemColor"
+   },
+   {
+    "binding": "$b",
+    "name": "Enum_$b"
+   }
+  ],
+  "white": [
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   }
+  ],
+  "black": [
+   {
+    "binding": "sv",
+    "name": "ColorPalette"
+   },
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   }
+  ],
+  "revertback": [
+   {
+    "binding": "Cv",
+    "name": "LaserState"
+   }
+  ],
+  "shootstill": [
+   {
+    "binding": "Cv",
+    "name": "LaserState"
+   }
+  ],
+  "shooting": [
+   {
+    "binding": "Cv",
+    "name": "LaserState"
+   }
+  ],
+  "cyan": [
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   }
+  ],
+  "berry": [
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   }
+  ],
+  "green": [
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   }
+  ],
+  "lavender": [
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   }
+  ],
+  "red": [
+   {
+    "binding": "$v",
+    "name": "BalloonColor"
+   },
+   {
+    "binding": "gy",
+    "name": "Enum_gy"
+   },
+   {
+    "binding": "pm",
+    "name": "GemColor"
+   },
+   {
+    "binding": "$b",
+    "name": "Enum_$b"
+   }
+  ],
+  "rect": [
+   {
+    "binding": "ty",
+    "name": "BalloonShape"
+   }
+  ],
+  "circle": [
+   {
+    "binding": "ty",
+    "name": "BalloonShape"
+   }
+  ],
+  "triangle": [
+   {
+    "binding": "ty",
+    "name": "BalloonShape"
+   }
+  ],
+  "swing": [
+   {
+    "binding": "Qy",
+    "name": "Enum_Qy"
+   }
+  ],
+  "spin": [
+   {
+    "binding": "Qy",
+    "name": "Enum_Qy"
+   }
+  ],
+  "wall_jump": [
+   {
+    "binding": "ig",
+    "name": "TutorialHud"
+   }
+  ],
+  "jump_practice": [
+   {
+    "binding": "ig",
+    "name": "TutorialHud"
+   }
+  ],
+  "long_jump_hint": [
+   {
+    "binding": "ig",
+    "name": "TutorialHud"
+   }
+  ],
+  "jump_hint": [
+   {
+    "binding": "ig",
+    "name": "TutorialHud"
+   }
+  ],
+  "clear_hud": [
+   {
+    "binding": "ig",
+    "name": "TutorialHud"
+   }
+  ],
+  "input_tutorial": [
+   {
+    "binding": "ig",
+    "name": "TutorialHud"
+   }
+  ],
+  "lantern": [
+   {
+    "binding": "og",
+    "name": "HalloweenHudMini"
+   },
+   {
+    "binding": "lg",
+    "name": "HalloweenHud"
+   }
+  ],
+  "pumpkin": [
+   {
+    "binding": "og",
+    "name": "HalloweenHudMini"
+   },
+   {
+    "binding": "lg",
+    "name": "HalloweenHud"
+   }
+  ],
+  "system": [
+   {
+    "binding": "ug",
+    "name": "LockReason"
+   },
+   {
+    "binding": "iS",
+    "name": "NoticeType"
+   }
+  ],
+  "slider": [
+   {
+    "binding": "Ig",
+    "name": "WidgetType"
+   }
+  ],
+  "action": [
+   {
+    "binding": "Ig",
+    "name": "WidgetType"
+   },
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "toggle": [
+   {
+    "binding": "Ig",
+    "name": "WidgetType"
+   }
+  ],
+  "radio": [
+   {
+    "binding": "Ig",
+    "name": "WidgetType"
+   }
+  ],
+  "switches": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "color": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "robotSpeed": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "defaultState": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "spawn": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "move_dirY": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "move_dirX": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "moveTime": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "moveY": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "moveX": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "move_gridY": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "move_gridX": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "rotateDir": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "rotateType": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "swingAngle": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "spinMode": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "size": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "gap": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "height": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "connect": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   },
+   {
+    "binding": "iS",
+    "name": "NoticeType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ease": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "waitTime": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "spinSpeed": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "moveSpeed": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "swingSpeed": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "speed": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "pathClosed": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "startAngle": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "insertNode": [
+   {
+    "binding": "Tg",
+    "name": "EditPropKey"
+   }
+  ],
+  "large": [
+   {
+    "binding": "mm",
+    "name": "SizeLevel"
+   }
+  ],
+  "middle": [
+   {
+    "binding": "mm",
+    "name": "SizeLevel"
+   }
+  ],
+  "small": [
+   {
+    "binding": "mm",
+    "name": "SizeLevel"
+   }
+  ],
+  "rightToLeft": [
+   {
+    "binding": "Cm",
+    "name": "TextDirection"
+   }
+  ],
+  "leftToRight": [
+   {
+    "binding": "Cm",
+    "name": "TextDirection"
+   }
+  ],
+  "fast": [
+   {
+    "binding": "wm",
+    "name": "SpeedLevel"
+   }
+  ],
+  "slow": [
+   {
+    "binding": "wm",
+    "name": "SpeedLevel"
+   }
+  ],
+  "observeplayer": [
+   {
+    "binding": "Km",
+    "name": "SpectateMode"
+   },
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   }
+  ],
+  "observeposition": [
+   {
+    "binding": "Km",
+    "name": "SpectateMode"
+   }
+  ],
+  "play": [
+   {
+    "binding": "Km",
+    "name": "SpectateMode"
+   },
+   {
+    "binding": "kC",
+    "name": "GamePhase"
+   },
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   }
+  ],
+  "nonfollow": [
+   {
+    "binding": "Km",
+    "name": "SpectateMode"
+   }
+  ],
+  "region": [
+   {
+    "binding": "Qm",
+    "name": "Enum_Qm"
+   }
+  ],
+  "ugcmultiplayer": [
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   }
+  ],
+  "ugcchallenge": [
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   },
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "matchreplay": [
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   }
+  ],
+  "matchaibattle": [
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   }
+  ],
+  "tutorialmatch": [
+   {
+    "binding": "nk",
+    "name": "RoomMode"
+   }
+  ],
+  "fail": [
+   {
+    "binding": "rk",
+    "name": "TutorialRobotState"
+   },
+   {
+    "binding": "Yw",
+    "name": "PermResult"
+   }
+  ],
+  "jumping": [
+   {
+    "binding": "rk",
+    "name": "TutorialRobotState"
+   }
+  ],
+  "walkToJumpPoint": [
+   {
+    "binding": "rk",
+    "name": "TutorialRobotState"
+   }
+  ],
+  "undoDelete": [
+   {
+    "binding": "uk",
+    "name": "EditAddOp"
+   }
+  ],
+  "undoAdd": [
+   {
+    "binding": "uk",
+    "name": "EditAddOp"
+   }
+  ],
+  "addFromCache": [
+   {
+    "binding": "uk",
+    "name": "EditAddOp"
+   }
+  ],
+  "shared": [
+   {
+    "binding": "Uk",
+    "name": "ShareState"
+   }
+  ],
+  "sharing": [
+   {
+    "binding": "Uk",
+    "name": "ShareState"
+   }
+  ],
+  "notShared": [
+   {
+    "binding": "Uk",
+    "name": "ShareState"
+   }
+  ],
+  "notSupportRespawnPoint": [
+   {
+    "binding": "nC",
+    "name": "LevelBlockReason"
+   }
+  ],
+  "notForPvp": [
+   {
+    "binding": "nC",
+    "name": "LevelBlockReason"
+   }
+  ],
+  "cache": [
+   {
+    "binding": "oC",
+    "name": "PaletteFilter"
+   }
+  ],
+  "buy": [
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   }
+  ],
+  "encourage": [
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   }
+  ],
+  "share": [
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "videoShare": [
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   }
+  ],
+  "video": [
+   {
+    "binding": "dC",
+    "name": "RewardSource"
+   },
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "lose": [
+   {
+    "binding": "kC",
+    "name": "GamePhase"
+   },
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "ready": [
+   {
+    "binding": "kC",
+    "name": "GamePhase"
+   }
+  ],
+  "double": [
+   {
+    "binding": "bC",
+    "name": "GameBanner"
+   }
+  ],
+  "great": [
+   {
+    "binding": "bC",
+    "name": "GameBanner"
+   }
+  ],
+  "gameEnd": [
+   {
+    "binding": "bC",
+    "name": "GameBanner"
+   }
+  ],
+  "warning": [
+   {
+    "binding": "bC",
+    "name": "GameBanner"
+   }
+  ],
+  "battleStart": [
+   {
+    "binding": "bC",
+    "name": "GameBanner"
+   }
+  ],
+  "timeEnd": [
+   {
+    "binding": "bC",
+    "name": "GameBanner"
+   }
+  ],
+  "fadeIn": [
+   {
+    "binding": "SC",
+    "name": "PopupAnim"
+   }
+  ],
+  "scaleIn": [
+   {
+    "binding": "SC",
+    "name": "PopupAnim"
+   }
+  ],
+  "single": [
+   {
+    "binding": "TC",
+    "name": "MatchType"
+   }
+  ],
+  "recordNative": [
+   {
+    "binding": "AC",
+    "name": "RecordMode"
+   }
+  ],
+  "recordToutiao": [
+   {
+    "binding": "AC",
+    "name": "RecordMode"
+   }
+  ],
+  "recordWechat": [
+   {
+    "binding": "AC",
+    "name": "RecordMode"
+   }
+  ],
+  "gizmo": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "attachable": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "foreground": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "humanPlayer": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "movetrigger": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "canHide": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   },
+   {
+    "binding": "NC",
+    "name": "PlatformKind"
+   }
+  ],
+  "pushable": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   },
+   {
+    "binding": "NC",
+    "name": "PlatformKind"
+   }
+  ],
+  "grid": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   },
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "background": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "cloud": [
+   {
+    "binding": "VC",
+    "name": "ZOrder"
+   }
+  ],
+  "zplatform": [
+   {
+    "binding": "NC",
+    "name": "PlatformKind"
+   }
+  ],
+  "static": [
+   {
+    "binding": "NC",
+    "name": "PlatformKind"
+   }
+  ],
+  "topbar": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "hpcountdown": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "ugcpvpend": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "ugcpvp": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "ugclevelsetting": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "pause": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "ugcrecordend": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "dailychallengeend": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "tutorialend": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "ugcend": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "ugcedit": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "replayrank": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "danup": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "rank": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "componentslist": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   }
+  ],
+  "game": [
+   {
+    "binding": "GC",
+    "name": "GameViewId"
+   },
+   {
+    "binding": "HC",
+    "name": "Enum_HC"
+   },
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   },
+   {
+    "binding": "DS",
+    "name": "AppState"
+   },
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "audio": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "dynamicBounds": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "rpc": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "levelNetwork": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "playNetwork": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "matchplay": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "matchprep": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "ghostrecord": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "camera": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "drag": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "editNetwork": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "editAI": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "editTouch": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "players": [
+   {
+    "binding": "zC",
+    "name": "GameSystem"
+   }
+  ],
+  "standby": [
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   }
+  ],
+  "observelevel": [
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   }
+  ],
+  "init": [
+   {
+    "binding": "jC",
+    "name": "GameFlowState"
+   },
+   {
+    "binding": "DS",
+    "name": "AppState"
+   }
+  ],
+  "disconnect_inObserveLevel": [
+   {
+    "binding": "WC",
+    "name": "DisconnectReason"
+   }
+  ],
+  "disconnect_afterPlayOutTween": [
+   {
+    "binding": "WC",
+    "name": "DisconnectReason"
+   }
+  ],
+  "disconnect_afterEnterRoom": [
+   {
+    "binding": "WC",
+    "name": "DisconnectReason"
+   }
+  ],
+  "timeout_connectRoom": [
+   {
+    "binding": "WC",
+    "name": "DisconnectReason"
+   }
+  ],
+  "cheat": [
+   {
+    "binding": "pw",
+    "name": "JoinMatchError"
+   }
+  ],
+  "matchFull": [
+   {
+    "binding": "pw",
+    "name": "JoinMatchError"
+   }
+  ],
+  "matchNotExist": [
+   {
+    "binding": "pw",
+    "name": "JoinMatchError"
+   }
+  ],
+  "matchOverTime": [
+   {
+    "binding": "pw",
+    "name": "JoinMatchError"
+   }
+  ],
+  "private": [
+   {
+    "binding": "vw",
+    "name": "RoomVisibility"
+   }
+  ],
+  "public": [
+   {
+    "binding": "vw",
+    "name": "RoomVisibility"
+   }
+  ],
+  "card": [
+   {
+    "binding": "gw",
+    "name": "RoomGameMode"
+   }
+  ],
+  "party": [
+   {
+    "binding": "gw",
+    "name": "RoomGameMode"
+   }
+  ],
+  "targetScore": [
+   {
+    "binding": "mw",
+    "name": "WinCondition"
+   }
+  ],
+  "fixedRound": [
+   {
+    "binding": "mw",
+    "name": "WinCondition"
+   }
+  ],
+  "fakeRoom": [
+   {
+    "binding": "kw",
+    "name": "MatchKind"
+   }
+  ],
+  "battleAITraining": [
+   {
+    "binding": "kw",
+    "name": "MatchKind"
+   }
+  ],
+  "friendly": [
+   {
+    "binding": "kw",
+    "name": "MatchKind"
+   }
+  ],
+  "matchMode": [
+   {
+    "binding": "xw",
+    "name": "RoomConfigField"
+   }
+  ],
+  "teamMode": [
+   {
+    "binding": "xw",
+    "name": "RoomConfigField"
+   }
+  ],
+  "roomType": [
+   {
+    "binding": "xw",
+    "name": "RoomConfigField"
+   }
+  ],
+  "map": [
+   {
+    "binding": "xw",
+    "name": "RoomConfigField"
+   }
+  ],
+  "ugcChallenge": [
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   }
+  ],
+  "ugcCreate": [
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   }
+  ],
+  "intimacy": [
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   }
+  ],
+  "cover": [
+   {
+    "binding": "Tw",
+    "name": "Enum_Tw"
+   }
+  ],
+  "deny": [
+   {
+    "binding": "Yw",
+    "name": "PermResult"
+   }
+  ],
+  "ok": [
+   {
+    "binding": "Yw",
+    "name": "PermResult"
+   }
+  ],
+  "http": [
+   {
+    "binding": "Zw",
+    "name": "Enum_Zw"
+   }
+  ],
+  "relation": [
+   {
+    "binding": "db",
+    "name": "ProfileInfoTab"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "badge": [
+   {
+    "binding": "db",
+    "name": "ProfileInfoTab"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "zero": [
+   {
+    "binding": "fb",
+    "name": "Enum_fb"
+   }
+  ],
+  "first": [
+   {
+    "binding": "fb",
+    "name": "Enum_fb"
+   }
+  ],
+  "reachflag": [
+   {
+    "binding": "fb",
+    "name": "Enum_fb"
+   }
+  ],
+  "training": [
+   {
+    "binding": "gb",
+    "name": "EntryMode"
+   },
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "tutorialEnd": [
+   {
+    "binding": "Nb",
+    "name": "TutorialStage"
+   }
+  ],
+  "characterUnlock": [
+   {
+    "binding": "Nb",
+    "name": "TutorialStage"
+   }
+  ],
+  "matchmaking": [
+   {
+    "binding": "Nb",
+    "name": "TutorialStage"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   },
+   {
+    "binding": "DS",
+    "name": "AppState"
+   }
+  ],
+  "matchmakingStart": [
+   {
+    "binding": "Nb",
+    "name": "TutorialStage"
+   }
+  ],
+  "darkblue": [
+   {
+    "binding": "$b",
+    "name": "Enum_$b"
+   }
+  ],
+  "redeem": [
+   {
+    "binding": "iS",
+    "name": "NoticeType"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "currency": [
+   {
+    "binding": "hS",
+    "name": "Enum_hS"
+   },
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   }
+  ],
+  "back": [
+   {
+    "binding": "hS",
+    "name": "Enum_hS"
+   }
+  ],
+  "feedback": [
+   {
+    "binding": "pS",
+    "name": "SettingsEntry"
+   }
+  ],
+  "contact": [
+   {
+    "binding": "pS",
+    "name": "SettingsEntry"
+   }
+  ],
+  "gameclub": [
+   {
+    "binding": "pS",
+    "name": "SettingsEntry"
+   }
+  ],
+  "auth": [
+   {
+    "binding": "pS",
+    "name": "SettingsEntry"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "toppvp": [
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "tutorialLose": [
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   }
+  ],
+  "tutorialWin": [
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   }
+  ],
+  "friendlyMatch": [
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   }
+  ],
+  "clanChat": [
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   }
+  ],
+  "leagueHome": [
+   {
+    "binding": "kS",
+    "name": "GuidePage"
+   }
+  ],
+  "douyinGroupRoom": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "createOnChat": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "clanchatlist": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "createOnMatchFull": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "createOnMatchStart": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "createOnMatchEnd": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "rematch": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "outpush": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "push": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "invitation": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "im": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "shareCard": [
+   {
+    "binding": "MS",
+    "name": "ChatEntry"
+   }
+  ],
+  "gift": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "mission": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "douyinvideo": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "decal": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   }
+  ],
+  "honesty": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "characterskin": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "userlevel": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "userdaily": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "clan": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "border": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "matchhistory": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "lobby": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "social": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "matchroom": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   },
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "profile": [
+   {
+    "binding": "PS",
+    "name": "Enum_PS"
+   }
+  ],
+  "roomlist": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "volpchat": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "query": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "videorecord": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "userdetail": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "reddot": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "uistack": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "popup": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   },
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "lifecycle": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "usermsg": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "request": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "user": [
+   {
+    "binding": "BS",
+    "name": "Enum_BS"
+   }
+  ],
+  "skinpackbuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "douyinsidebarvisitpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "albumedit": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "albumlevellist": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "albumdetail": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "albumlist": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "albumcreate": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "hornbuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "accountdelete": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clantransferrole": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clanapplication": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clanbadges": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clanugcinvite": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "recharegeitembuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clanupdpateid": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clanupdatename": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clansearch": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clancreate": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "clanlist": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "packhistory": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "giftgive": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "pvpfriendadd": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "itemcommon": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "charactershare": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "newbiepack": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "paycode": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "pay": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "battlepassreward": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "textintro": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "gemuse": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "battlepassbuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "battlepass": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "currencyconfirm": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "levelbgmedit": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "currencyexchange": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "userdetailpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "itemdetail": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "vipbuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "gameliveintro": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "mobileupdate": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "realnameinfo": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "mobileinfo": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "accountbind": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "accountinfo": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "antiaddiction": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "badgeunlock": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "badgedetail": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "pvproomsearch": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "douyinvideorank": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "douyinvisitpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "commonalert": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "traininglevels": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "decalpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "honestypopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugctemplate": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "npcalert": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugcbroadcastlist": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugcbroadcast": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "textedit": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugcmarklist": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "leagueinventoryuse": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "inventoryuse": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "shopitembuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "packweekbuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "packbuy": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "packmultireward": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "packdetail": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "packreward": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "banner": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "updategender": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "updatename": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "nickname": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "mobilebind": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "restorealert": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "accountrestore": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "restorecode": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "mobilelogin": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "realname": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "rankrushintro": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "rankrushevent": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "teamMatchmaking": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "expweeklyrank": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugccommentlist": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugcstamp": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugctextcomment": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "qqsticky": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "userlevelup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "expintro": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugcuploadslot": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "hppopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugclistpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugcuploadnameandtag": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "ugcsearch": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "freecoinpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "characterunlock": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "debrishelppopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "debrisunlockpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "danintro": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "pvpinvitation": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "onlinefriend": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "bottombar": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "friendsearch": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "leagueseason": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "leaguerewardintro": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "tutorialpopup": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "favTips": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "characterinit": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   },
+   {
+    "binding": "DS",
+    "name": "AppState"
+   }
+  ],
+  "settings": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "alert": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "uiscene": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "friendlyMatchmaking": [
+   {
+    "binding": "ES",
+    "name": "ScreenId"
+   }
+  ],
+  "quitgame": [
+   {
+    "binding": "DS",
+    "name": "AppState"
+   }
+  ],
+  "reloadgame": [
+   {
+    "binding": "DS",
+    "name": "AppState"
+   }
+  ],
+  "mask": [
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "effect": [
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "gameui": [
+   {
+    "binding": "RS",
+    "name": "UILayer"
+   }
+  ],
+  "kuaishou": [
+   {
+    "binding": "HS",
+    "name": "PlatformType"
+   }
+  ],
+  "bilibili": [
+   {
+    "binding": "HS",
+    "name": "PlatformType"
+   }
+  ],
+  "qq": [
+   {
+    "binding": "HS",
+    "name": "PlatformType"
+   }
+  ],
+  "standalone": [
+   {
+    "binding": "HS",
+    "name": "PlatformType"
+   }
+  ],
+  "toutiao": [
+   {
+    "binding": "HS",
+    "name": "PlatformType"
+   }
+  ],
+  "wechat": [
+   {
+    "binding": "HS",
+    "name": "PlatformType"
+   }
+  ],
+  "chrome": [
+   {
+    "binding": "HS",
+    "name": "PlatformType"
+   }
+  ]
+ }
+}

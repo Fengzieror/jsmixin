@@ -1,0 +1,61 @@
+[
+ {
+  "file": "chunk1_bindings.md",
+  "kind": "bindings",
+  "count": 152,
+  "range": [
+   "RC",
+   "Sw"
+  ]
+ },
+ {
+  "file": "chunk2_bindings.md",
+  "kind": "bindings",
+  "count": 152,
+  "range": [
+   "Pw",
+   "Sm"
+  ]
+ },
+ {
+  "file": "chunk3_bindings.md",
+  "kind": "bindings",
+  "count": 152,
+  "range": [
+   "Nk",
+   "ut"
+  ]
+ },
+ {
+  "file": "chunk4_bindings.md",
+  "kind": "bindings",
+  "count": 152,
+  "range": [
+   "Th",
+   "OC"
+  ]
+ },
+ {
+  "file": "chunk5_bindings.md",
+  "kind": "bindings",
+  "count": 152,
+  "range": [
+   "Xw",
+   "W"
+  ]
+ },
+ {
+  "file": "chunk6_bindings.md",
+  "kind": "bindings",
+  "count": 152,
+  "range": [
+   "sl",
+   "xu"
+  ]
+ },
+ {
+  "file": "chunk7_enums.md",
+  "kind": "enums",
+  "count": 141
+ }
+]
