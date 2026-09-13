@@ -25,7 +25,6 @@
     "vendor/",
     "build-tool/",
     "android-modfs/",
-    "mixins/base-loader/",
     "docs/",
     "README.md",
     "LICENSE",

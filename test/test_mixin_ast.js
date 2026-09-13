@@ -1,7 +1,7 @@
 /*
  * test_mixin_ast.js — Node 自测
  *   1. 小样例单元测试：module/name/anchor/method 段 + inject/overwrite/wrap op
- *   2. 真实 main.min.js：定位模块 625、XS、'秒后重试' 函数，验证唯一性与编辑
+ *   2. 可选：本地大文件真实目标样本（存在才跑；仓库不含该文件，缺失时自动跳过）
  * 运行：node test/test_mixin_ast.js
  */
 'use strict';
@@ -349,9 +349,13 @@ console.log('== 批量快路径 ==');
     }
 })();
 
-/* ---------- 2. 真实 main.min.js ---------- */
+/* ---------- 2. 可选：本地真实目标样本（大文件定位/编辑/哈希锁/批量快路径冒烟） ---------- */
+var realPath = path.join(__dirname, '../../pdzzapksworkspace/main.min.js');
+if (!fs.existsSync(realPath)) {
+    console.log('== 大文件样本 ==（跳过：本地未提供真实目标样本）');
+} else {
 console.log('== main.min.js ==');
-var realSrc = fs.readFileSync(path.join(__dirname, '../../pdzzapksworkspace/main.min.js'), 'utf8');
+var realSrc = fs.readFileSync(realPath, 'utf8');
 
 // 定位测试（不产出补丁）
 var ast0 = acorn.parse(realSrc, { ecmaVersion: 'latest' });
@@ -406,6 +410,7 @@ try { acorn.parse(patched, { ecmaVersion: 'latest' }); check('main.min.js 补丁
 catch (e) { check('main.min.js 补丁后语法完整', false, e.message); }
 var diffLines = patched.length - realSrc.length;
 console.log('    长度差 +' + diffLines + ' 字节（其余字节应与原文件一致）');
+} // end 可选样本块
 
 console.log(failures === 0 ? '\n全部通过' : '\n有 ' + failures + ' 项失败');
 process.exit(failures === 0 ? 0 : 1);

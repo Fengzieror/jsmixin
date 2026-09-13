@@ -36,7 +36,7 @@ public class ModFs {
 
     public static final String PREFS = "modfs";
     public static final String KEY_SAF_URI = "saf_uri";
-    /** 存储根下的 mod 基目录名（与 pdzzlauncher/docs/MOD_STORAGE.md 定稿一致） */
+    /** 存储根下的 mod 基目录名（与外部启动器的 mod 存储约定一致） */
     public static final String MOD_BASE = ".battlecraft";
 
     /** JS 侧判断"当前可读 mod 目录"用：legacy 已授权 / 不需要 / 已有 SAF 授权 */

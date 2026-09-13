@@ -125,7 +125,6 @@ A complete runnable project (host game + 3 mods covering every decorator) is in
   intercepts and why (the interception checklist), the LayaNative boot timeline.
 - [docs/DESIGN-v2.md](docs/DESIGN-v2.md) — segments/ops reference and the
   Sponge Mixin / MixinExtras mapping.
-- [docs/DESIGN-v1-layanative.md](docs/DESIGN-v1-layanative.md) — v1 design archive.
 
 ### Testing
 
@@ -212,7 +211,6 @@ node build-tool/build.js <mod项目目录>
 - [docs/BOOT-CHAIN.md](docs/BOOT-CHAIN.md) — 加载链路：代码如何进入运行时、
   拦截清单、LayaNative 启动时间线。
 - [docs/DESIGN-v2.md](docs/DESIGN-v2.md) — 段/操作全集参考、Sponge 对照表。
-- [docs/DESIGN-v1-layanative.md](docs/DESIGN-v1-layanative.md) — v1 设计存档。
 
 ### 测试
 
