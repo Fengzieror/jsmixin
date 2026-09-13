@@ -177,10 +177,23 @@ function parseMarkFile(file, map) {
             for (var d = 0; d < mDecs.length; d++) {
                 var dn = decoratorName(mDecs[d], sf);
                 var da = decoratorArg(mDecs[d], sf);
+                // op 级 method（Java 形态）：操作注解自己指定目标方法，一个 mark 类可多方法各打各的。
+                // 与 target.method 同用 = 歧义，构建报错（宁可报错不静默选一个）——走 errors 收集而非抛异常。
+                var opMethod = da.method;
+                var methodErr = null;
+                if (opMethod != null && target.method) {
+                    methodErr = 'method 与 target.method 同时存在（"' + target.method + '"）——二选一';
+                }
                 if (dn === 'Inject') {
                     var at = da.at || 'head';
                     if (at !== 'head' && at !== 'tail') fail(file + ': @Inject at 仅支持 head/tail，收到 ' + at);
-                    made.push({ op: 'inject', at: at, code: code });
+                    if (da.cancellable != null && da.cancellable !== true && da.cancellable !== false) {
+                        fail(file + ': @Inject cancellable 只能是 true/false');
+                    }
+                    if (da.cancellable === true && at !== 'head') {
+                        fail(file + ': @Inject cancellable 仅支持 at:"head"（tail 注入的取消是死代码）');
+                    }
+                    made.push({ op: 'inject', at: at, cancellable: da.cancellable === true ? true : undefined, code: code });
                 } else if (dn === 'Overwrite') {
                     made.push({ op: 'overwrite', code: code });
                 } else if (dn === 'Wrap') {
@@ -191,7 +204,7 @@ function parseMarkFile(file, map) {
                     made.push({ op: 'wrap', code: code });
                 } else if (dn === 'Export') {
                     if (!da.as) fail(file + ': @Export 需要 { as: "导出名" }');
-                    made.push({ op: 'export', as: da.as });
+                    made.push({ op: 'export', as: da.as, writable: da.writable === true ? true : undefined });
                 } else if (dn === 'Modify') {
                     if (!da.find || typeof da.find !== 'string') fail(file + ': @Modify 需要 { find: "节点源码精确文本" }');
                     if (da.replace == null || typeof da.replace !== 'string') fail(file + ': @Modify 需要 { replace: "替换表达式文本" }');
@@ -206,9 +219,38 @@ function parseMarkFile(file, map) {
                     if (!da.call) fail(file + ': @ModifyArg 需要 { call: "callee 点分名（支持 this.x）" }');
                     if (da.arg == null || typeof da.arg !== 'number') fail(file + ': @ModifyArg 需要 { arg: 实参槽位序号 }');
                     made.push({ op: 'modifyArg', call: da.call, arg: da.arg, params: da.params, nth: da.nth, all: da.all === true ? true : undefined, code: code });
+                } else if (dn === 'ModifyReturnValue') {
+                    made.push({ op: 'modifyReturn', code: code });
+                } else if (dn === 'ModifyExpressionValue') {
+                    if (!da.call && !da.find) fail(file + ': @ModifyExpressionValue 需要 { call: "调用点分名" } 或 { find: "表达式精确文本" }');
+                    made.push({ op: 'wrapValue', call: da.call, find: da.find, params: da.params, nth: da.nth, all: da.all === true ? true : undefined, code: code });
+                } else if (dn === 'ModifyArgs') {
+                    if (!da.call) fail(file + ': @ModifyArgs 需要 { call: "callee 点分名（支持 this.x）" }');
+                    made.push({ op: 'modifyArgs', call: da.call, params: da.params, nth: da.nth, all: da.all === true ? true : undefined, code: code });
                 } else {
                     fail(file + ': 方法 ' + markMethodName + ' 上有未支持的装饰器 @' + dn
-                        + '（支持 Inject/Overwrite/Wrap/Export/Modify/Redirect/WrapOperation/ModifyArg）');
+                        + '（支持 Inject/Overwrite/Wrap/Export/Modify/Redirect/WrapOperation/ModifyArg'
+                        + '/ModifyReturnValue/ModifyExpressionValue/ModifyArgs）');
+                }
+                // op 级 method 附着（Export 目标是绑定名，不支持 method）
+                if (opMethod != null) {
+                    if (dn === 'Export') {
+                        made[made.length - 1].methodErr = '@Export 不支持 method（导出目标是绑定名/函数本身）';
+                    } else {
+                        made[made.length - 1].method = opMethod;
+                        made[made.length - 1].methodErr = methodErr;
+                    }
+                }
+                // @Share/@Local 装饰器参数（构建期校验用，见 runBuild）
+                var arrFields = { locals: da.locals, share: da.share };
+                for (var af in arrFields) {
+                    var arr = arrFields[af];
+                    if (arr != null) {
+                        if (!(arr instanceof Array) || !arr.every(function (s) { return typeof s === 'string'; })) {
+                            fail(file + ': @' + dn + ' 的 ' + af + ' 必须是字符串数组');
+                        }
+                        made[made.length - 1][af] = arr;
+                    }
                 }
             }
             if (made.length) ops.push({ markMethod: markMethodName, patches: made });
@@ -230,24 +272,28 @@ function expandGroups(groups) {
     var reqs = [];
     for (var g = 0; g < groups.length; g++) {
         var grp = groups[g];
-        // cls-only 目标：mark 方法名 = 目标类方法表的 key；给了 method/path 则所有方法作用于同一解析结果
-        var useMethodName = grp.clsReadable && !grp.targetMethodExplicit && !grp.hasPath;
         for (var o = 0; o < grp.ops.length; o++) {
             var op = grp.ops[o];
-            var fullPath = grp.basePath.slice(0);
-            if (useMethodName) {
-                fullPath.push({ method: grp.map.method(grp.clsReadable, op.markMethod) });
-            }
             for (var p = 0; p < op.patches.length; p++) {
                 var pk = op.patches[p];
+                // 路径按 patch 逐个合成：op 级 method 覆盖/追加末段（Java 形态，一个 mark 类多目标）
+                var fullPath = grp.basePath.slice(0);
+                if (grp.clsReadable && !grp.targetMethodExplicit && !grp.hasPath) {
+                    // cls-only：目标方法 = op 级 method（若有，覆盖推断）否则 mark 方法名推断
+                    fullPath.push({ method: grp.map.method(grp.clsReadable, pk.method || op.markMethod) });
+                } else if (pk.method && !pk.methodErr) {
+                    fullPath.push({ method: grp.map.method(grp.clsReadable || '', pk.method) });
+                }
                 reqs.push({
                     name: grp.className + '.' + op.markMethod + (op.patches.length > 1 ? '#' + p : ''),
                     targetFile: grp.targetFile,
                     path: fullPath,
+                    methodErr: pk.methodErr,
                     op: pk.op,
                     at: pk.at,
                     code: pk.code,
                     as: pk.as,
+                    writable: pk.writable,
                     find: pk.find,
                     replace: pk.replace,
                     nth: pk.nth,
@@ -255,6 +301,9 @@ function expandGroups(groups) {
                     call: pk.call,
                     arg: pk.arg,
                     params: pk.params,
+                    cancellable: pk.cancellable,
+                    locals: pk.locals,
+                    share: pk.share,
                     from: grp.file
                 });
             }
@@ -279,12 +328,22 @@ function expandExport(req, astCache) {
         if (kids[i].fn === full.node) { nm = kids[i].asName || kids[i].idName; break; }
     }
     if (!nm) return '@Export 目标没有可用的绑定名/自身 id（匿名函数请改用 Wrap）';
-    // 导出赋值注入到父层函数尾（runtime 的 tail 会在末尾 return 之前插入，不会成为死代码）
+    // 导出赋值注入到父层函数尾（runtime 的 tail 会在末尾 return 之前插入，不会成为死代码）。
+    // writable: true → getter/setter 形式（@Accessor/@Invoker 强化）：外部读写直达闭包绑定本身
+    // 而非快照拷贝——set 里的赋值在注入文本内执行，真正改写闭包变量。
     req.path = parentPath;
     req.op = 'inject';
     req.at = 'tail';
-    req.code = '\nwindow.__mixin_exports = window.__mixin_exports || {};\nwindow.__mixin_exports['
-        + JSON.stringify(req.as) + '] = ' + nm + ';';
+    if (req.writable) {
+        req.code = '\nwindow.__mixin_exports = window.__mixin_exports || {};\n'
+            + 'Object.defineProperty(window.__mixin_exports, ' + JSON.stringify(req.as) + ', {'
+            + ' get: function () { return ' + nm + '; },'
+            + ' set: function (v) { ' + nm + ' = v; },'
+            + ' configurable: !0 });';
+    } else {
+        req.code = '\nwindow.__mixin_exports = window.__mixin_exports || {};\nwindow.__mixin_exports['
+            + JSON.stringify(req.as) + '] = ' + nm + ';';
+    }
     req.name = req.name + '$export';
     return null;
 }
@@ -342,8 +401,15 @@ function runBuild(projDir) {
     var errors = [];
     var patchesByFile = {}; // targetFile → [patch]
     var exportNames = [];   // @Export 汇总（game-types.d.ts 用）
+    // @Share 全集：本 mod 声明的共享名对同目标的其他注入可见（词法作用域），@Local 校验需计入
+    var allShareNames = {};
+    for (var r0 = 0; r0 < reqs.length; r0++) {
+        var sh = reqs[r0].share;
+        if (sh) for (var s0 = 0; s0 < sh.length; s0++) allShareNames[sh[s0]] = 1;
+    }
     for (var r = 0; r < reqs.length; r++) {
         var req = reqs[r];
+        if (req.methodErr) { errors.push(req.name + ': ' + req.methodErr); continue; }
         var c;
         try { c = getAst(req.targetFile); } catch (e) { errors.push(req.name + ': ' + e.message); continue; }
 
@@ -373,7 +439,8 @@ function runBuild(projDir) {
         if (pr.error) { errors.push(req.name + ': ' + withLineInfo(pr.error, c.src)); continue; }
 
         // 调用点级 op 的构建期预检：目标函数内调用点 0 个 / 多个未消歧 → 构建失败
-        if (req.op === 'redirect' || req.op === 'wrapCall' || req.op === 'modifyArg') {
+        if (req.op === 'redirect' || req.op === 'wrapCall' || req.op === 'modifyArg'
+            || req.op === 'modifyArgs' || (req.op === 'wrapValue' && req.call)) {
             var sites = AST.findCallSites(pr.node, req, c.src);
             if (!sites.length) { errors.push(req.name + ': 目标函数内 0 处命中调用 "' + req.call + '"'); continue; }
             if (sites.length > 1 && req.all !== true && req.nth == null) {
@@ -382,8 +449,48 @@ function runBuild(projDir) {
             }
         }
 
+        // @Local 构建期校验：声称捕获的局部变量必须在目标函数里真实存在（参数或 var 声明）
+        if (req.locals && req.locals.length) {
+            var declared = {};
+            (pr.node.params || []).forEach(function (p) {
+                if (p && p.type === 'Identifier') declared[p.name] = 1;
+            });
+            AST.walkAll(pr.node, function (n) {
+                if (n.type === 'VariableDeclarator' && n.id && n.id.type === 'Identifier') declared[n.id.name] = 1;
+            });
+            for (var li = 0; li < req.locals.length; li++) {
+                if (!declared[req.locals[li]] && !allShareNames[req.locals[li]]) {
+                    errors.push(req.name + ': @Local "' + req.locals[li] + '" 在目标函数内不存在（参数、变量声明或其他注入的 @Share）');
+                }
+            }
+        }
+        // @Share 构建期校验：共享名必须由本注入体自己声明（同函数内注入共享同一词法作用域）
+        if (req.share && req.share.length) {
+            var shared = {};
+            var codeAst = acorn.parse('(function(){' + req.code + '})', { ecmaVersion: 'latest' });
+            (function w(n) {
+                if (!n || typeof n !== 'object') return;
+                if (Array.isArray(n)) { n.forEach(w); return; }
+                if (typeof n.type !== 'string') return;
+                if (n.type === 'VariableDeclarator' && n.id && n.id.type === 'Identifier') shared[n.id.name] = 1;
+                else if (n.type === 'AssignmentExpression' && n.left && n.left.type === 'Identifier') shared[n.left.name] = 1;
+                for (var k in n) {
+                    if (k === 'start' || k === 'end' || k === 'loc' || k === 'range') continue;
+                    var v = n[k];
+                    if (Array.isArray(v)) v.forEach(w);
+                    else if (v && typeof v === 'object' && typeof v.type === 'string') w(v);
+                }
+            })(codeAst);
+            for (var si = 0; si < req.share.length; si++) {
+                if (!shared[req.share[si]]) {
+                    errors.push(req.name + ': @Share "' + req.share[si] + '" 未被本注入体声明（var 赋值后同函数内各注入点天然可见）');
+                }
+            }
+        }
+
         var patch = { name: req.name, path: req.path, op: req.op };
         if (req.op === 'inject') patch.at = req.at || 'head';
+        if (req.cancellable === true) patch.cancellable = true;
         if (req.code != null) patch.code = req.code;
         if (req.op === 'modify') {
             patch.find = req.find;
@@ -391,10 +498,18 @@ function runBuild(projDir) {
             if (req.nth != null) patch.nth = req.nth;
             if (req.all === true) patch.all = true;
         }
-        if (req.op === 'redirect' || req.op === 'wrapCall' || req.op === 'modifyArg') {
+        if (req.op === 'redirect' || req.op === 'wrapCall' || req.op === 'modifyArg'
+            || req.op === 'modifyArgs') {
             patch.call = req.call;
             if (req.params != null) patch.params = req.params;
             if (req.op === 'modifyArg') patch.arg = req.arg;
+            if (req.nth != null) patch.nth = req.nth;
+            if (req.all === true) patch.all = true;
+        }
+        if (req.op === 'wrapValue') {
+            if (req.call) patch.call = req.call;
+            else patch.find = req.find;
+            if (req.params != null) patch.params = req.params;
             if (req.nth != null) patch.nth = req.nth;
             if (req.all === true) patch.all = true;
         }

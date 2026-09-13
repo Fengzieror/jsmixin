@@ -77,4 +77,5 @@ export function installTransformerGlobals(g = globalThis) {
         log('eval hook installed (v' + ENGINE_VERSION + ')');
     }
     installEvalHook();
+    return engine;
 }

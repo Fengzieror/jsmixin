@@ -484,9 +484,51 @@
   function applyOp(fn, patch, src, edits) {
     const op = patch.op;
     const code = patch.code;
-    if (op === "redirect" || op === "wrapCall" || op === "modifyArg") {
+    if (op === "wrapValue" && patch.call == null) {
+      if (!isFnNode(fn) || !hasBlockBody(fn)) {
+        throw new Error("op \u76EE\u6807\u4E0D\u662F\u5757\u4F53\u51FD\u6570\uFF1A" + describeFn(fn, src));
+      }
+      if (!patch.find || typeof patch.find !== "string") throw new Error("wrapValue \u9700\u8981 find\uFF08\u8868\u8FBE\u5F0F\u7CBE\u786E\u6587\u672C\uFF09\u6216 call\uFF08\u8C03\u7528\u70B9\u5206\u540D\uFF09");
+      validateBodyCode(code, "wrapValue");
+      try {
+        getAcorn().parse("(" + patch.find + ")", { ecmaVersion: "latest" });
+      } catch (e) {
+        throw new Error("wrapValue.find \u4E0D\u662F\u5408\u6CD5\u8868\u8FBE\u5F0F: " + e.message);
+      }
+      const matches = [];
+      walkAll(fn, function(n) {
+        if (n === fn) return;
+        if (src.slice(n.start, n.end) === patch.find) matches.push(n);
+      });
+      if (!matches.length) throw new Error('wrapValue: \u76EE\u6807\u51FD\u6570\u5185 0 \u5904\u547D\u4E2D "' + patch.find + '"');
+      const kept = matches.filter(function(n) {
+        return !matches.some(function(m) {
+          return m !== n && m.start <= n.start && m.end >= n.end;
+        });
+      });
+      if (kept.length > 1 && patch.all !== true && patch.nth == null) {
+        throw new Error("wrapValue: " + kept.length + ' \u5904\u547D\u4E2D "' + patch.find + '"\uFF0C\u9700\u5199 nth \u6216 all:true');
+      }
+      let targets = kept;
+      if (patch.all !== true) {
+        const nth = patch.nth == null ? 0 : patch.nth;
+        if (nth < 0 || nth >= kept.length) throw new Error("wrapValue: nth " + nth + " \u8D8A\u754C\uFF08\u547D\u4E2D " + kept.length + " \u5904\uFF09");
+        targets = [kept[nth]];
+      }
+      for (let ti = 0; ti < targets.length; ti++) {
+        const t = targets[ti];
+        edits.push({
+          start: t.start,
+          end: t.end,
+          text: "(function ($value) {\n" + code + "\n})(" + src.slice(t.start, t.end) + ")"
+        });
+      }
+      return;
+    }
+    if (op === "redirect" || op === "wrapCall" || op === "modifyArg" || op === "wrapValue" || op === "modifyArgs") {
       if (!isFnNode(fn)) throw new Error("op \u76EE\u6807\u4E0D\u662F\u51FD\u6570\uFF1A" + describeFn(fn, src));
       if (!patch.call) throw new Error(op + " \u9700\u8981 call\uFF08\u76EE\u6807\u8C03\u7528\u7684 callee \u70B9\u5206\u540D\uFF0C\u652F\u6301 this.x\uFF09");
+      if (op === "wrapValue" && patch.find) throw new Error("wrapValue \u7684 call \u4E0E find \u53EA\u80FD\u4E8C\u9009\u4E00");
       if (code == null || typeof code !== "string") throw new Error(op + " \u9700\u8981 code");
       const sites = disambiguateSites(findCallSites(fn, patch, src), patch, op);
       for (let i = 0; i < sites.length; i++) {
@@ -503,6 +545,15 @@
           const calleeSrc = src.slice(callee.start, callee.end);
           const fwdThis = callee.type === "MemberExpression" && callee.object ? src.slice(callee.object.start, callee.object.end) : "this";
           text = "(function ($args) {\nvar $orig = function () { return (" + calleeSrc + ").apply(" + fwdThis + ", arguments.length ? arguments : $args); };\n" + code + "\n})([" + argsSrc + "])";
+        } else if (op === "wrapValue") {
+          validateBodyCode(code, "wrapValue");
+          text = "(function ($value) {\n" + code + "\n})(" + src.slice(callNode.start, callNode.end) + ")";
+        } else if (op === "modifyArgs") {
+          validateBodyCode(code, "modifyArgs");
+          const callee = callNode.callee;
+          const calleeSrc = src.slice(callee.start, callee.end);
+          const fwdThis = callee.type === "MemberExpression" && callee.object ? src.slice(callee.object.start, callee.object.end) : "undefined";
+          text = "(" + calleeSrc + ").apply(" + fwdThis + ", (function ($args) {\n" + code + "\n})([" + argsSrc + "]))";
         } else {
           const kind = validateExprOrBody(code, "modifyArg");
           const argIdx = patch.arg;
@@ -554,6 +605,13 @@
       const n = "_" + fn.start;
       const newBody = "\nfunction __mixin_orig" + n + "(" + paramText + ") {" + origBody + "}\nvar __mixin_args" + n + " = arguments;\nreturn (function ($orig, __mixin_args) {\n" + code + "\n})(function () {return __mixin_orig" + n + ".apply(this, arguments.length ? arguments : __mixin_args" + n + "); }, __mixin_args" + n + ");\n";
       edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: newBody });
+    } else if (op === "modifyReturn") {
+      validateBodyCode(code, "modifyReturn");
+      const mrParams = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : "";
+      const mrBody = src.slice(fn.body.start + 1, fn.body.end - 1);
+      const mn = "_" + fn.start;
+      const mrBodyNew = "\nfunction __mixin_orig" + mn + "(" + mrParams + ") {" + mrBody + "}\nreturn (function ($value) {\n" + code + "\n})(__mixin_orig" + mn + ".apply(this, arguments));\n";
+      edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: mrBodyNew });
     } else if (op === "modify") {
       let modParseKind = function(text, what) {
         let eMsg = null;
@@ -703,7 +761,9 @@
     resolvePath: (ast, path, src) => resolvePath(ast, path, src),
     applyEdits: (src, edits) => applyEdits(src, edits),
     // v2：调用点定位暴露给构建工具做构建期预检（findCallSites(fn, patch, src)）
-    findCallSites: (fn, patch, src) => findCallSites(fn, patch, src)
+    findCallSites: (fn, patch, src) => findCallSites(fn, patch, src),
+    // v2.1：子树遍历暴露给构建工具做 @Local 存在性校验
+    walkAll: (root, cb) => walkAll(root, cb)
   };
 
   // src/hosts/layanative.ts

@@ -12,7 +12,7 @@
  *   window.eval 包装（游戏脚本经 apploader 的 window.eval 执行，唯一纯 JS 拦截点）
  */
 import { applyAstPatches, internals, VERSION as AST_VERSION } from '../core/ast.js';
-import { createMixinEngine, VERSION as ENGINE_VERSION } from '../core/engine.js';
+import { createMixinEngine, VERSION as ENGINE_VERSION, type MixinEngine } from '../core/engine.js';
 import type { ModDescription } from '../core/types.js';
 
 type G = any;
@@ -25,7 +25,7 @@ export function installAstGlobals(g: G = globalThis): void {
     };
 }
 
-export function installTransformerGlobals(g: G = globalThis): void {
+export function installTransformerGlobals(g: G = globalThis): MixinEngine {
     // acorn 由 vendor/acorn.js 先行加载到 global（组装线顺序：acorn.js → mixinAst.js → mixinTransformer.js）
     const engine = createMixinEngine({ acorn: g.acorn });
 
@@ -81,4 +81,5 @@ export function installTransformerGlobals(g: G = globalThis): void {
     }
 
     installEvalHook();
+    return engine;
 }

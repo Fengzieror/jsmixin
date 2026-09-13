@@ -1,0 +1,9 @@
+{
+  "modid": "v3-mod",
+  "name": "V3Mod",
+  "version": "0.1.0",
+  "priority": 100,
+  "gameFiles": {
+    "sample-es6.js": "game/sample-es6.js"
+  }
+}

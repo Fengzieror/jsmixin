@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "modid": "v3-mod",
+  "name": "V3Mod",
+  "version": "0.1.0",
+  "mixins": [
+    "patches.js"
+  ],
+  "priority": 100
+}

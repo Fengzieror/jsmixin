@@ -163,12 +163,60 @@ function argsSource(callNode, src) {
 function applyOp(fn, patch, src, edits) {
     const op = patch.op;
     const code = patch.code;
+    /* —— wrapValue 的 find 形态（@ModifyExpressionValue 按表达式文本定位）——
+     * 表达式照常求值，结果经 $value 包装：EXPR → (function ($value){ CODE })(EXPR) */
+    if (op === 'wrapValue' && patch.call == null) {
+        if (!isFnNode(fn) || !hasBlockBody(fn)) {
+            throw new Error('op 目标不是块体函数：' + describeFn(fn, src));
+        }
+        if (!patch.find || typeof patch.find !== 'string')
+            throw new Error('wrapValue 需要 find（表达式精确文本）或 call（调用点分名）');
+        validateBodyCode(code, 'wrapValue');
+        try {
+            getAcorn().parse('(' + patch.find + ')', { ecmaVersion: 'latest' });
+        }
+        catch (e) {
+            throw new Error('wrapValue.find 不是合法表达式: ' + e.message);
+        }
+        const matches = [];
+        walkAll(fn, function (n) {
+            if (n === fn)
+                return;
+            if (src.slice(n.start, n.end) === patch.find)
+                matches.push(n);
+        });
+        if (!matches.length)
+            throw new Error('wrapValue: 目标函数内 0 处命中 "' + patch.find + '"');
+        // 去内层：嵌套同文本只保留最外层（坐标嵌套 = 重叠损坏）
+        const kept = matches.filter(function (n) {
+            return !matches.some(function (m) { return m !== n && m.start <= n.start && m.end >= n.end; });
+        });
+        if (kept.length > 1 && patch.all !== true && patch.nth == null) {
+            throw new Error('wrapValue: ' + kept.length + ' 处命中 "' + patch.find + '"，需写 nth 或 all:true');
+        }
+        let targets = kept;
+        if (patch.all !== true) {
+            const nth = patch.nth == null ? 0 : patch.nth;
+            if (nth < 0 || nth >= kept.length)
+                throw new Error('wrapValue: nth ' + nth + ' 越界（命中 ' + kept.length + ' 处）');
+            targets = [kept[nth]];
+        }
+        for (let ti = 0; ti < targets.length; ti++) {
+            const t = targets[ti];
+            edits.push({ start: t.start, end: t.end,
+                text: '(function ($value) {\n' + code + '\n})(' + src.slice(t.start, t.end) + ')' });
+        }
+        return;
+    }
     /* —— 调用点级 op：目标函数子树内的某个调用（v2 新增）—— */
-    if (op === 'redirect' || op === 'wrapCall' || op === 'modifyArg') {
+    if (op === 'redirect' || op === 'wrapCall' || op === 'modifyArg'
+        || op === 'wrapValue' || op === 'modifyArgs') {
         if (!isFnNode(fn))
             throw new Error('op 目标不是函数：' + describeFn(fn, src));
         if (!patch.call)
             throw new Error(op + ' 需要 call（目标调用的 callee 点分名，支持 this.x）');
+        if (op === 'wrapValue' && patch.find)
+            throw new Error('wrapValue 的 call 与 find 只能二选一');
         if (code == null || typeof code !== 'string')
             throw new Error(op + ' 需要 code');
         const sites = disambiguateSites(findCallSites(fn, patch, src), patch, op);
@@ -197,6 +245,23 @@ function applyOp(fn, patch, src, edits) {
                     + 'var $orig = function () { return (' + calleeSrc + ').apply(' + fwdThis
                     + ', arguments.length ? arguments : $args); };\n'
                     + code + '\n})([' + argsSrc + '])';
+            }
+            else if (op === 'wrapValue') {
+                // @ModifyExpressionValue：调用照常执行，其结果经 $value 包装
+                validateBodyCode(code, 'wrapValue');
+                text = '(function ($value) {\n' + code + '\n})(' + src.slice(callNode.start, callNode.end) + ')';
+            }
+            else if (op === 'modifyArgs') {
+                // @ModifyArgs：code($args) 返回新实参数组，整体重组调用。
+                // 成员调用保留原 this（apply 对象取 callee.object 源码）；
+                // 普通调用 this 用 undefined（与原 plain call 的 sloppy 语义一致，不能借用目标函数的 this）。
+                validateBodyCode(code, 'modifyArgs');
+                const callee = callNode.callee;
+                const calleeSrc = src.slice(callee.start, callee.end);
+                const fwdThis = (callee.type === 'MemberExpression' && callee.object)
+                    ? src.slice(callee.object.start, callee.object.end) : 'undefined';
+                text = '(' + calleeSrc + ').apply(' + fwdThis
+                    + ', (function ($args) {\n' + code + '\n})([' + argsSrc + ']))';
             }
             else { // modifyArg
                 // 包装单个实参：$arg 原实参值，code 表达式（或语句体）求值结果替换该实参。
@@ -272,6 +337,18 @@ function applyOp(fn, patch, src, edits) {
             'return (function ($orig, __mixin_args) {\n' + code + '\n})(function () {' +
             'return __mixin_orig' + n + '.apply(this, arguments.length ? arguments : __mixin_args' + n + '); }, __mixin_args' + n + ');\n';
         edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: newBody });
+    }
+    else if (op === 'modifyReturn') {
+        // @ModifyReturnValue：原函数体保真内移为 __mixin_origN，返回值经 $value 包装。
+        // 与 wrap 的区别：注入体拿到的是【已求值的返回值】（$value），不是可再调用的 $orig。
+        // code 必须返回新返回值；this 与实参经 call/arguments 原样转发。
+        validateBodyCode(code, 'modifyReturn');
+        const mrParams = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : '';
+        const mrBody = src.slice(fn.body.start + 1, fn.body.end - 1);
+        const mn = '_' + fn.start;
+        const mrBodyNew = '\nfunction __mixin_orig' + mn + '(' + mrParams + ') {' + mrBody + '}\n' +
+            'return (function ($value) {\n' + code + '\n})(__mixin_orig' + mn + '.apply(this, arguments));\n';
+        edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: mrBodyNew });
     }
     else if (op === 'modify') {
         // 修改目标函数子树内表达式节点的源码文本（README v2：修改数值字面量；
@@ -454,5 +531,7 @@ export const internals = {
     resolvePath: (ast, path, src) => resolvePath(ast, path, src),
     applyEdits: (src, edits) => applyEdits(src, edits),
     // v2：调用点定位暴露给构建工具做构建期预检（findCallSites(fn, patch, src)）
-    findCallSites: (fn, patch, src) => findCallSites(fn, patch, src)
+    findCallSites: (fn, patch, src) => findCallSites(fn, patch, src),
+    // v2.1：子树遍历暴露给构建工具做 @Local 存在性校验
+    walkAll: (root, cb) => walkAll(root, cb)
 };

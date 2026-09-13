@@ -35,6 +35,8 @@ export interface Patch {
     op: string;
     /** inject: 'head' | 'tail'（缺省 head） */
     at?: string;
+    /** inject: 可取消语义声明（仅 head 有意义；head 注入体内 return 即取消原函数） */
+    cancellable?: boolean;
     /** inject/overwrite/wrap/redirect/wrapCall/modifyArg 的注入体 */
     code?: string;
     /** log op 的消息 */
@@ -105,4 +107,6 @@ export interface AstInternals {
     applyEdits: (src: string, edits: SourceEdit[]) => string;
     /** v2：目标函数子树内按 patch.call（callee 点分名，含 params 过滤）定位调用点 */
     findCallSites?: (fn: any, patch: any, src: string) => any[];
+    /** v2.1：子树遍历（@Local 构建期校验用） */
+    walkAll?: (root: any, cb: (n: any) => void) => void;
 }

@@ -117,25 +117,41 @@ LayaNative 内置 loader.js（`/sdcard/.battlecraft/mods/<id>/` 布局）逻辑�
 APK 内置实现；泛化版供 Node/未来宿主使用。**mod 写一次，跨宿主通用**（patches.js 都调
 全局 `__mixin.register`）。
 
-## 八、Sponge Mixin / MixinExtras 对照（v2 现状）
+## 八、Sponge Mixin / MixinExtras 对照（v2.1 现状）
 
-| Java 注解 | jsmixin v2 | 状态 |
+| Java 注解 | jsmixin v2.1 | 状态 |
 |---|---|---|
 | @Mixin | @MixinClass | v1 |
 | @Inject(HEAD/TAIL) | @Inject({at}) | v1 |
-| @Inject(cancellable) | head 注入 `return` 即取消（无规范化 API） | 第二批 |
+| @Inject(cancellable) | @Inject({at:'head', cancellable:true})——head 注入体内 `return` 即取消原函数/替换返回值 | **v2.1** |
 | @Overwrite | @Overwrite / op overwrite | v1 |
 | @Redirect | @Redirect / op redirect | **v2** |
 | @ModifyArg | @ModifyArg / op modifyArg | **v2** |
-| @ModifyArgs | — | 第二批 |
+| @ModifyArgs | @ModifyArgs / op modifyArgs（$args 返回新实参数组） | **v2.1** |
 | @ModifyVariable / @ModifyConstant | op modify（文本级）近似 | 部分 |
 | @WrapOperation（MixinExtras） | @WrapOperation / op wrapCall | **v2** |
 | @WrapMethod（MixinExtras） | @Wrap / op wrap | v1 |
-| @ModifyExpressionValue / @ModifyReturnValue | — | 第二批 |
-| @Accessor / @Invoker | @Export（只读导出） | 强化第二批 |
-| @Share / @Local | — | 第二批 |
+| @ModifyExpressionValue | @ModifyExpressionValue / op wrapValue（call 或 find 定位，调用照常执行、结果经 $value 包装） | **v2.1** |
+| @ModifyReturnValue | @ModifyReturnValue / op modifyReturn（$value = 已求值返回值） | **v2.1** |
+| @Accessor / @Invoker | @Export（只读导出）；`@Export({as, writable:true})` 读写直达闭包绑定 | **v2.1** 强化 |
+| @Share / @Local | `share: ['x']` / `locals: ['y']` 构建期校验 + 词法作用域天然共享（同函数内各注入点同一作用域，var 直接可见） | **v2.1**（构建期校验） |
 | refmap（构建期名字映射） | name-map.json + 构建期预检（内嵌 patches.js） | v1 |
 | priority | mixins.json priority | v1 |
+| 方法归操作注解（@Inject method=...） | op 级 `method` 参数：一个 mark 类多方法各打各的目标；`target.method` 为全类共享目标的糖（与 op 级同用 → 构建报错） | **v2.1** |
+
+## 八点一、通用 boot bundle（dist/boot/mixin-boot.js）
+
+面向"裸 JS 引导环境"（无模块系统）的单文件产物：**内联 acorn + core + 全局适配器**。
+引擎作者只需保证它最先执行，然后可选地：
+
+```js
+__mixinSetModSource({ readFile: (path) => text });  // 注入存储读取能力（缺省无 mod 可读）
+__mixinLoadMods(root);                              // 装载 <root>/mods.json（或目录扫描）
+__mixinRunEntries();                                // 游戏/应用启动后执行 entry 队列
+__mixinWindowClosed();                              // 目标代码开始装载时通知注册窗口关闭
+```
+
+不含任何 LayaNative 存储假设；LayaNative 侧继续用 `runtime/*.js` + 内置 loader.js。
 
 ## 九、拦截完备性（node 宿主验收口径）
 

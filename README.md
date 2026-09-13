@@ -135,8 +135,11 @@ mod 目录结构与 patch 写法在 [docs/DESIGN-v2.md](docs/DESIGN-v2.md) §七
 node build-tool/build.js <mod项目目录>
 ```
 
-装饰器全集：`@MixinClass` `@Inject` `@Overwrite` `@Wrap` `@Export` `@Modify`
-`@Redirect` `@WrapOperation` `@ModifyArg`（构建期唯一性预检 + 产物双重校验）。
+装饰器全集：`@MixinClass` `@Inject`（含 `cancellable`）`@Overwrite` `@Wrap` `@Export`
+（含 `writable`）`@Modify` `@Redirect` `@WrapOperation` `@ModifyArg` `@ModifyArgs`
+`@ModifyReturnValue` `@ModifyExpressionValue` `@ModifyArgs`——操作装饰器支持 op 级
+`method` 参数（一个 mark 类多方法各打各的目标）与 `locals`/`share` 构建期校验。
+沿用构建期唯一性预检 + 产物双重校验。
 
 ### 内部设计文档（中文）
 
