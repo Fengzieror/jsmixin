@@ -1,7 +1,7 @@
 {
   "name": "jsmixin",
-  "version": "1.0.0",
-  "description": "SpongePowered-Mixin-style source transform for LayaNative games: AST-level inject/overwrite/wrap/modify/export on game JS before V8 compiles it",
+  "version": "2.0.0",
+  "description": "SpongePowered-Mixin-style JS source transform: AST-level inject/overwrite/wrap/redirect on any JavaScript before it is compiled. Runtime-agnostic core + LayaNative/Node adapters; mods are standalone folders loaded from disk, target code is never modified on disk.",
   "keywords": [
     "mixin",
     "layanative",
@@ -9,7 +9,10 @@
     "ast",
     "acorn",
     "mod",
-    "game-modding"
+    "game-modding",
+    "node",
+    "redirect",
+    "wrap"
   ],
   "license": "MIT",
   "repository": {
@@ -17,29 +20,53 @@
     "url": "git+https://github.com/Fengzieror/jsmixin.git"
   },
   "files": [
+    "dist/",
     "runtime/",
     "vendor/",
     "build-tool/",
     "android-modfs/",
     "mixins/base-loader/",
+    "docs/",
     "README.md",
-    "DESIGN-target.md",
-    "DESIGN-layout.md"
+    "LICENSE"
   ],
-  "main": "runtime/mixinAst.js",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
   "exports": {
-    ".": "./runtime/mixinAst.js",
-    "./transformer": "./runtime/mixinTransformer.js",
-    "./build": "./build-tool/build.js"
+    ".": {
+      "types": "./dist/cjs/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "./node": {
+      "types": "./dist/cjs/hosts/node.d.ts",
+      "require": "./dist/cjs/hosts/node.js",
+      "import": "./dist/cjs/hosts/node.js"
+    },
+    "./build": "./build-tool/build.js",
+    "./runtime/ast": "./runtime/mixinAst.js",
+    "./runtime/transformer": "./runtime/mixinTransformer.js"
+  },
+  "bin": {
+    "jsmixin": "dist/cjs/hosts/cli.js"
   },
   "scripts": {
-    "test": "node test/test_mixin_ast.js && node test/test_build_tool.js",
+    "build": "npm run build:cjs && npm run build:esm && npm run build:compat",
+    "build:cjs": "tsc -p tsconfig.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:compat": "node scripts/build-compat.mjs",
+    "test": "npm run build && node test/test_mixin_ast.js && node test/test_build_tool.js && node test/test_v2_core.js && node test/test_node_host.js",
     "build:mod": "node build-tool/build.js"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
+  },
+  "dependencies": {
+    "acorn": "^8.18.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "esbuild": "^0.24.0",
+    "@types/node": "^20.0.0"
   }
 }

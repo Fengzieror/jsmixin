@@ -1,0 +1,464 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.internals = exports.VERSION = void 0;
+exports.setAcorn = setAcorn;
+exports.resolvePath = resolvePath;
+exports.applyAstPatches = applyAstPatches;
+/*
+ * ast.ts — AST 精确定位引擎（mixinAst v1.2.1 的 TypeScript 移植 + v2 扩展）
+ *
+ * 设计（DESIGN-target.md / docs/DESIGN-v2.md）：
+ *   - 路径逐段解析，每段候选必须唯一（除非显式写 index），0 个或多个 → 整个 patch 拒绝并列出候选。
+ *   - 编辑全部基于原始 source 切片（start/end/text），不重新生成代码，目标节点之外字节原样保留。
+ *   - 任何失败 fail-safe：调用方拿到原字符串，程序照常运行。
+ *
+ * v2 扩展（相对 v1.2.1）：
+ *   - 新段 {class:'Name'}（原生 ES6 class）与 {wrap:'cjs'|'umd'|'iife'}（打包器解包段）。
+ *   - 新 op redirect / wrapCall / modifyArg：在目标函数子树内按 callee 点分名定位调用点
+ *     （对齐 Sponge @Redirect 与 MixinExtras @WrapOperation / @ModifyArg 语义）。
+ *
+ * acorn 由调用方注入（setAcorn / createMixinEngine({acorn})）；保持与 v1 相同的
+ * 全局回退（globalThis.acorn），兼容 vendor/acorn.js 先加载的 LayaNative 组装线。
+ */
+const features_js_1 = require("./features.js");
+const module_js_1 = require("./segs/module.js");
+const name_js_1 = require("./segs/name.js");
+const call_js_1 = require("./segs/call.js");
+const fnIndex_js_1 = require("./segs/fnIndex.js");
+const anchor_js_1 = require("./segs/anchor.js");
+const method_js_1 = require("./segs/method.js");
+const klass_js_1 = require("./segs/klass.js");
+const wrap_js_1 = require("./segs/wrap.js");
+exports.VERSION = '2.0.0';
+/* ---------- acorn 注入 ---------- */
+let _acorn = null;
+function setAcorn(a) { _acorn = a; }
+function getAcorn() {
+    if (_acorn)
+        return _acorn;
+    return globalThis.acorn || null;
+}
+/* ---------- 路径段解析 ---------- */
+function resolvePath(ast, path, src) {
+    const chain = [ast]; // 已解析节点链，末位 = 当前节点
+    let prevAsName = null;
+    for (let i = 0; i < path.length; i++) {
+        const seg = path[i];
+        let node = chain[chain.length - 1];
+        let r;
+        if (seg.module != null)
+            r = (0, module_js_1.resolveModule)(node, seg, src);
+        else if (seg.name != null)
+            r = (0, name_js_1.resolveName)(node, seg, src);
+        else if (seg.call != null)
+            r = (0, call_js_1.resolveCall)(node, seg, src);
+        else if (seg.fn != null)
+            r = (0, fnIndex_js_1.resolveFnIndex)(node, seg, src);
+        else if (seg.method != null) {
+            r = (0, method_js_1.resolveMethod)(node, seg, src, prevAsName);
+            if (r.error && chain.length > 1 && /0 个候选/.test(r.error)) {
+                // 非 IIFE 包装的类：方法表调用是类绑定语句的兄弟（不在类函数体内）。
+                // 回退到上一层的子树里找 —— cls 名字过滤仍然保证身份，唯一性仍然强制。
+                const up = (0, method_js_1.resolveMethodAt)(chain[chain.length - 2], seg, src, prevAsName);
+                if (!up.error)
+                    r = up;
+            }
+        }
+        else if (seg.class != null)
+            r = (0, klass_js_1.resolveClass)(node, seg, src);
+        else if (seg.wrap != null)
+            r = (0, wrap_js_1.resolveWrap)(node, seg, src);
+        else if (seg.anchor)
+            r = (0, anchor_js_1.resolveAnchor)(node, seg, src);
+        else
+            return { error: 'path[' + i + '] 段类型无法识别（需 module/name/call/fn/method/anchor/class/wrap）' };
+        if (r.error)
+            return { error: 'path[' + i + '] ' + r.error };
+        node = r.node;
+        chain.push(node);
+        prevAsName = r.asName || null;
+        if ((0, features_js_1.isFnNode)(node) && !(0, features_js_1.hasBlockBody)(node)) {
+            return { error: 'path[' + i + '] 目标函数体不是块（箭头函数表达式体），无法注入' };
+        }
+    }
+    return { node: chain[chain.length - 1] };
+}
+/* ---------- op 应用：产出 {start,end,text} 编辑，基于原 source ---------- */
+// 注入体是"函数体语句"（可含 return），包一层函数做语法校验
+function validateBodyCode(code, where) {
+    const acorn = getAcorn();
+    if (!acorn)
+        throw new Error('acorn 未加载');
+    try {
+        acorn.parse('(function(){' + code + '})', { ecmaVersion: 'latest' });
+    }
+    catch (e) {
+        throw new Error(where + ' 注入体语法错误: ' + e.message);
+    }
+}
+// 注入体是"表达式"
+function validateExprCode(code, where) {
+    const acorn = getAcorn();
+    if (!acorn)
+        throw new Error('acorn 未加载');
+    try {
+        acorn.parse('(' + code + ')', { ecmaVersion: 'latest' });
+    }
+    catch (e) {
+        throw new Error(where + ' 注入体不是合法表达式: ' + e.message);
+    }
+}
+// 注入体收"表达式"或"函数体语句"两种形式（redirect/modifyArg 用）：
+// 表达式 → 内联求值；语句体（可含 return）→ 包 IIFE。
+// 返回 'expr' | 'body'，都不合法时抛错。
+function validateExprOrBody(code, where) {
+    const acorn = getAcorn();
+    if (!acorn)
+        throw new Error('acorn 未加载');
+    try {
+        acorn.parse('(' + code + ')', { ecmaVersion: 'latest' });
+        return 'expr';
+    }
+    catch (e) { /* 试语句体 */ }
+    try {
+        acorn.parse('(function(){' + code + '})', { ecmaVersion: 'latest' });
+        return 'body';
+    }
+    catch (e) {
+        throw new Error(where + ' 注入体不是合法表达式/语句体: ' + e.message);
+    }
+}
+/* ---------- 调用点定位（redirect / wrapCall / modifyArg 共用） ---------- */
+// 目标函数子树内匹配 patch.call 的调用点（源码顺序，确定性）；params 可选过滤
+function findCallSites(fn, patch, src) {
+    const sites = [];
+    (0, features_js_1.walkAll)(fn, function (n) {
+        if (n === fn)
+            return;
+        if (n.type !== 'CallExpression')
+            return;
+        const nm = (0, features_js_1.calleeName)(n.callee);
+        if (nm !== patch.call)
+            return;
+        if (patch.params != null && n.arguments.length !== patch.params)
+            return;
+        sites.push(n);
+    });
+    return sites;
+}
+// 与 modify op 相同的消歧纪律：多命中需 nth/all，0 命中报错
+function disambiguateSites(sites, patch, op) {
+    if (!sites.length)
+        throw new Error(op + ': 目标函数内 0 处命中调用 "' + patch.call + '"');
+    if (sites.length > 1 && patch.all !== true && patch.nth == null) {
+        throw new Error(op + ': ' + sites.length + ' 处命中调用 "' + patch.call + '"，需写 nth 或 all:true');
+    }
+    if (patch.all !== true) {
+        const nth = patch.nth == null ? 0 : patch.nth;
+        if (nth < 0 || nth >= sites.length) {
+            throw new Error(op + ': nth ' + nth + ' 越界（命中 ' + sites.length + ' 处）');
+        }
+        return [sites[nth]];
+    }
+    return sites;
+}
+// 实参列表的源码文本（逗号连接；展开实参原样保留）
+function argsSource(callNode, src) {
+    return callNode.arguments.map(function (a) { return src.slice(a.start, a.end); }).join(', ');
+}
+function applyOp(fn, patch, src, edits) {
+    const op = patch.op;
+    const code = patch.code;
+    /* —— 调用点级 op：目标函数子树内的某个调用（v2 新增）—— */
+    if (op === 'redirect' || op === 'wrapCall' || op === 'modifyArg') {
+        if (!(0, features_js_1.isFnNode)(fn))
+            throw new Error('op 目标不是函数：' + (0, features_js_1.describeFn)(fn, src));
+        if (!patch.call)
+            throw new Error(op + ' 需要 call（目标调用的 callee 点分名，支持 this.x）');
+        if (code == null || typeof code !== 'string')
+            throw new Error(op + ' 需要 code');
+        const sites = disambiguateSites(findCallSites(fn, patch, src), patch, op);
+        for (let i = 0; i < sites.length; i++) {
+            const callNode = sites[i];
+            const argsSrc = argsSource(callNode, src);
+            let text;
+            let editStart = callNode.start, editEnd = callNode.end;
+            if (op === 'redirect') {
+                // 整体替换调用：实参按原位置求值一次进 $args；this 不保留（需要 this 用 wrapCall）。
+                // code 是表达式 → 内联；是语句体（可 return）→ 包 IIFE。
+                const kind = validateExprOrBody(code, 'redirect');
+                text = kind === 'expr'
+                    ? '(function ($args) { return (' + code + '); })([' + argsSrc + '])'
+                    : '(function ($args) {\n' + code + '\n})([' + argsSrc + '])';
+            }
+            else if (op === 'wrapCall') {
+                // 包装调用：$orig() 无参转发原实参；$orig(a,b) 显式改参；$args 原实参数组。
+                // 成员调用保留原 this（apply 对象取 callee.object 源码，闭包内求值）。
+                validateBodyCode(code, 'wrapCall');
+                const callee = callNode.callee;
+                const calleeSrc = src.slice(callee.start, callee.end);
+                const fwdThis = (callee.type === 'MemberExpression' && callee.object)
+                    ? src.slice(callee.object.start, callee.object.end) : 'this';
+                text = '(function ($args) {\n'
+                    + 'var $orig = function () { return (' + calleeSrc + ').apply(' + fwdThis
+                    + ', arguments.length ? arguments : $args); };\n'
+                    + code + '\n})([' + argsSrc + '])';
+            }
+            else { // modifyArg
+                // 包装单个实参：$arg 原实参值，code 表达式（或语句体）求值结果替换该实参。
+                // 只替换目标实参表达式，调用本身保留（helper(包装($arg)) 语义）。
+                const kind = validateExprOrBody(code, 'modifyArg');
+                const argIdx = patch.arg;
+                if (argIdx == null || typeof argIdx !== 'number' || argIdx < 0) {
+                    throw new Error('modifyArg 需要 arg（实参槽位序号）');
+                }
+                if (argIdx >= callNode.arguments.length) {
+                    throw new Error('modifyArg: arg ' + argIdx + ' 越界（该调用共 ' + callNode.arguments.length + ' 个实参）');
+                }
+                const argNode = callNode.arguments[argIdx];
+                if (argNode.type === 'SpreadElement') {
+                    throw new Error('modifyArg: 实参 ' + argIdx + ' 是展开语法（...），无法单独包装');
+                }
+                editStart = argNode.start;
+                editEnd = argNode.end;
+                const argSrc = src.slice(argNode.start, argNode.end);
+                text = kind === 'expr'
+                    ? '(function ($arg) { return (' + code + '); })(' + argSrc + ')'
+                    : '(function ($arg) {\n' + code + '\n})(' + argSrc + ')';
+            }
+            // 组装文本必须自身可解析（fail-fast，防止拼出坏代码静默入库）
+            const acorn = getAcorn();
+            try {
+                acorn.parse('(' + text + ')', { ecmaVersion: 'latest' });
+            }
+            catch (e) {
+                throw new Error(op + ' 组装文本语法错误: ' + e.message);
+            }
+            edits.push({ start: editStart, end: editEnd, text: text });
+        }
+        return;
+    }
+    if (!(0, features_js_1.isFnNode)(fn) || !(0, features_js_1.hasBlockBody)(fn)) {
+        throw new Error('op 目标不是块体函数：' + (0, features_js_1.describeFn)(fn, src));
+    }
+    if (op === 'inject') {
+        const at = patch.at || 'head';
+        validateBodyCode(code, 'inject-' + at);
+        if (at === 'head')
+            edits.push({ start: fn.body.start + 1, end: fn.body.start + 1, text: '\n' + code });
+        else if (at === 'tail') {
+            // 对齐 Java Mixin @At("TAIL")：函数最后一条语句是 return 时，注入到它之前
+            // （落在 return 之后是死代码）；否则注入到函数体末尾。
+            // 前导 ';' 防御 ASI 邻接：原末句可能无分号（靠 } 结束），
+            // 直接拼接会被解析成对原表达式返回值的调用（真机踩过：jS.init(...)(注入IIFE) → TypeError）。
+            let pos = fn.body.end - 1;
+            const stmts = fn.body.body;
+            if (stmts.length && stmts[stmts.length - 1].type === 'ReturnStatement')
+                pos = stmts[stmts.length - 1].start;
+            edits.push({ start: pos, end: pos, text: '\n;' + code + '\n' });
+        }
+        else
+            throw new Error('inject at 仅支持 head/tail，收到 ' + at);
+    }
+    else if (op === 'overwrite') {
+        validateBodyCode(code, 'overwrite');
+        edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: '\n' + code + '\n' });
+    }
+    else if (op === 'wrap') {
+        validateBodyCode(code, 'wrap');
+        const paramText = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : '';
+        const origBody = src.slice(fn.body.start + 1, fn.body.end - 1);
+        const n = '_' + fn.start;
+        // $orig() 无参 = 转发原始实参；$orig(a, b) 显式改参。
+        // 原始实参经 __mixin_args（第二包装参数）暴露给注入体——不要用 arguments：
+        // 包装函数自身的 arguments[0] 是转发函数（真机踩坑：getComponentName 拿 arguments[0]
+        // 当 id → 所有组件名变成 "component_name_" + 函数源码）。
+        const newBody = '\nfunction __mixin_orig' + n + '(' + paramText + ') {' + origBody + '}\n' +
+            'var __mixin_args' + n + ' = arguments;\n' +
+            'return (function ($orig, __mixin_args) {\n' + code + '\n})(function () {' +
+            'return __mixin_orig' + n + '.apply(this, arguments.length ? arguments : __mixin_args' + n + '); }, __mixin_args' + n + ');\n';
+        edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: newBody });
+    }
+    else if (op === 'modify') {
+        // 修改目标函数子树内表达式节点的源码文本（README v2：修改数值字面量；
+        // 泛化为任意表达式精确文本替换）。
+        //   find    必填。节点源码文本的精确匹配（按 trim 后逐节点比对）
+        //   replace 必填。替换文本（须为合法表达式）
+        //   nth     可选。命中多个时取第 n 个（0 起）；未写且命中>1 → 拒绝
+        //   all     可选。替换全部命中（嵌套同文本时保留最外层，其余丢弃——
+        //           坐标嵌套=重叠=静默损坏，交给统一的 overlap 拒绝逻辑前先去内层）
+        if (!patch.find || typeof patch.find !== 'string')
+            throw new Error('modify 需要 find（节点源码精确文本）');
+        if (patch.replace == null || typeof patch.replace !== 'string')
+            throw new Error('modify 需要 replace（替换表达式文本）');
+        // find/replace 可以是表达式，也可以是完整语句（如 "return x"）——
+        // 单语句 Program 都能解析即合法；插入形态按被替换节点种类决定
+        function modParseKind(text, what) {
+            let eMsg = null;
+            try {
+                const ast = getAcorn().parse(text, { ecmaVersion: 'latest' });
+                const first = ast.body[0];
+                return (ast.body.length === 1 && first && first.type === 'ExpressionStatement') ? 'expr' : 'stmt';
+            }
+            catch (e0) {
+                eMsg = e0.message;
+            }
+            try {
+                // Program 层非法的语句（return/break/...）放进函数体再验
+                const f = getAcorn().parse('(function(){' + text + '})', { ecmaVersion: 'latest' });
+                const body = f.body[0].expression.body.body;
+                if (body.length === 1)
+                    return 'stmt';
+            }
+            catch (e1) { /* 落到统一报错 */ }
+            throw new Error('modify.' + what + ' 不是合法表达式/语句: ' + eMsg);
+        }
+        modParseKind(patch.find, 'find');
+        modParseKind(patch.replace, 'replace');
+        const matches = [];
+        (0, features_js_1.walkAll)(fn, function (n) {
+            if (n === fn)
+                return;
+            if (src.slice(n.start, n.end) === patch.find)
+                matches.push(n);
+        });
+        if (!matches.length)
+            throw new Error('modify: 目标函数内 0 处命中 "' + patch.find + '"');
+        // 去内层：文本相同的嵌套节点只保留最外层（文本一致，外层替换结果相同且坐标安全）
+        const kept = matches.filter(function (n) {
+            return !matches.some(function (m) { return m !== n && m.start <= n.start && m.end >= n.end; });
+        });
+        if (kept.length > 1 && patch.all !== true && patch.nth == null) {
+            throw new Error('modify: ' + kept.length + ' 处命中 "' + patch.find + '"，需写 nth 或 all:true');
+        }
+        let targets = kept;
+        if (patch.all !== true) {
+            const nth = patch.nth == null ? 0 : patch.nth;
+            if (nth < 0 || nth >= kept.length)
+                throw new Error('modify: nth ' + nth + ' 越界（命中 ' + kept.length + ' 处）');
+            targets = [kept[nth]];
+        }
+        for (let ti = 0; ti < targets.length; ti++) {
+            const isStmt = /Statement$|Declaration$/.test(targets[ti].type);
+            edits.push({ start: targets[ti].start, end: targets[ti].end,
+                text: isStmt ? patch.replace : '(' + patch.replace + ')' });
+        }
+    }
+    else if (op === 'log') {
+        // 便捷 op：等价 inject + console.log
+        edits.push({ start: fn.body.start + 1, end: fn.body.start + 1, text: '\nconsole.log(' + JSON.stringify(String(patch.message || '[mixin] hit')) + ');\n' });
+    }
+    else {
+        throw new Error('未知 op: ' + op);
+    }
+}
+function applyEdits(src, edits) {
+    edits.sort(function (a, b) { return b.start - a.start || b.end - a.end; });
+    let out = src;
+    for (let i = 0; i < edits.length; i++) {
+        const e = edits[i];
+        out = out.slice(0, e.start) + e.text + out.slice(e.end);
+    }
+    return out;
+}
+/* ---------- 对外入口 ---------- */
+// 两个编辑区间是否重叠（零长度插入只与其内部插入冲突；边界相接不算）
+function editsOverlap(a, b) {
+    return a.start < b.end && b.start < a.end;
+}
+function findOverlap(accepted, incoming) {
+    for (let i = 0; i < accepted.length; i++) {
+        for (let j = 0; j < incoming.length; j++) {
+            if (editsOverlap(accepted[i], incoming[j])) {
+                return '新编辑 @' + incoming[j].start + '..' + incoming[j].end +
+                    ' 与已接受编辑 @' + accepted[i].start + '..' + accepted[i].end + ' 重叠';
+            }
+        }
+    }
+    return null;
+}
+/*
+ * applyAstPatches(filename, source, patches [, stats]) → string
+ * patches: [{ path: [...], op, code/at/message, name? }]
+ * 单个 patch 失败（定位失败/重叠冲突）→ 跳过该 patch 并打日志，其余照常；
+ * 解析（acorn.parse）失败 → 整体返回原 source。
+ * 编辑坐标全部基于原始 source，因此重叠 = 坐标错位 = 静默损坏，必须拒绝。
+ * 传入 stats 对象（可选，构建工具产物校验用）→ 得到 { applied, skipped:[label] }。
+ */
+function applyAstPatches(filename, source, patches, stats) {
+    const acorn = getAcorn();
+    if (!acorn) {
+        (0, features_js_1.logable)('acorn 未加载，跳过 AST patch: ' + filename);
+        return source;
+    }
+    const t0 = Date.now();
+    let ast;
+    let parseErr = null;
+    try {
+        ast = acorn.parse(source, { ecmaVersion: 'latest' });
+    }
+    catch (e1) {
+        // ESM（import/export）需要 sourceType:'module'：script 失败后自动重试 module 模式。
+        // 普通脚本目标不受影响（首轮已成功）；两种模式都失败才放弃（fail-safe 返回原文）。
+        parseErr = e1;
+        try {
+            ast = acorn.parse(source, { ecmaVersion: 'latest', sourceType: 'module' });
+        }
+        catch (e2) {
+            (0, features_js_1.logable)('ERROR: ' + filename + ' 解析失败，跳过全部 AST patch: ' + parseErr.message);
+            return source;
+        }
+    }
+    (0, features_js_1.logable)('parsed ' + filename + ' in ' + (Date.now() - t0) + 'ms');
+    let accepted = [];
+    let ok = 0;
+    const skipped = [];
+    for (let i = 0; i < patches.length; i++) {
+        const patch = patches[i];
+        const label = patch.name || ('patch#' + i);
+        try {
+            const r = resolvePath(ast, patch.path, source);
+            if (r.error) {
+                (0, features_js_1.logable)('SKIP ' + label + ': ' + r.error);
+                skipped.push(label + ': ' + r.error);
+                continue;
+            }
+            const patchEdits = [];
+            applyOp(r.node, patch, source, patchEdits);
+            const conflict = findOverlap(accepted, patchEdits);
+            if (conflict) {
+                (0, features_js_1.logable)('SKIP ' + label + ': ' + conflict + '（坐标基于原文件，重叠会静默损坏，拒绝该 patch）');
+                skipped.push(label + ': ' + conflict);
+                continue;
+            }
+            accepted = accepted.concat(patchEdits);
+            (0, features_js_1.logable)('OK ' + label + ' (' + patchEdits.length + ' 处编辑) → ' + (0, features_js_1.describeFn)(r.node, source));
+            ok++;
+        }
+        catch (e) {
+            (0, features_js_1.logable)('SKIP ' + label + ': ' + e.message);
+            skipped.push(label + ': ' + e.message);
+        }
+    }
+    if (stats) {
+        stats.applied = ok;
+        stats.skipped = skipped;
+    }
+    if (ok === 0) {
+        (0, features_js_1.logable)('WARN: ' + filename + ' 没有 AST patch 生效（fail-safe 返回原文件）');
+        return source;
+    }
+    const out = applyEdits(source, accepted);
+    (0, features_js_1.logable)('applied ' + ok + '/' + patches.length + ' AST patches to ' + filename);
+    return out;
+}
+/* ---------- 兼容出口（__mixinAst._internals） ---------- */
+exports.internals = {
+    directChildFns: (node) => (0, features_js_1.directChildFns)(node),
+    fnFeatures: (fn) => (0, features_js_1.fnFeatures)(fn),
+    matchAnchor: (fn, anchor) => (0, features_js_1.matchAnchor)(fn, anchor),
+    resolvePath: (ast, path, src) => resolvePath(ast, path, src),
+    applyEdits: (src, edits) => applyEdits(src, edits),
+    // v2：调用点定位暴露给构建工具做构建期预检（findCallSites(fn, patch, src)）
+    findCallSites: (fn, patch, src) => findCallSites(fn, patch, src)
+};

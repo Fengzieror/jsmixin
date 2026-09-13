@@ -1,0 +1,253 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.loader = exports.engine = void 0;
+exports.activateNodeHost = activateNodeHost;
+/*
+ * hosts/node.ts — Node.js 宿主适配器（"一行引入"档位）。
+ *
+ * 用法：在一切业务代码之前 `require('jsmixin/node')`（或 node --require jsmixin/node）。
+ * 引入即生效：
+ *   1. 包装 globalThis.eval 与 Function 构造器（ECMAScript 规范层仅有的两个
+ *      "字符串→编译"入口，先加载防原始引用抢跑）；
+ *   2. 包装 vm.Script / runInThisContext / runInNewContext / runInContext（可选加固）；
+ *   3. hook require（Module._extensions['.js']）；
+ *   4. 装载 mod 目录（缺省 <cwd>/mods：mods.json 或目录扫描）；
+ *   5. 暴露全局 __mixin（与 LayaNative 相同契约，mod 包跨宿主通用）；
+ *   6. entry 队列在装载完成后下一轮事件循环执行。
+ *
+ * mod 目录约定见 src/loader/loader.ts 头注。
+ */
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
+const engine_js_1 = require("../core/engine.js");
+const loader_js_1 = require("../loader/loader.js");
+function discoverScanDirs(root) {
+    // 目录扫描：root/<id>/mixins.json（mod 目录与 mods.json 并排）
+    try {
+        return fs.readdirSync(root, { withFileTypes: true })
+            .filter((d) => d.isDirectory())
+            .map((d) => path.join(root, d.name))
+            .filter((p) => fs.existsSync(path.join(p, 'mixins.json')));
+    }
+    catch (e) {
+        return [];
+    }
+}
+function activateNodeHost(options) {
+    const g = globalThis;
+    if (g.__jsmixinNodeHost)
+        return g.__jsmixinNodeHost;
+    let acornInst = options && options.acorn;
+    if (!acornInst) {
+        try {
+            acornInst = require('acorn');
+        }
+        catch (e) {
+            acornInst = undefined;
+        }
+    }
+    const engine = (0, engine_js_1.createMixinEngine)({ acorn: acornInst });
+    function log(msg) {
+        try {
+            console.log('[jsmixin] ' + msg);
+        }
+        catch (e) { /* ignore */ }
+    }
+    // 全局 __mixin：与 LayaNative 完全相同契约 → mod 的 patches.js 跨宿主通用
+    g.__mixin = {
+        version: engine_js_1.VERSION,
+        register: function (mod) { engine.register(mod); },
+        stats: function () { return engine.stats(); },
+        sourceHash: engine_js_1.sourceHash
+    };
+    /* ---- 语言层拦截：eval + Function（先加载防抢跑） ---- */
+    // "字符串→编译"的统一变换入口：优先用文本尾部的 //@ sourceURL= 作为文件名
+    // （与 LayaNative eval 钩子同规则），没有则用通道回退名。
+    function transformAuto(src, fallbackName) {
+        const m = /\/\/@ sourceURL=(.+?)\s*$/.exec(src);
+        return engine.transformFile(m ? m[1] : fallbackName, src);
+    }
+    const origEval = g.eval;
+    if (typeof origEval === 'function') {
+        g.eval = function (src) {
+            if (typeof src === 'string' && src.length > 64) {
+                try {
+                    src = transformAuto(src, '(inline-eval)');
+                }
+                catch (e) {
+                    log('eval transform error: ' + e);
+                }
+            }
+            return origEval(src);
+        };
+    }
+    else {
+        log('WARN: eval 不可用，eval 钩子未安装');
+    }
+    const OriginalFunction = g.Function;
+    const WrappedFunction = function (...args) {
+        const body = args[args.length - 1];
+        if (typeof body === 'string' && body.length > 64) {
+            try {
+                const t = transformAuto(body, '(new Function)');
+                if (t !== body) {
+                    args = args.slice();
+                    args[args.length - 1] = t;
+                }
+            }
+            catch (e) {
+                log('Function transform error: ' + e);
+            }
+        }
+        return new OriginalFunction(...args);
+    };
+    WrappedFunction.prototype = OriginalFunction.prototype;
+    g.Function = WrappedFunction;
+    /* ---- vm 加固（可选）：vm.Script / runInThisContext / runInNewContext / runInContext ---- */
+    if (!(options && options.noVmHook)) {
+        try {
+            const vm = require('vm');
+            if (vm && !vm.__jsmixinPatched) {
+                const OrigScript = vm.Script;
+                const WrappedScript = function (...args) {
+                    const code = args[0];
+                    if (typeof code === 'string' && code.length > 64) {
+                        try {
+                            const t = transformAuto(code, '(vm.Script)');
+                            if (t !== code) {
+                                args = args.slice();
+                                args[0] = t;
+                            }
+                        }
+                        catch (e) {
+                            log('vm.Script transform error: ' + e);
+                        }
+                    }
+                    return new OrigScript(...args);
+                };
+                WrappedScript.prototype = OrigScript.prototype;
+                vm.Script = WrappedScript;
+                const wrapRun = (name) => {
+                    const orig = vm[name];
+                    if (typeof orig !== 'function')
+                        return;
+                    vm[name] = function (...args) {
+                        const code = args[0];
+                        if (typeof code === 'string' && code.length > 64) {
+                            try {
+                                const t = transformAuto(code, '(vm.' + name + ')');
+                                if (t !== code) {
+                                    args = args.slice();
+                                    args[0] = t;
+                                }
+                            }
+                            catch (e) {
+                                log('vm.' + name + ' transform error: ' + e);
+                            }
+                        }
+                        return orig.apply(vm, args);
+                    };
+                };
+                wrapRun('runInThisContext');
+                wrapRun('runInNewContext');
+                wrapRun('runInContext');
+                vm.__jsmixinPatched = true;
+            }
+        }
+        catch (e) {
+            log('vm 钩子未安装: ' + e);
+        }
+    }
+    /* ---- require hook（Module._extensions['.js']） ---- */
+    if (!(options && options.noRequireHook)) {
+        const Module = require('module');
+        const origJs = Module._extensions['.js'];
+        Module._extensions['.js'] = function (module, filename) {
+            let src;
+            try {
+                src = fs.readFileSync(filename, 'utf8');
+            }
+            catch (e) {
+                return origJs.call(this, module, filename); // 读不到按原逻辑（会抛出原生错误）
+            }
+            const out = engine.transformFile(filename, src);
+            module._compile(out, filename);
+        };
+    }
+    /* ---- mod 装载（mods.json 优先，否则目录扫描） ---- */
+    const loader = (0, loader_js_1.createModLoader)({
+        engine: engine,
+        readFile: function (p) {
+            try {
+                return fs.readFileSync(p, 'utf8');
+            }
+            catch (e) {
+                return '';
+            }
+        }
+    });
+    const modsDir = (options && options.modsDir) || path.join(process.cwd(), 'mods');
+    if (!(options && options.noMods) && fs.existsSync(modsDir)) {
+        if (fs.existsSync(path.join(modsDir, 'mods.json'))) {
+            loader.loadMods(modsDir);
+        }
+        else {
+            const dirs = discoverScanDirs(modsDir);
+            if (dirs.length) {
+                for (let i = 0; i < dirs.length; i++) {
+                    try {
+                        loader.loadOne(modsDir, path.basename(dirs[i]));
+                    }
+                    catch (e) {
+                        log('mod 装载失败: ' + e);
+                    }
+                }
+                log('外部 mod 装载完成（目录扫描 ' + dirs.length + ' 个，entries: ' + loader.entries.length + '）');
+            }
+        }
+        // entry 队列：装载完成后下一轮事件循环执行（Node 无"游戏启动"挂点）
+        if (typeof setTimeout === 'function')
+            setTimeout(function () { loader.runEntries(); }, 0);
+    }
+    const host = { engine: engine, loader: loader, modsDir: modsDir };
+    g.__jsmixinNodeHost = host;
+    return host;
+}
+// require('jsmixin/node') 即激活（幂等）
+const host = activateNodeHost();
+exports.default = host;
+exports.engine = host.engine;
+exports.loader = host.loader;

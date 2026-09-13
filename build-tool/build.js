@@ -196,9 +196,19 @@ function parseMarkFile(file, map) {
                     if (!da.find || typeof da.find !== 'string') fail(file + ': @Modify 需要 { find: "节点源码精确文本" }');
                     if (da.replace == null || typeof da.replace !== 'string') fail(file + ': @Modify 需要 { replace: "替换表达式文本" }');
                     made.push({ op: 'modify', find: da.find, replace: da.replace, nth: da.nth, all: da.all === true ? true : undefined });
+                } else if (dn === 'Redirect') {
+                    if (!da.call) fail(file + ': @Redirect 需要 { call: "callee 点分名（支持 this.x）" }');
+                    made.push({ op: 'redirect', call: da.call, params: da.params, nth: da.nth, all: da.all === true ? true : undefined, code: code });
+                } else if (dn === 'WrapOperation') {
+                    if (!da.call) fail(file + ': @WrapOperation 需要 { call: "callee 点分名（支持 this.x）" }');
+                    made.push({ op: 'wrapCall', call: da.call, params: da.params, nth: da.nth, all: da.all === true ? true : undefined, code: code });
+                } else if (dn === 'ModifyArg') {
+                    if (!da.call) fail(file + ': @ModifyArg 需要 { call: "callee 点分名（支持 this.x）" }');
+                    if (da.arg == null || typeof da.arg !== 'number') fail(file + ': @ModifyArg 需要 { arg: 实参槽位序号 }');
+                    made.push({ op: 'modifyArg', call: da.call, arg: da.arg, params: da.params, nth: da.nth, all: da.all === true ? true : undefined, code: code });
                 } else {
                     fail(file + ': 方法 ' + markMethodName + ' 上有未支持的装饰器 @' + dn
-                        + '（支持 Inject/Overwrite/Wrap/Export/Modify）');
+                        + '（支持 Inject/Overwrite/Wrap/Export/Modify/Redirect/WrapOperation/ModifyArg）');
                 }
             }
             if (made.length) ops.push({ markMethod: markMethodName, patches: made });
@@ -242,6 +252,9 @@ function expandGroups(groups) {
                     replace: pk.replace,
                     nth: pk.nth,
                     all: pk.all,
+                    call: pk.call,
+                    arg: pk.arg,
+                    params: pk.params,
                     from: grp.file
                 });
             }
@@ -310,10 +323,18 @@ function runBuild(projDir) {
             var gp = cfg.gameFiles[targetFile];
             if (!gp) fail('target.file "' + targetFile + '" 不在 build-config.gameFiles 里');
             var src = readText(path.join(projDir, gp));
-            astCache[targetFile] = {
-                src: src,
-                ast: acorn.parse(src, { ecmaVersion: 'latest' })
-            };
+            var ast;
+            try {
+                ast = acorn.parse(src, { ecmaVersion: 'latest' });
+            } catch (e1) {
+                // ESM（import/export）目标：script 失败后按 module 模式重试（与 runtime 同规则）
+                try {
+                    ast = acorn.parse(src, { ecmaVersion: 'latest', sourceType: 'module' });
+                } catch (e2) {
+                    throw e1;
+                }
+            }
+            astCache[targetFile] = { src: src, ast: ast };
         }
         return astCache[targetFile];
     }
@@ -332,15 +353,34 @@ function runBuild(projDir) {
             if (ee) { errors.push(req.name + ' (@Export ' + req.as + '): ' + ee); continue; }
         }
 
-        // 注入体语法校验（与 runtime validateCode 同规则）
+        // 注入体语法校验（与 runtime validateCode 同规则；调用点级 op 的 code 收表达式或语句体）
         if (req.code != null) {
-            try { acorn.parse('(function(){' + req.code + '})', { ecmaVersion: 'latest' }); }
-            catch (e) { errors.push(req.name + ': 注入体语法错误: ' + e.message); continue; }
+            var ok1 = null, err1 = null;
+            if (req.op === 'redirect' || req.op === 'modifyArg') {
+                try { acorn.parse('(' + req.code + ')', { ecmaVersion: 'latest' }); ok1 = 'expr'; } catch (e) { err1 = e; }
+                if (!ok1) {
+                    try { acorn.parse('(function(){' + req.code + '})', { ecmaVersion: 'latest' }); ok1 = 'body'; } catch (e2) { err1 = e2; }
+                }
+                if (!ok1) { errors.push(req.name + ': 注入体语法错误: ' + err1.message); continue; }
+            } else {
+                try { acorn.parse('(function(){' + req.code + '})', { ecmaVersion: 'latest' }); }
+                catch (e) { errors.push(req.name + ': 注入体语法错误: ' + e.message); continue; }
+            }
         }
 
         // 构建期唯一性预检：0 个或多于 1 个候选 → 构建失败
         var pr = AST.resolvePath(c.ast, req.path, c.src);
         if (pr.error) { errors.push(req.name + ': ' + withLineInfo(pr.error, c.src)); continue; }
+
+        // 调用点级 op 的构建期预检：目标函数内调用点 0 个 / 多个未消歧 → 构建失败
+        if (req.op === 'redirect' || req.op === 'wrapCall' || req.op === 'modifyArg') {
+            var sites = AST.findCallSites(pr.node, req, c.src);
+            if (!sites.length) { errors.push(req.name + ': 目标函数内 0 处命中调用 "' + req.call + '"'); continue; }
+            if (sites.length > 1 && req.all !== true && req.nth == null) {
+                errors.push(req.name + ': ' + sites.length + ' 处命中调用 "' + req.call + '"，需写 nth 或 all:true');
+                continue;
+            }
+        }
 
         var patch = { name: req.name, path: req.path, op: req.op };
         if (req.op === 'inject') patch.at = req.at || 'head';
@@ -348,6 +388,13 @@ function runBuild(projDir) {
         if (req.op === 'modify') {
             patch.find = req.find;
             patch.replace = req.replace;
+            if (req.nth != null) patch.nth = req.nth;
+            if (req.all === true) patch.all = true;
+        }
+        if (req.op === 'redirect' || req.op === 'wrapCall' || req.op === 'modifyArg') {
+            patch.call = req.call;
+            if (req.params != null) patch.params = req.params;
+            if (req.op === 'modifyArg') patch.arg = req.arg;
             if (req.nth != null) patch.nth = req.nth;
             if (req.all === true) patch.all = true;
         }

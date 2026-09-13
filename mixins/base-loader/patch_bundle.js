@@ -40,6 +40,7 @@ window.__mixinBoot = function (Laya) {
 window.__mixin.register({
     modid: 'base-test',
     version: '0.0.3',
+    priority: 0, // 基础加载器最先应用（DESIGN-layout.md §三纪律）
     mixins: [
         {
             // 游戏主脚本：由 apploader.js 经 window.downloadfile + window.eval 执行
