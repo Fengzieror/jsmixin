@@ -25,7 +25,7 @@ import { resolveClass } from './segs/klass.js';
 import { resolveWrap } from './segs/wrap.js';
 import type { Anchor, Patch, PathSeg, PatchStats, ResolveResult, SourceEdit, AstInternals } from './types.js';
 
-export const VERSION = '2.0.0';
+export const VERSION = '2.1.0';
 
 /* ---------- acorn 注入 ---------- */
 

@@ -8,7 +8,17 @@
 import * as esbuild from 'esbuild';
 import fs from 'fs';
 
-const banner = (src) => ({ js: '/* 由 jsmixin v2 构建生成（源: ' + src + '），勿手改。 */' });
+// 许可声明头：MIT 义务 = 再分发时保留版权与许可声明。
+// boot bundle 内联了 acorn，必须带 acorn 归属；其余产物只声明 jsmixin 自身。
+const OWN = '/*! jsmixin v2.1.0 | MIT License | https://github.com/Fengzieror/jsmixin */';
+const ACORN = '/*! Includes acorn 8.18.0 | MIT License | '
+    + 'Copyright (C) 2012-2020 by Marijn Haverbeke, Ingvar Stepanyan and contributors '
+    + '| https://github.com/acornjs/acorn */';
+
+const banner = (src, extra) => ({
+    js: '/* 由 jsmixin v2 构建生成（源: ' + src + '），勿手改。 */\n'
+        + OWN + (extra ? '\n' + extra : '')
+});
 
 const common = {
     bundle: true,
@@ -39,7 +49,7 @@ await esbuild.build({
     ...common,
     entryPoints: ['src/compat/boot-compat.ts'],
     outfile: 'dist/boot/mixin-boot.js',
-    banner: banner('src/compat/boot-compat.ts')
+    banner: banner('src/compat/boot-compat.ts', ACORN)
 });
 
 // 防御性检查：产物必须挂上 v1 全局契约符号

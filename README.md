@@ -13,8 +13,20 @@ modified — everything happens in memory, and mods are standalone folders loade
 
 ### Install
 
-> Not published to npm yet (planned). Use from a git clone / local path:
-> `npm install file:../jsmixin` or `npm link`.
+> Not published to npm yet (planned). Two ways to get it:
+
+```bash
+# Option A — from source (requires Node >= 18; dev toolchain is installed automatically,
+# the build runs once via the `prepare` script on install):
+git clone https://github.com/Fengzieror/jsmixin.git
+cd jsmixin && npm install        # clones build themselves (tsc + esbuild)
+
+# Option B — prebuilt artifacts: grab the dist zip from GitHub Releases
+# (contains dist/, runtime/, vendor/ — everything needed to run without building).
+```
+
+The repo tracks sources only; `dist/` and `runtime/` are build outputs (see
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) for bundled third-party components).
 
 ### Quick start — Node ("one-line integration")
 
@@ -69,9 +81,13 @@ Path segments: `{module}` (webpack) · `{name}` (bindings, dotted namespaces) ·
 `{anchor}` (string/call signatures) · `{call,arg}` (anonymous callbacks) ·
 `{wrap}` (CJS/UMD/IIFE unwrapping) · `{fn}` (structural, last resort).
 
-Ops: `inject` (head/tail) · `overwrite` · `wrap` ($orig) · `redirect` · `wrapCall` ·
-`modifyArg` · `modify` · `log` — all with fail-safe semantics (a failed patch is
-skipped, the program runs unchanged).
+Ops: `inject` (head/tail, cancellable) · `overwrite` · `wrap` ($orig) · `redirect` ·
+`wrapCall` · `modifyArg` · `modifyArgs` · `modify` · `modifyReturn` ·
+`wrapValue` (expression-level) · `export` (incl. writable) · `log` — all with fail-safe
+semantics (a failed patch is skipped, the program runs unchanged).
+
+A complete runnable project with 3 mods covering every decorator lives in
+[examples/demo-game](examples/demo-game).
 
 ### Documentation
 
@@ -85,7 +101,7 @@ skipped, the program runs unchanged).
 
 ```
 npm install
-npm test          # builds (tsc CJS+ESM, esbuild compat bundles) and runs 4 suites
+npm test          # builds (tsc CJS+ESM, esbuild compat bundles) and runs 7 suites
 ```
 
 ---
@@ -107,6 +123,19 @@ SpongePowered Mixin 风格的 JS 源码变换系统：在目标 JS **编译之�
 3. **硬盘 JS 永不修改**：目标代码用原本的传入方式运行，mixin 在"字符串进编译器之前"透明拦截。
 4. **接口开放靠变换实现**：export/wrap/inject 把闭包内符号暴露出来就是 mod 的 API；
    原作预留接口是加分项，不是前提。
+
+### 获取与构建
+
+```bash
+# 方式 A — 源码（Node >= 18；npm install 时 prepare 脚本自动执行一次构建）
+git clone https://github.com/Fengzieror/jsmixin.git
+cd jsmixin && npm install
+
+# 方式 B — 免构建：到 GitHub Releases 下载 dist 压缩包（含 dist/ runtime/ vendor/）
+```
+
+仓库只跟踪源码；`dist/` 与 `runtime/` 是构建产物（第三方组件声明见
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)，产物头部自带许可 banner）。
 
 ### LayaNative 宿主（v1 兼容，零改动）
 
@@ -152,4 +181,5 @@ node build-tool/build.js <mod项目目录>
 
 ## License
 
-MIT
+MIT — 见 [LICENSE](./LICENSE)。第三方组件（acorn / TypeScript / esbuild）的许可与版权
+声明见 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)。

@@ -1,6 +1,6 @@
 {
   "name": "jsmixin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "SpongePowered-Mixin-style JS source transform: AST-level inject/overwrite/wrap/redirect on any JavaScript before it is compiled. Runtime-agnostic core + LayaNative/Node adapters; mods are standalone folders loaded from disk, target code is never modified on disk.",
   "keywords": [
     "mixin",
@@ -28,7 +28,8 @@
     "mixins/base-loader/",
     "docs/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md"
   ],
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
@@ -53,9 +54,11 @@
   },
   "scripts": {
     "build": "npm run build:cjs && npm run build:esm && npm run build:compat",
-    "build:cjs": "tsc -p tsconfig.json",
-    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.json && node scripts/add-banners.mjs",
+    "build:esm": "tsc -p tsconfig.esm.json && node scripts/add-banners.mjs",
     "build:compat": "node scripts/build-compat.mjs",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test",
     "test": "npm run build && node test/test_mixin_ast.js && node test/test_build_tool.js && node test/test_v2_core.js && node test/test_node_host.js && node test/test_build_tool_v2.js && node test/test_build_tool_v3.js && node test/test_boot_bundle.js",
     "build:mod": "node build-tool/build.js"
   },

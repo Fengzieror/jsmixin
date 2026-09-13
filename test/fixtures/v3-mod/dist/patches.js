@@ -1,5 +1,5 @@
 /* 由 jsmixin build-tool 生成，勿手改。源: V3.mark.ts */
-window.__mixin.register({
+(typeof window !== 'undefined' ? window : globalThis).__mixin.register({
   "modid": "v3-mod",
   "version": "0.1.0",
   "mixins": [
@@ -148,7 +148,7 @@ window.__mixin.register({
           ],
           "op": "inject",
           "at": "tail",
-          "code": "\nwindow.__mixin_exports = window.__mixin_exports || {};\nObject.defineProperty(window.__mixin_exports, \"stepFn\", { get: function () { return step; }, set: function (v) { step = v; }, configurable: !0 });"
+          "code": "\n(typeof window !== 'undefined' ? window : globalThis).__mixin_exports = (typeof window !== 'undefined' ? window : globalThis).__mixin_exports || {};\nObject.defineProperty((typeof window !== 'undefined' ? window : globalThis).__mixin_exports, \"stepFn\", { get: function () { return step; }, set: function (v) { step = v; }, enumerable: !0, configurable: !0 });"
         }
       ]
     }
