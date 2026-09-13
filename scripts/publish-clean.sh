@@ -48,10 +48,10 @@ git update-index --cacheinfo 100644,$BLOB,test/test_mixin_ast.js
 
 TREE=$(git write-tree)
 
-# 安全闸门：公开树里出现游戏衍生关键词则中止
-if git grep -l -E "派对制造|pdzz|秒后重试|noads|keystore|apktool|pdzzapksworkspace" "$TREE" -- >/dev/null 2>&1; then
+# 安全闸门：公开树里出现游戏衍生关键词则中止（排除本脚本——闸门模式本身含这些词）
+if git grep -l -E "派对制造|pdzz|秒后重试|noads|keystore|apktool|pdzzapksworkspace" "$TREE" -- ':!scripts/publish-clean.sh' >/dev/null 2>&1; then
     echo "ABORT: 公开树命中敏感关键词，请检查：" >&2
-    git grep -n -E "派对制造|pdzz|秒后重试|noads|keystore|apktool|pdzzapksworkspace" "$TREE" -- >&2
+    git grep -n -E "派对制造|pdzz|秒后重试|noads|keystore|apktool|pdzzapksworkspace" "$TREE" -- ':!scripts/publish-clean.sh' >&2
     exit 1
 fi
 
