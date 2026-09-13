@@ -66,7 +66,14 @@ function baseName(f: string): string {
 
 function fileMatches(pattern: string, base: string, full: string): boolean {
     if (!pattern) return false;
-    return base === pattern || full === pattern;
+    // pattern 带路径分隔符 → 按（分隔符规范化后的）全路径匹配，可与其它目录的同名文件消歧；
+    // 纯文件名 → 沿用 basename 匹配（跨目录命中，兼容 v1 行为）
+    if (/[\\/]/.test(pattern)) {
+        const normFull = full.replace(/\\/g, '/');
+        const normPattern = pattern.replace(/\\/g, '/');
+        return normFull === normPattern || normFull.endsWith('/' + normPattern);
+    }
+    return base === pattern;
 }
 
 /*
@@ -95,6 +102,11 @@ function applyReplaces(mx: MixinEntry, source: string, filename: string, log: Mi
     for (let i = 0; i < mx.replaces.length; i++) {
         const from = mx.replaces[i][0];
         const to = mx.replaces[i][1];
+        // 空 from 防御（#14）：split('') 会把输出炸成逐字符，静默产出损坏文本
+        if (!from) {
+            log('WARN: ' + (mx.file || '?') + ' 的 replaces 第 ' + i + ' 项 from 为空串，跳过该条');
+            continue;
+        }
         const n = out.split(from).length - 1;
         if (n === 0) {
             log('WARN: ' + (mx.file || '?') + ' 中找不到替换目标 "' + from + '"（可能游戏版本不符）');
