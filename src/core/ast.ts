@@ -300,6 +300,13 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: '\n' + code + '\n' });
     } else if (op === 'wrap') {
         validateBodyCode(code, 'wrap');
+        // wrap 把原函数体内移进普通嵌套函数 __mixin_origN，因此：
+        //   async   → orig 同步声明为 async，await 语义保持（外层 async 返回 Promise，链式展平）
+        //   generator → 拒绝：需要 yield* 委托才能保真，当前骨架不支持，宁跳过不产出坏代码（#1）
+        //   块体箭头  → 拒绝：箭头函数没有自己的 arguments/this，'var __mixin_args = arguments'
+        //               捕获到的是外层函数（甚至模块层 ReferenceError）的 arguments（#1）
+        if (fn.generator) throw new Error('wrap 暂不支持 generator 目标（需要 yield* 委托保真，当前未实现）');
+        if (fn.type === 'ArrowFunctionExpression') throw new Error('wrap 不支持箭头函数目标（arguments/this 是词法绑定的外层，转发不保真），请用 overwrite/inject');
         const paramText = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : '';
         const origBody = src.slice(fn.body.start + 1, fn.body.end - 1);
         const n = '_' + fn.start;
@@ -308,7 +315,7 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         // 包装函数自身的 arguments[0] 是转发函数（真机踩坑：getComponentName 拿 arguments[0]
         // 当 id → 所有组件名变成 "component_name_" + 函数源码）。
         const newBody =
-            '\nfunction __mixin_orig' + n + '(' + paramText + ') {' + origBody + '}\n' +
+            '\n' + (fn.async ? 'async ' : '') + 'function __mixin_orig' + n + '(' + paramText + ') {' + origBody + '}\n' +
             'var __mixin_args' + n + ' = arguments;\n' +
             'return (function ($orig, __mixin_args) {\n' + code + '\n})(function () {' +
             'return __mixin_orig' + n + '.apply(this, arguments.length ? arguments : __mixin_args' + n + '); }, __mixin_args' + n + ');\n';
@@ -317,12 +324,15 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         // @ModifyReturnValue：原函数体保真内移为 __mixin_origN，返回值经 $value 包装。
         // 与 wrap 的区别：注入体拿到的是【已求值的返回值】（$value），不是可再调用的 $orig。
         // code 必须返回新返回值；this 与实参经 call/arguments 原样转发。
+        // async/generator/箭头的约束与 wrap 相同（#1）。
         validateBodyCode(code, 'modifyReturn');
+        if (fn.generator) throw new Error('modifyReturn 暂不支持 generator 目标（需要 yield* 委托保真，当前未实现）');
+        if (fn.type === 'ArrowFunctionExpression') throw new Error('modifyReturn 不支持箭头函数目标（arguments/this 是词法绑定的外层，转发不保真），请用 overwrite/inject');
         const mrParams = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : '';
         const mrBody = src.slice(fn.body.start + 1, fn.body.end - 1);
         const mn = '_' + fn.start;
         const mrBodyNew =
-            '\nfunction __mixin_orig' + mn + '(' + mrParams + ') {' + mrBody + '}\n' +
+            '\n' + (fn.async ? 'async ' : '') + 'function __mixin_orig' + mn + '(' + mrParams + ') {' + mrBody + '}\n' +
             'return (function ($value) {\n' + code + '\n})(__mixin_orig' + mn + '.apply(this, arguments));\n';
         edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: mrBodyNew });
     } else if (op === 'modify') {
