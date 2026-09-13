@@ -341,7 +341,7 @@ function expandExport(req, astCache) {
             + 'Object.defineProperty(' + G + '.__mixin_exports, ' + JSON.stringify(req.as) + ', {'
             + ' get: function () { return ' + nm + '; },'
             + ' set: function (v) { ' + nm + ' = v; },'
-            + ' configurable: !0 });';
+            + ' enumerable: !0, configurable: !0 });';
     } else {
         req.code = '\n' + G + '.__mixin_exports = ' + G + '.__mixin_exports || {};\n' + G + '.__mixin_exports['
             + JSON.stringify(req.as) + '] = ' + nm + ';';
@@ -577,6 +577,13 @@ function runBuild(projDir) {
         mixins: ['patches.js']
     };
     if (cfg.priority != null) manifest.priority = cfg.priority;
+    // entry（附加式代码）：cfg.entry 声明则随产物复制并写进清单（loader 在游戏启动后执行）
+    if (cfg.entry) {
+        var entrySrc = path.join(projDir, cfg.entry);
+        if (!fs.existsSync(entrySrc)) fail('cfg.entry 指向的文件不存在: ' + cfg.entry);
+        fs.writeFileSync(path.join(outDir, path.basename(cfg.entry)), fs.readFileSync(entrySrc));
+        manifest.entry = path.basename(cfg.entry);
+    }
     // 哈希校验暂不要求：不生成 required 块
     fs.writeFileSync(path.join(outDir, 'mixins.json'), JSON.stringify(manifest, null, 2) + '\n');
 

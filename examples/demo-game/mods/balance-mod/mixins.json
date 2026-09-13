@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "modid": "balance-mod",
+  "name": "BalanceMod",
+  "version": "1.0.0",
+  "mixins": [
+    "patches.js"
+  ],
+  "priority": 50
+}

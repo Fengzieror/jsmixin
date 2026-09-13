@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "modid": "log-mod",
+  "name": "LogMod",
+  "version": "1.0.0",
+  "mixins": [
+    "patches.js"
+  ],
+  "priority": 10,
+  "entry": "entry.js"
+}

@@ -1,0 +1,7 @@
+{
+  "mods": [
+    { "id": "log-mod", "enabled": true },
+    { "id": "balance-mod", "enabled": true },
+    { "id": "cheat-mod", "enabled": true }
+  ]
+}
