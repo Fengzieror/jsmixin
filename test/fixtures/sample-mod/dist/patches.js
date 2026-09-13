@@ -1,5 +1,5 @@
 /* 由 jsmixin build-tool 生成，勿手改。源: Demo.mark.ts */
-window.__mixin.register({
+(typeof window !== 'undefined' ? window : globalThis).__mixin.register({
   "modid": "demo-mod",
   "version": "0.1.0",
   "mixins": [
@@ -73,7 +73,7 @@ window.__mixin.register({
           ],
           "op": "inject",
           "at": "tail",
-          "code": "\nwindow.__mixin_exports = window.__mixin_exports || {};\nwindow.__mixin_exports[\"stepFn\"] = step;"
+          "code": "\n(typeof window !== 'undefined' ? window : globalThis).__mixin_exports = (typeof window !== 'undefined' ? window : globalThis).__mixin_exports || {};\n(typeof window !== 'undefined' ? window : globalThis).__mixin_exports[\"stepFn\"] = step;"
         },
         {
           "name": "ModifyMark.target",

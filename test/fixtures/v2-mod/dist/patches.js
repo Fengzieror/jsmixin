@@ -1,5 +1,5 @@
 /* 由 jsmixin build-tool 生成，勿手改。源: V2.mark.ts */
-window.__mixin.register({
+(typeof window !== 'undefined' ? window : globalThis).__mixin.register({
   "modid": "v2-mod",
   "version": "0.1.0",
   "mixins": [
