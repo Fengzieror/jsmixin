@@ -208,13 +208,27 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
                     : '(function ($args) {\n' + code + '\n})([' + argsSrc + '])';
             } else if (op === 'wrapCall') {
                 // 包装调用：$orig() 无参转发原实参；$orig(a,b) 显式改参；$args 原实参数组。
-                // 成员调用保留原 this（apply 对象取 callee.object 源码，闭包内求值）。
+                // 成员调用保留原 this；object 不是裸 Identifier/this 时提取到临时变量
+                // （闭包内求值一次），否则 getter/工厂调用会被求值两次、receiver 与方法
+                // 可能来自不同实例（#10）。
                 validateBodyCode(code, 'wrapCall');
                 const callee = callNode.callee;
-                const calleeSrc = src.slice(callee.start, callee.end);
-                const fwdThis = (callee.type === 'MemberExpression' && callee.object)
-                    ? src.slice(callee.object.start, callee.object.end) : 'this';
+                let recvPrep = '';
+                let calleeSrc = src.slice(callee.start, callee.end);
+                let fwdThis = 'this';
+                if (callee.type === 'MemberExpression' && callee.object) {
+                    const objSrc = src.slice(callee.object.start, callee.object.end);
+                    if (callee.object.type === 'Identifier' || callee.object.type === 'ThisExpression') {
+                        fwdThis = objSrc;
+                    } else {
+                        const rv = '__mixin_recv_' + callNode.start;
+                        recvPrep = 'var ' + rv + ' = (' + objSrc + ');\n';
+                        fwdThis = rv;
+                        calleeSrc = rv + src.slice(callee.object.end, callee.end);
+                    }
+                }
                 text = '(function ($args) {\n'
+                    + recvPrep
                     + 'var $orig = function () { return (' + calleeSrc + ').apply(' + fwdThis
                     + ', arguments.length ? arguments : $args); };\n'
                     + code + '\n})([' + argsSrc + '])';
@@ -226,13 +240,29 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
                 // @ModifyArgs：code($args) 返回新实参数组，整体重组调用。
                 // 成员调用保留原 this（apply 对象取 callee.object 源码）；
                 // 普通调用 this 用 undefined（与原 plain call 的 sloppy 语义一致，不能借用目标函数的 this）。
+                // object 不是裸 Identifier/this 时提取到临时变量单次求值（#10，同 wrapCall）。
                 validateBodyCode(code, 'modifyArgs');
                 const callee = callNode.callee;
-                const calleeSrc = src.slice(callee.start, callee.end);
-                const fwdThis = (callee.type === 'MemberExpression' && callee.object)
-                    ? src.slice(callee.object.start, callee.object.end) : 'undefined';
-                text = '(' + calleeSrc + ').apply(' + fwdThis
+                let calleeSrc = src.slice(callee.start, callee.end);
+                let fwdThis = 'undefined';
+                let recvWrap: ((body: string) => string) | null = null;
+                if (callee.type === 'MemberExpression' && callee.object) {
+                    const objSrc = src.slice(callee.object.start, callee.object.end);
+                    if (callee.object.type === 'Identifier' || callee.object.type === 'ThisExpression') {
+                        fwdThis = objSrc;
+                    } else {
+                        const rv = '__mixin_recv_' + callNode.start;
+                        fwdThis = rv;
+                        calleeSrc = rv + src.slice(callee.object.end, callee.end);
+                        // 表达式上下文不能塞 var 声明：包一层 IIFE 完成"提取 → apply"
+                        recvWrap = function (body: string): string {
+                            return '(function () {\nvar ' + rv + ' = (' + objSrc + ');\n' + body + '\n})()';
+                        };
+                    }
+                }
+                const applyExpr = '(' + calleeSrc + ').apply(' + fwdThis
                     + ', (function ($args) {\n' + code + '\n})([' + argsSrc + ']))';
+                text = recvWrap ? recvWrap('return ' + applyExpr + ';') : applyExpr;
             } else { // modifyArg
                 // 包装单个实参：$arg 原实参值，code 表达式（或语句体）求值结果替换该实参。
                 // 只替换目标实参表达式，调用本身保留（helper(包装($arg)) 语义）。
