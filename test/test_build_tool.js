@@ -32,7 +32,7 @@ if (res.ok) {
         '实际 ' + res.patchCount);
 
     var patchesJs = fs.readFileSync(path.join(res.outDir, 'patches.js'), 'utf8');
-    check('产物 patches.js 存在且含 register 调用', patchesJs.indexOf('window.__mixin.register(') >= 0);
+    check('产物 patches.js 存在且含 register 调用（跨宿主 window/globalThis）', patchesJs.indexOf('(typeof window !== \'undefined\' ? window : globalThis).__mixin.register(') >= 0);
     check('产物包含 export 赋值', patchesJs.indexOf('__mixin_exports') >= 0);
     check('产物包含 modify patch（find/replace）', /"op":\s*"modify"/.test(patchesJs)
         && patchesJs.indexOf('return x + 1;') >= 0 && patchesJs.indexOf('return x + 2;') >= 0);

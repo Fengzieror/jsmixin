@@ -10,7 +10,7 @@
  *                                aliases:{可读名:真实名} }
  *
  * 输出（<项目>/dist/）：
- *   patches.js          window.__mixin.register({...}) 形态，与 runtime 对接
+ *   patches.js          __mixin.register({...}) 形态（window/globalThis 跨宿主），与 runtime 对接
  *   mixins.json         mod 清单（哈希校验暂不要求，不生成 required 块）
  *
  * 管线（DESIGN-target.md §五，按当前口径裁剪）：
@@ -312,7 +312,7 @@ function expandGroups(groups) {
     return reqs;
 }
 
-// 把 @Export 请求翻译成 inject-tail patch：在父层函数尾注入 window.__mixin_exports 赋值。
+// 把 @Export 请求翻译成 inject-tail patch：在父层函数尾注入 __mixin_exports 赋值（跨宿主）。
 // 需要目标在父作用域里有名字（绑定名或自身 id）；匿名目标请改用 Wrap。
 function expandExport(req, astCache) {
     var c = astCache[req.targetFile];
@@ -331,17 +331,19 @@ function expandExport(req, astCache) {
     // 导出赋值注入到父层函数尾（runtime 的 tail 会在末尾 return 之前插入，不会成为死代码）。
     // writable: true → getter/setter 形式（@Accessor/@Invoker 强化）：外部读写直达闭包绑定本身
     // 而非快照拷贝——set 里的赋值在注入文本内执行，真正改写闭包变量。
+    // 导出容器跨宿主：注入体内不假设全局别名（Node 无 window）
+    var G = "(typeof window !== 'undefined' ? window : globalThis)";
     req.path = parentPath;
     req.op = 'inject';
     req.at = 'tail';
     if (req.writable) {
-        req.code = '\nwindow.__mixin_exports = window.__mixin_exports || {};\n'
-            + 'Object.defineProperty(window.__mixin_exports, ' + JSON.stringify(req.as) + ', {'
+        req.code = '\n' + G + '.__mixin_exports = ' + G + '.__mixin_exports || {};\n'
+            + 'Object.defineProperty(' + G + '.__mixin_exports, ' + JSON.stringify(req.as) + ', {'
             + ' get: function () { return ' + nm + '; },'
             + ' set: function (v) { ' + nm + ' = v; },'
             + ' configurable: !0 });';
     } else {
-        req.code = '\nwindow.__mixin_exports = window.__mixin_exports || {};\nwindow.__mixin_exports['
+        req.code = '\n' + G + '.__mixin_exports = ' + G + '.__mixin_exports || {};\n' + G + '.__mixin_exports['
             + JSON.stringify(req.as) + '] = ' + nm + ';';
     }
     req.name = req.name + '$export';
@@ -562,8 +564,10 @@ function runBuild(projDir) {
     if (cfg.priority != null) mod.priority = cfg.priority;
 
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+    // 注册行跨宿主：LayaNative/浏览器走 window，Node 走 globalThis（mod 包跨运行时通用）
     var patchesJs = '/* 由 jsmixin build-tool 生成，勿手改。源: ' + markFiles.map(function (p) { return path.basename(p); }).join(', ') + ' */\n'
-        + 'window.__mixin.register(' + JSON.stringify(mod, null, 2) + ');\n';
+        + '(typeof window !== \'undefined\' ? window : globalThis).__mixin.register('
+        + JSON.stringify(mod, null, 2) + ');\n';
     fs.writeFileSync(path.join(outDir, 'patches.js'), patchesJs);
     var manifest = {
         schemaVersion: 1,
