@@ -208,13 +208,27 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
                     : '(function ($args) {\n' + code + '\n})([' + argsSrc + '])';
             } else if (op === 'wrapCall') {
                 // 包装调用：$orig() 无参转发原实参；$orig(a,b) 显式改参；$args 原实参数组。
-                // 成员调用保留原 this（apply 对象取 callee.object 源码，闭包内求值）。
+                // 成员调用保留原 this；object 不是裸 Identifier/this 时提取到临时变量
+                // （闭包内求值一次），否则 getter/工厂调用会被求值两次、receiver 与方法
+                // 可能来自不同实例（#10）。
                 validateBodyCode(code, 'wrapCall');
                 const callee = callNode.callee;
-                const calleeSrc = src.slice(callee.start, callee.end);
-                const fwdThis = (callee.type === 'MemberExpression' && callee.object)
-                    ? src.slice(callee.object.start, callee.object.end) : 'this';
+                let recvPrep = '';
+                let calleeSrc = src.slice(callee.start, callee.end);
+                let fwdThis = 'this';
+                if (callee.type === 'MemberExpression' && callee.object) {
+                    const objSrc = src.slice(callee.object.start, callee.object.end);
+                    if (callee.object.type === 'Identifier' || callee.object.type === 'ThisExpression') {
+                        fwdThis = objSrc;
+                    } else {
+                        const rv = '__mixin_recv_' + callNode.start;
+                        recvPrep = 'var ' + rv + ' = (' + objSrc + ');\n';
+                        fwdThis = rv;
+                        calleeSrc = rv + src.slice(callee.object.end, callee.end);
+                    }
+                }
                 text = '(function ($args) {\n'
+                    + recvPrep
                     + 'var $orig = function () { return (' + calleeSrc + ').apply(' + fwdThis
                     + ', arguments.length ? arguments : $args); };\n'
                     + code + '\n})([' + argsSrc + '])';
@@ -226,13 +240,29 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
                 // @ModifyArgs：code($args) 返回新实参数组，整体重组调用。
                 // 成员调用保留原 this（apply 对象取 callee.object 源码）；
                 // 普通调用 this 用 undefined（与原 plain call 的 sloppy 语义一致，不能借用目标函数的 this）。
+                // object 不是裸 Identifier/this 时提取到临时变量单次求值（#10，同 wrapCall）。
                 validateBodyCode(code, 'modifyArgs');
                 const callee = callNode.callee;
-                const calleeSrc = src.slice(callee.start, callee.end);
-                const fwdThis = (callee.type === 'MemberExpression' && callee.object)
-                    ? src.slice(callee.object.start, callee.object.end) : 'undefined';
-                text = '(' + calleeSrc + ').apply(' + fwdThis
+                let calleeSrc = src.slice(callee.start, callee.end);
+                let fwdThis = 'undefined';
+                let recvWrap: ((body: string) => string) | null = null;
+                if (callee.type === 'MemberExpression' && callee.object) {
+                    const objSrc = src.slice(callee.object.start, callee.object.end);
+                    if (callee.object.type === 'Identifier' || callee.object.type === 'ThisExpression') {
+                        fwdThis = objSrc;
+                    } else {
+                        const rv = '__mixin_recv_' + callNode.start;
+                        fwdThis = rv;
+                        calleeSrc = rv + src.slice(callee.object.end, callee.end);
+                        // 表达式上下文不能塞 var 声明：包一层 IIFE 完成"提取 → apply"
+                        recvWrap = function (body: string): string {
+                            return '(function () {\nvar ' + rv + ' = (' + objSrc + ');\n' + body + '\n})()';
+                        };
+                    }
+                }
+                const applyExpr = '(' + calleeSrc + ').apply(' + fwdThis
                     + ', (function ($args) {\n' + code + '\n})([' + argsSrc + ']))';
+                text = recvWrap ? recvWrap('return ' + applyExpr + ';') : applyExpr;
             } else { // modifyArg
                 // 包装单个实参：$arg 原实参值，code 表达式（或语句体）求值结果替换该实参。
                 // 只替换目标实参表达式，调用本身保留（helper(包装($arg)) 语义）。
@@ -270,7 +300,20 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
     if (op === 'inject') {
         const at = patch.at || 'head';
         validateBodyCode(code, 'inject-' + at);
-        if (at === 'head') edits.push({ start: fn.body.start + 1, end: fn.body.start + 1, text: '\n' + code });
+        if (at === 'head') {
+            // 指令序言（"use strict" 等字符串指令）必须保持为函数体前缘，插入到其后，
+            // 否则指令不再是第一条 → 严格语义静默丢失（#5）。
+            let insertAt = fn.body.start + 1;
+            const stmts0 = fn.body.body || [];
+            for (let s = 0; s < stmts0.length; s++) {
+                const st = stmts0[s];
+                if (st.type === 'ExpressionStatement' && st.expression.type === 'Literal' && typeof st.expression.value === 'string') {
+                    insertAt = st.end;
+                } else break;
+            }
+            // 尾部换行防御 ASI 邻接：压缩目标上注入体与原首条语句同行粘连（#5）
+            edits.push({ start: insertAt, end: insertAt, text: '\n' + code + '\n' });
+        }
         else if (at === 'tail') {
             // 对齐 Java Mixin @At("TAIL")：函数最后一条语句是 return 时，注入到它之前
             // （落在 return 之后是死代码）；否则注入到函数体末尾。
@@ -287,6 +330,13 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: '\n' + code + '\n' });
     } else if (op === 'wrap') {
         validateBodyCode(code, 'wrap');
+        // wrap 把原函数体内移进普通嵌套函数 __mixin_origN，因此：
+        //   async   → orig 同步声明为 async，await 语义保持（外层 async 返回 Promise，链式展平）
+        //   generator → 拒绝：需要 yield* 委托才能保真，当前骨架不支持，宁跳过不产出坏代码（#1）
+        //   块体箭头  → 拒绝：箭头函数没有自己的 arguments/this，'var __mixin_args = arguments'
+        //               捕获到的是外层函数（甚至模块层 ReferenceError）的 arguments（#1）
+        if (fn.generator) throw new Error('wrap 暂不支持 generator 目标（需要 yield* 委托保真，当前未实现）');
+        if (fn.type === 'ArrowFunctionExpression') throw new Error('wrap 不支持箭头函数目标（arguments/this 是词法绑定的外层，转发不保真），请用 overwrite/inject');
         const paramText = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : '';
         const origBody = src.slice(fn.body.start + 1, fn.body.end - 1);
         const n = '_' + fn.start;
@@ -295,7 +345,7 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         // 包装函数自身的 arguments[0] 是转发函数（真机踩坑：getComponentName 拿 arguments[0]
         // 当 id → 所有组件名变成 "component_name_" + 函数源码）。
         const newBody =
-            '\nfunction __mixin_orig' + n + '(' + paramText + ') {' + origBody + '}\n' +
+            '\n' + (fn.async ? 'async ' : '') + 'function __mixin_orig' + n + '(' + paramText + ') {' + origBody + '}\n' +
             'var __mixin_args' + n + ' = arguments;\n' +
             'return (function ($orig, __mixin_args) {\n' + code + '\n})(function () {' +
             'return __mixin_orig' + n + '.apply(this, arguments.length ? arguments : __mixin_args' + n + '); }, __mixin_args' + n + ');\n';
@@ -304,12 +354,15 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         // @ModifyReturnValue：原函数体保真内移为 __mixin_origN，返回值经 $value 包装。
         // 与 wrap 的区别：注入体拿到的是【已求值的返回值】（$value），不是可再调用的 $orig。
         // code 必须返回新返回值；this 与实参经 call/arguments 原样转发。
+        // async/generator/箭头的约束与 wrap 相同（#1）。
         validateBodyCode(code, 'modifyReturn');
+        if (fn.generator) throw new Error('modifyReturn 暂不支持 generator 目标（需要 yield* 委托保真，当前未实现）');
+        if (fn.type === 'ArrowFunctionExpression') throw new Error('modifyReturn 不支持箭头函数目标（arguments/this 是词法绑定的外层，转发不保真），请用 overwrite/inject');
         const mrParams = fn.params.length ? src.slice(fn.params[0].start, fn.params[fn.params.length - 1].end) : '';
         const mrBody = src.slice(fn.body.start + 1, fn.body.end - 1);
         const mn = '_' + fn.start;
         const mrBodyNew =
-            '\nfunction __mixin_orig' + mn + '(' + mrParams + ') {' + mrBody + '}\n' +
+            '\n' + (fn.async ? 'async ' : '') + 'function __mixin_orig' + mn + '(' + mrParams + ') {' + mrBody + '}\n' +
             'return (function ($value) {\n' + code + '\n})(__mixin_orig' + mn + '.apply(this, arguments));\n';
         edits.push({ start: fn.body.start + 1, end: fn.body.end - 1, text: mrBodyNew });
     } else if (op === 'modify') {
@@ -340,7 +393,7 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
             throw new Error('modify.' + what + ' 不是合法表达式/语句: ' + eMsg);
         }
         modParseKind(patch.find, 'find');
-        modParseKind(patch.replace, 'replace');
+        const replaceKind = modParseKind(patch.replace, 'replace');
         const matches: any[] = [];
         walkAll(fn, function (n: any): void {
             if (n === fn) return;
@@ -362,8 +415,26 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         }
         for (let ti = 0; ti < targets.length; ti++) {
             const isStmt = /Statement$|Declaration$/.test(targets[ti].type);
-            edits.push({ start: targets[ti].start, end: targets[ti].end,
-                text: isStmt ? patch.replace : '(' + patch.replace + ')' });
+            let text: string;
+            if (isStmt) {
+                // replace 与命中节点种类必须匹配（#5）：语句位置塞表达式 → 产物语法错误
+                if (replaceKind === 'stmt' || targets[ti].type === 'ExpressionStatement') {
+                    text = patch.replace;
+                } else {
+                    throw new Error('modify: 命中节点是语句（' + targets[ti].type + '），但 replace 是表达式且无法作为语句替换: ' + patch.replace);
+                }
+            } else {
+                if (replaceKind === 'expr') {
+                    text = '(' + patch.replace + ')';
+                } else {
+                    // 'stmt' 形态可能内嵌合法表达式（赋值/调用语句等），括号试探放行
+                    try { getAcorn().parse('(' + patch.replace + ')', { ecmaVersion: 'latest' }); text = '(' + patch.replace + ')'; }
+                    catch (e: any) {
+                        throw new Error('modify: 命中节点是表达式，但 replace 是语句且不能作表达式替换: ' + patch.replace);
+                    }
+                }
+            }
+            edits.push({ start: targets[ti].start, end: targets[ti].end, text: text });
         }
     } else if (op === 'log') {
         // 便捷 op：等价 inject + console.log
@@ -374,7 +445,9 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
 }
 
 function applyEdits(src: string, edits: SourceEdit[]): string {
-    edits.sort(function (a, b) { return b.start - a.start || b.end - a.end; });
+    // 同点零长插入按接受顺序的逆序应用（后应用者出现在文本更前），
+    // 使先接受的（priority 更高）最终排在文本前面——与串行管线一致（#7）
+    edits.sort(function (a, b) { return b.start - a.start || b.end - a.end || (b.seq || 0) - (a.seq || 0); });
     let out = src;
     for (let i = 0; i < edits.length; i++) {
         const e = edits[i];
@@ -385,9 +458,17 @@ function applyEdits(src: string, edits: SourceEdit[]): string {
 
 /* ---------- 对外入口 ---------- */
 
-// 两个编辑区间是否重叠（零长度插入只与其内部插入冲突；边界相接不算）
+/*
+ * 两个编辑区间是否重叠（边界相接不算）。两类一律判冲突：
+ *   1. 区间相交（含零长插入落在另一编辑区间内部）；
+ *   2. 零长插入压在另一编辑的起点上（#7）：应用顺序决定插入落在替换文本之前还是之后，
+ *      批量快路径与串行管线对此会产出不同结果——语义歧义，必须拒绝。
+ */
 function editsOverlap(a: SourceEdit, b: SourceEdit): boolean {
-    return a.start < b.end && b.start < a.end;
+    if (a.start < b.end && b.start < a.end) return true;
+    const zeroA = a.start === a.end, zeroB = b.start === b.end;
+    if (zeroA !== zeroB && a.start === b.start) return true;
+    return false;
 }
 
 function findOverlap(accepted: SourceEdit[], incoming: SourceEdit[]): string | null {
@@ -396,6 +477,21 @@ function findOverlap(accepted: SourceEdit[], incoming: SourceEdit[]): string | n
             if (editsOverlap(accepted[i], incoming[j])) {
                 return '新编辑 @' + incoming[j].start + '..' + incoming[j].end +
                     ' 与已接受编辑 @' + accepted[i].start + '..' + accepted[i].end + ' 重叠';
+            }
+        }
+    }
+    return null;
+}
+
+// 同一 patch 产出的多条编辑两两互检（#2）：findOverlap 只查"已接受 vs 新来"，
+// 查不到同 patch 内部重叠（如 all:true 命中嵌套同名调用），此前会静默产出损坏代码
+function findSelfOverlap(edits: SourceEdit[]): string | null {
+    for (let i = 0; i < edits.length; i++) {
+        for (let j = i + 1; j < edits.length; j++) {
+            if (editsOverlap(edits[i], edits[j])) {
+                return 'patch 内部第 ' + i + ' 条编辑 @' + edits[i].start + '..' + edits[i].end +
+                    ' 与第 ' + j + ' 条 @' + edits[j].start + '..' + edits[j].end + ' 重叠' +
+                    '（嵌套同名调用点等）';
             }
         }
     }
@@ -416,14 +512,16 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
     const t0 = Date.now();
     let ast: any;
     let parseErr: any = null;
+    let parseMode: any = { ecmaVersion: 'latest' };
     try {
-        ast = acorn.parse(source, { ecmaVersion: 'latest' });
+        ast = acorn.parse(source, parseMode);
     } catch (e1: any) {
         // ESM（import/export）需要 sourceType:'module'：script 失败后自动重试 module 模式。
         // 普通脚本目标不受影响（首轮已成功）；两种模式都失败才放弃（fail-safe 返回原文）。
         parseErr = e1;
+        parseMode = { ecmaVersion: 'latest', sourceType: 'module' };
         try {
-            ast = acorn.parse(source, { ecmaVersion: 'latest', sourceType: 'module' });
+            ast = acorn.parse(source, parseMode);
         } catch (e2: any) {
             logable('ERROR: ' + filename + ' 解析失败，跳过全部 AST patch: ' + parseErr.message);
             return source;
@@ -441,7 +539,7 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
             if (r.error) { logable('SKIP ' + label + ': ' + r.error); skipped.push(label + ': ' + r.error); continue; }
             const patchEdits: SourceEdit[] = [];
             applyOp(r.node, patch, source, patchEdits);
-            const conflict = findOverlap(accepted, patchEdits);
+            const conflict = findOverlap(accepted, patchEdits) || findSelfOverlap(patchEdits);
             if (conflict) { logable('SKIP ' + label + ': ' + conflict + '（坐标基于原文件，重叠会静默损坏，拒绝该 patch）'); skipped.push(label + ': ' + conflict); continue; }
             accepted = accepted.concat(patchEdits);
             logable('OK ' + label + ' (' + patchEdits.length + ' 处编辑) → ' + describeFn(r.node, source));
@@ -456,7 +554,21 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
         logable('WARN: ' + filename + ' 没有 AST patch 生效（fail-safe 返回原文件）');
         return source;
     }
+    for (let i = 0; i < accepted.length; i++) accepted[i].seq = i;
     const out = applyEdits(source, accepted);
+    // 最终产物 re-parse 自检（#5）：局部拼接错误绝不允许静默入库。
+    // 失败 → 整文件回滚返回原文（见 docs/error-policy.md：运行时"中止"的上限就是打回原样）。
+    let reparseOk = false;
+    let reparseErr: any = null;
+    try { acorn.parse(out, parseMode); reparseOk = true; } catch (e3: any) { reparseErr = e3; }
+    if (!reparseOk && parseMode.sourceType === 'module') {
+        try { acorn.parse(out, { ecmaVersion: 'latest' }); reparseOk = true; } catch (e4: any) { reparseErr = e4; }
+    }
+    if (!reparseOk) {
+        logable('ERROR: ' + filename + ' 补丁产物语法校验失败，整体回滚（fail-safe 返回原文件）: ' + reparseErr.message);
+        if (stats) { stats.applied = 0; stats.skipped = skipped.concat(['(产物回滚): ' + reparseErr.message]); }
+        return source;
+    }
     logable('applied ' + ok + '/' + patches.length + ' AST patches to ' + filename);
     return out;
 }

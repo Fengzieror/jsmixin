@@ -14,7 +14,6 @@ require('../runtime/mixinAst.js');
 require('../runtime/mixinTransformer.js');
 
 var __mixinAst = global.__mixinAst;
-var assert = require('assert');
 
 var failures = 0;
 function check(name, cond, detail) {

@@ -36,8 +36,9 @@ export function installTransformerGlobals(g: G = globalThis): MixinEngine {
     g.__mixin = {
         version: ENGINE_VERSION,
         register: function (mod: ModDescription): void { engine.register(mod); },
-        stats: function (): { mods: number; evalHooked: boolean } {
-            return { mods: engine.stats().mods, evalHooked: !!g.__mixinEvalHooked };
+        stats: function (): { mods: number; version: string; evalHooked: boolean } {
+            // version 与 node 宿主对齐（#14）：两宿主 stats 结构一致，诊断脚本可通用
+            return { mods: engine.stats().mods, version: ENGINE_VERSION, evalHooked: !!g.__mixinEvalHooked };
         },
         // 供补丁作者/测试计算期望哈希：__mixin.sourceHash(source) → 'fnv1a32:xxxx:len:nnn'
         sourceHash: engine.sourceHash

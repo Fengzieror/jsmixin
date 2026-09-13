@@ -58,7 +58,7 @@
     "build:compat": "node scripts/build-compat.mjs",
     "prepare": "npm run build",
     "prepublishOnly": "npm test",
-    "test": "npm run build && node test/test_mixin_ast.js && node test/test_build_tool.js && node test/test_v2_core.js && node test/test_node_host.js && node test/test_build_tool_v2.js && node test/test_build_tool_v3.js && node test/test_boot_bundle.js",
+    "test": "npm run build && node test/test_mixin_ast.js && node test/test_build_tool.js && node test/test_v2_core.js && node test/test_node_host.js && node test/test_build_tool_v2.js && node test/test_build_tool_v3.js && node test/test_boot_bundle.js && node test/test_version.js",
     "build:mod": "node build-tool/build.js"
   },
   "engines": {

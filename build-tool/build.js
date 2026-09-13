@@ -44,7 +44,9 @@ function fail(msg) { throw new Error('[build] ' + msg); }
 
 function readText(p) {
     if (!fs.existsSync(p)) fail('文件不存在: ' + p);
-    return fs.readFileSync(p, 'utf8');
+    // 去 BOM（#15）：Windows 记事本等工具保存的文件带 BOM 时 JSON.parse 会报
+    // "Unexpected token"，报错完全不像配置问题
+    return fs.readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
 }
 
 // 装饰器实参/路径段都是受信的本地字面量，直接求值
@@ -314,11 +316,13 @@ function expandGroups(groups) {
 
 // 把 @Export 请求翻译成 inject-tail patch：在父层函数尾注入 __mixin_exports 赋值（跨宿主）。
 // 需要目标在父作用域里有名字（绑定名或自身 id）；匿名目标请改用 Wrap。
+// 目标必须是父层函数（path >= 2 段）：顶层函数的父层是 Program，无法注入（#15：
+// 此前 length < 1 的守卫恒假，真正要拦的是 length < 2，直到产物校验才绕远暴露）
 function expandExport(req, astCache) {
     var c = astCache[req.targetFile];
     var full = AST.resolvePath(c.ast, req.path, c.src);
     if (full.error) return withLineInfo(full.error, c.src);
-    if (req.path.length < 1) return '@Export 目标不能是顶层（无法注入 Program 层）';
+    if (req.path.length < 2) return '@Export 目标不能是顶层函数（父层是 Program，无法注入导出赋值）';
     var parentPath = req.path.slice(0, -1);
     var pr = AST.resolvePath(c.ast, parentPath, c.src);
     if (pr.error) return withLineInfo(pr.error, c.src);
@@ -362,9 +366,17 @@ function runBuild(projDir) {
     var map = makeMapper(nameMapJson);
 
     if (!cfg.gameFiles || typeof cfg.gameFiles !== 'object') fail('build-config.json 缺少 gameFiles');
-    var markFiles = fs.readdirSync(marksDir).filter(function (f) { return /\.mark\.ts$/.test(f); })
-        .sort().map(function (f) { return path.join(marksDir, f); });
-    if (!markFiles.length) fail('marks 目录里没有 *.mark.ts 文件');
+    // 递归扫描 marks 目录（#15）：子目录里的 *.mark.ts 此前被静默忽略（不递归也不报错）
+    var markFiles = [];
+    (function walkMarks(dir) {
+        fs.readdirSync(dir, { withFileTypes: true }).forEach(function (d) {
+            var p = path.join(dir, d.name);
+            if (d.isDirectory()) walkMarks(p);
+            else if (/\.mark\.ts$/.test(d.name)) markFiles.push(p);
+        });
+    })(marksDir);
+    markFiles.sort();
+    if (!markFiles.length) fail('marks 目录里没有 *.mark.ts 文件: ' + marksDir);
 
     // 1. 解析 marks
     var groups = [];
@@ -403,11 +415,16 @@ function runBuild(projDir) {
     var errors = [];
     var patchesByFile = {}; // targetFile → [patch]
     var exportNames = [];   // @Export 汇总（game-types.d.ts 用）
-    // @Share 全集：本 mod 声明的共享名对同目标的其他注入可见（词法作用域），@Local 校验需计入
+    // @Share 全集（按 targetFile 分桶，#12）：@Share 名对【同目标文件】的其他注入可见。
+    // 此前全 mod 一个 map——combat.js 里不存在的 @Local 会被 shop.js 声明的 @Share
+    // 误放行（假通过 → 运行时 ReferenceError）
     var allShareNames = {};
     for (var r0 = 0; r0 < reqs.length; r0++) {
         var sh = reqs[r0].share;
-        if (sh) for (var s0 = 0; s0 < sh.length; s0++) allShareNames[sh[s0]] = 1;
+        if (sh) {
+            var bucket = allShareNames[reqs[r0].targetFile] = allShareNames[reqs[r0].targetFile] || {};
+            for (var s0 = 0; s0 < sh.length; s0++) bucket[sh[s0]] = 1;
+        }
     }
     for (var r = 0; r < reqs.length; r++) {
         var req = reqs[r];
@@ -460,16 +477,26 @@ function runBuild(projDir) {
             AST.walkAll(pr.node, function (n) {
                 if (n.type === 'VariableDeclarator' && n.id && n.id.type === 'Identifier') declared[n.id.name] = 1;
             });
+            // 只计同目标文件的 @Share（词法作用域以文件为最大公共边界，#12）
+            var fileShares = allShareNames[req.targetFile] || {};
             for (var li = 0; li < req.locals.length; li++) {
-                if (!declared[req.locals[li]] && !allShareNames[req.locals[li]]) {
-                    errors.push(req.name + ': @Local "' + req.locals[li] + '" 在目标函数内不存在（参数、变量声明或其他注入的 @Share）');
+                if (!declared[req.locals[li]] && !fileShares[req.locals[li]]) {
+                    errors.push(req.name + ': @Local "' + req.locals[li] + '" 在目标函数内不存在（参数、变量声明或同目标文件其他注入的 @Share）');
                 }
             }
         }
         // @Share 构建期校验：共享名必须由本注入体自己声明（同函数内注入共享同一词法作用域）
         if (req.share && req.share.length) {
             var shared = {};
-            var codeAst = acorn.parse('(function(){' + req.code + '})', { ecmaVersion: 'latest' });
+            // 解析必须捕获进 errors（#12）：redirect/modifyArg 允许表达式形态，
+            // 表达式按 (function(){...}) 包裹解析会抛 acorn 原始 SyntaxError
+            var codeAst;
+            try {
+                codeAst = acorn.parse('(function(){' + req.code + '})', { ecmaVersion: 'latest' });
+            } catch (eParse) {
+                errors.push(req.name + ': @Share 校验解析注入体失败: ' + eParse.message);
+                continue;
+            }
             (function w(n) {
                 if (!n || typeof n !== 'object') return;
                 if (Array.isArray(n)) { n.forEach(w); return; }
@@ -594,7 +621,10 @@ function runBuild(projDir) {
         ok: true,
         outDir: outDir,
         patchCount: total,
-        files: Object.keys(patchesByFile).concat(['game-types.d.ts']),
+        // 与头注承诺一致（#15）：包含 patches.js / mixins.json / entry 文件（此前缺失）
+        files: Object.keys(patchesByFile)
+            .concat(['patches.js', 'mixins.json', 'game-types.d.ts'])
+            .concat(cfg.entry ? [path.basename(cfg.entry)] : []),
         patchesByFile: patchesByFile
     };
 }
