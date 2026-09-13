@@ -5,7 +5,7 @@
  * 不经过本脚本；这里用 `/*!` 前缀做幂等保护，重复构建不会叠加。
  * tsc 没有 banner 选项，所以走后置处理。
  */
-import { readdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 const BANNER = '/*! jsmixin v2.1.0 | MIT License | https://github.com/Fengzieror/jsmixin */\n';
@@ -21,6 +21,9 @@ function walk(dir) {
     }
 }
 
-walk('dist/cjs');
-walk('dist/esm');
-console.log('banners OK: dist/cjs, dist/esm');
+// dist/esm 在 build:cjs 阶段尚不存在（构建链 build:cjs → build:esm），
+// 全新克隆 npm install 触发 prepare 时尤其如此——缺失即跳过，由下一轮补齐
+const done = [];
+if (existsSync('dist/cjs')) { walk('dist/cjs'); done.push('dist/cjs'); }
+if (existsSync('dist/esm')) { walk('dist/esm'); done.push('dist/esm'); }
+console.log('banners OK: ' + (done.join(', ') || '(no dist output yet)'));
