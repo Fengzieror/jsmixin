@@ -126,6 +126,11 @@ A complete runnable project (host game + 3 mods covering every decorator) is in
 - [docs/DESIGN-v2.md](docs/DESIGN-v2.md) — segments/ops reference and the
   Sponge Mixin / MixinExtras mapping.
 
+### AI-assisted development
+
+This project was developed with the assistance of AI coding tools (code generation,
+documentation and test authoring), under the maintainer's direction and review.
+
 ### Testing
 
 ```
@@ -211,6 +216,11 @@ node build-tool/build.js <mod项目目录>
 - [docs/BOOT-CHAIN.md](docs/BOOT-CHAIN.md) — 加载链路：代码如何进入运行时、
   拦截清单、LayaNative 启动时间线。
 - [docs/DESIGN-v2.md](docs/DESIGN-v2.md) — 段/操作全集参考、Sponge 对照表。
+
+### AI 辅助声明
+
+本项目在开发过程中使用了 AI 编程辅助工具（代码生成、文档与测试编写），全程由维护者
+主导方向并审核产出。
 
 ### 测试
 
