@@ -374,7 +374,9 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
 }
 
 function applyEdits(src: string, edits: SourceEdit[]): string {
-    edits.sort(function (a, b) { return b.start - a.start || b.end - a.end; });
+    // 同点零长插入按接受顺序的逆序应用（后应用者出现在文本更前），
+    // 使先接受的（priority 更高）最终排在文本前面——与串行管线一致（#7）
+    edits.sort(function (a, b) { return b.start - a.start || b.end - a.end || (b.seq || 0) - (a.seq || 0); });
     let out = src;
     for (let i = 0; i < edits.length; i++) {
         const e = edits[i];
@@ -385,9 +387,17 @@ function applyEdits(src: string, edits: SourceEdit[]): string {
 
 /* ---------- 对外入口 ---------- */
 
-// 两个编辑区间是否重叠（零长度插入只与其内部插入冲突；边界相接不算）
+/*
+ * 两个编辑区间是否重叠（边界相接不算）。两类一律判冲突：
+ *   1. 区间相交（含零长插入落在另一编辑区间内部）；
+ *   2. 零长插入压在另一编辑的起点上（#7）：应用顺序决定插入落在替换文本之前还是之后，
+ *      批量快路径与串行管线对此会产出不同结果——语义歧义，必须拒绝。
+ */
 function editsOverlap(a: SourceEdit, b: SourceEdit): boolean {
-    return a.start < b.end && b.start < a.end;
+    if (a.start < b.end && b.start < a.end) return true;
+    const zeroA = a.start === a.end, zeroB = b.start === b.end;
+    if (zeroA !== zeroB && a.start === b.start) return true;
+    return false;
 }
 
 function findOverlap(accepted: SourceEdit[], incoming: SourceEdit[]): string | null {
@@ -396,6 +406,21 @@ function findOverlap(accepted: SourceEdit[], incoming: SourceEdit[]): string | n
             if (editsOverlap(accepted[i], incoming[j])) {
                 return '新编辑 @' + incoming[j].start + '..' + incoming[j].end +
                     ' 与已接受编辑 @' + accepted[i].start + '..' + accepted[i].end + ' 重叠';
+            }
+        }
+    }
+    return null;
+}
+
+// 同一 patch 产出的多条编辑两两互检（#2）：findOverlap 只查"已接受 vs 新来"，
+// 查不到同 patch 内部重叠（如 all:true 命中嵌套同名调用），此前会静默产出损坏代码
+function findSelfOverlap(edits: SourceEdit[]): string | null {
+    for (let i = 0; i < edits.length; i++) {
+        for (let j = i + 1; j < edits.length; j++) {
+            if (editsOverlap(edits[i], edits[j])) {
+                return 'patch 内部第 ' + i + ' 条编辑 @' + edits[i].start + '..' + edits[i].end +
+                    ' 与第 ' + j + ' 条 @' + edits[j].start + '..' + edits[j].end + ' 重叠' +
+                    '（嵌套同名调用点等）';
             }
         }
     }
@@ -416,14 +441,16 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
     const t0 = Date.now();
     let ast: any;
     let parseErr: any = null;
+    let parseMode: any = { ecmaVersion: 'latest' };
     try {
-        ast = acorn.parse(source, { ecmaVersion: 'latest' });
+        ast = acorn.parse(source, parseMode);
     } catch (e1: any) {
         // ESM（import/export）需要 sourceType:'module'：script 失败后自动重试 module 模式。
         // 普通脚本目标不受影响（首轮已成功）；两种模式都失败才放弃（fail-safe 返回原文）。
         parseErr = e1;
+        parseMode = { ecmaVersion: 'latest', sourceType: 'module' };
         try {
-            ast = acorn.parse(source, { ecmaVersion: 'latest', sourceType: 'module' });
+            ast = acorn.parse(source, parseMode);
         } catch (e2: any) {
             logable('ERROR: ' + filename + ' 解析失败，跳过全部 AST patch: ' + parseErr.message);
             return source;
@@ -441,7 +468,7 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
             if (r.error) { logable('SKIP ' + label + ': ' + r.error); skipped.push(label + ': ' + r.error); continue; }
             const patchEdits: SourceEdit[] = [];
             applyOp(r.node, patch, source, patchEdits);
-            const conflict = findOverlap(accepted, patchEdits);
+            const conflict = findOverlap(accepted, patchEdits) || findSelfOverlap(patchEdits);
             if (conflict) { logable('SKIP ' + label + ': ' + conflict + '（坐标基于原文件，重叠会静默损坏，拒绝该 patch）'); skipped.push(label + ': ' + conflict); continue; }
             accepted = accepted.concat(patchEdits);
             logable('OK ' + label + ' (' + patchEdits.length + ' 处编辑) → ' + describeFn(r.node, source));
@@ -456,7 +483,21 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
         logable('WARN: ' + filename + ' 没有 AST patch 生效（fail-safe 返回原文件）');
         return source;
     }
+    for (let i = 0; i < accepted.length; i++) accepted[i].seq = i;
     const out = applyEdits(source, accepted);
+    // 最终产物 re-parse 自检（#5）：局部拼接错误绝不允许静默入库。
+    // 失败 → 整文件回滚返回原文（见 docs/error-policy.md：运行时"中止"的上限就是打回原样）。
+    let reparseOk = false;
+    let reparseErr: any = null;
+    try { acorn.parse(out, parseMode); reparseOk = true; } catch (e3: any) { reparseErr = e3; }
+    if (!reparseOk && parseMode.sourceType === 'module') {
+        try { acorn.parse(out, { ecmaVersion: 'latest' }); reparseOk = true; } catch (e4: any) { reparseErr = e4; }
+    }
+    if (!reparseOk) {
+        logable('ERROR: ' + filename + ' 补丁产物语法校验失败，整体回滚（fail-safe 返回原文件）: ' + reparseErr.message);
+        if (stats) { stats.applied = 0; stats.skipped = skipped.concat(['(产物回滚): ' + reparseErr.message]); }
+        return source;
+    }
     logable('applied ' + ok + '/' + patches.length + ' AST patches to ' + filename);
     return out;
 }
