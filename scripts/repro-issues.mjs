@@ -254,14 +254,14 @@ function writeProj(dir, files) {
     writeProj(tmp, {
         'mods/m1/mixins.json': JSON.stringify({ modid: 'm1', version: '1.0.0', mixins: ['p.js'], entry: 'entry.js' }),
         'mods/m1/p.js': '__mixin.register({ modid: "m1", version: "1.0.0", mixins: [] });',
-        'mods/m1/entry.js': "require('fs').writeFileSync(process.env.REPRO8_MARKER, 'ran');",
+        // entry 经 loader 的间接 eval 在全局作用域执行，没有 require/CJS 包裹，只能用全局对象
+        'mods/m1/entry.js': "process.stdout.write('ENTRY-RAN');",
         'main.js': "console.log('main ok');",
     });
-    const marker = path.join(tmp, 'marker.txt');
     const r = spawnSync(process.execPath, [path.join(root, 'dist/cjs/hosts/cli.js'), 'run', 'main.js', '--mods', 'mods'],
-        { cwd: tmp, encoding: 'utf8', timeout: 60000, env: Object.assign({}, process.env, { REPRO8_MARKER: marker }) });
+        { cwd: tmp, encoding: 'utf8', timeout: 60000 });
     const mainRan = /main ok/.test(r.stdout || '');
-    const entryRan = fs.existsSync(marker);
+    const entryRan = /ENTRY-RAN/.test(r.stdout || '');
     const confirmed = mainRan && !entryRan;
     verdict(8, 'cli process.exit 抢在 mod entry（setTimeout 0）之前，jsmixin run 下 entry 永不执行',
         confirmed ? CONFIRMED : PARTIAL,

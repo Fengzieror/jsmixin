@@ -56,8 +56,9 @@ export function activateNodeHost(options?: NodeHostOptions): NodeHost {
     const g = globalThis as G;
     const existing = g.__jsmixinNodeHost as NodeHost | undefined;
     if (existing) {
-        // 重复激活：幂等返回旧实例，但 options 不一致时必须出声（#14），静默吞掉会误导排障
-        if (options && options.modsDir && options.modsDir !== existing.modsDir) {
+        // 重复激活：幂等返回旧实例，但 modsDir 实际不同时必须出声（#14），静默吞掉会误导排障。
+        // 以解析后的绝对路径比较，避免 cli.js 自动激活（缺省 cwd/mods）与显式传参路径同目录的误报。
+        if (options && options.modsDir && path.resolve(options.modsDir) !== path.resolve(existing.modsDir)) {
             console.log('[jsmixin] WARN: 宿主已激活（modsDir=' + existing.modsDir + '），本次 modsDir=' + options.modsDir + ' 被忽略');
         }
         return existing;
