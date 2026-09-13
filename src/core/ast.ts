@@ -270,7 +270,20 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
     if (op === 'inject') {
         const at = patch.at || 'head';
         validateBodyCode(code, 'inject-' + at);
-        if (at === 'head') edits.push({ start: fn.body.start + 1, end: fn.body.start + 1, text: '\n' + code });
+        if (at === 'head') {
+            // 指令序言（"use strict" 等字符串指令）必须保持为函数体前缘，插入到其后，
+            // 否则指令不再是第一条 → 严格语义静默丢失（#5）。
+            let insertAt = fn.body.start + 1;
+            const stmts0 = fn.body.body || [];
+            for (let s = 0; s < stmts0.length; s++) {
+                const st = stmts0[s];
+                if (st.type === 'ExpressionStatement' && st.expression.type === 'Literal' && typeof st.expression.value === 'string') {
+                    insertAt = st.end;
+                } else break;
+            }
+            // 尾部换行防御 ASI 邻接：压缩目标上注入体与原首条语句同行粘连（#5）
+            edits.push({ start: insertAt, end: insertAt, text: '\n' + code + '\n' });
+        }
         else if (at === 'tail') {
             // 对齐 Java Mixin @At("TAIL")：函数最后一条语句是 return 时，注入到它之前
             // （落在 return 之后是死代码）；否则注入到函数体末尾。
@@ -340,7 +353,7 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
             throw new Error('modify.' + what + ' 不是合法表达式/语句: ' + eMsg);
         }
         modParseKind(patch.find, 'find');
-        modParseKind(patch.replace, 'replace');
+        const replaceKind = modParseKind(patch.replace, 'replace');
         const matches: any[] = [];
         walkAll(fn, function (n: any): void {
             if (n === fn) return;
@@ -362,8 +375,26 @@ function applyOp(fn: any, patch: Patch, src: string, edits: SourceEdit[]): void 
         }
         for (let ti = 0; ti < targets.length; ti++) {
             const isStmt = /Statement$|Declaration$/.test(targets[ti].type);
-            edits.push({ start: targets[ti].start, end: targets[ti].end,
-                text: isStmt ? patch.replace : '(' + patch.replace + ')' });
+            let text: string;
+            if (isStmt) {
+                // replace 与命中节点种类必须匹配（#5）：语句位置塞表达式 → 产物语法错误
+                if (replaceKind === 'stmt' || targets[ti].type === 'ExpressionStatement') {
+                    text = patch.replace;
+                } else {
+                    throw new Error('modify: 命中节点是语句（' + targets[ti].type + '），但 replace 是表达式且无法作为语句替换: ' + patch.replace);
+                }
+            } else {
+                if (replaceKind === 'expr') {
+                    text = '(' + patch.replace + ')';
+                } else {
+                    // 'stmt' 形态可能内嵌合法表达式（赋值/调用语句等），括号试探放行
+                    try { getAcorn().parse('(' + patch.replace + ')', { ecmaVersion: 'latest' }); text = '(' + patch.replace + ')'; }
+                    catch (e: any) {
+                        throw new Error('modify: 命中节点是表达式，但 replace 是语句且不能作表达式替换: ' + patch.replace);
+                    }
+                }
+            }
+            edits.push({ start: targets[ti].start, end: targets[ti].end, text: text });
         }
     } else if (op === 'log') {
         // 便捷 op：等价 inject + console.log
