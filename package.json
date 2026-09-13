@@ -1,0 +1,75 @@
+{
+  "name": "jsmixin",
+  "version": "2.1.0",
+  "description": "SpongePowered-Mixin-style JS source transform: AST-level inject/overwrite/wrap/redirect on any JavaScript before it is compiled. Runtime-agnostic core + LayaNative/Node adapters; mods are standalone folders loaded from disk, target code is never modified on disk.",
+  "keywords": [
+    "mixin",
+    "layanative",
+    "layaair",
+    "ast",
+    "acorn",
+    "mod",
+    "game-modding",
+    "node",
+    "redirect",
+    "wrap"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fengzieror/jsmixin.git"
+  },
+  "files": [
+    "dist/",
+    "runtime/",
+    "vendor/",
+    "build-tool/",
+    "android-modfs/",
+    "docs/",
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/cjs/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "./node": {
+      "types": "./dist/cjs/hosts/node.d.ts",
+      "require": "./dist/cjs/hosts/node.js",
+      "import": "./dist/cjs/hosts/node.js"
+    },
+    "./build": "./build-tool/build.js",
+    "./boot": "./dist/boot/mixin-boot.js",
+    "./runtime/ast": "./runtime/mixinAst.js",
+    "./runtime/transformer": "./runtime/mixinTransformer.js"
+  },
+  "bin": {
+    "jsmixin": "dist/cjs/hosts/cli.js"
+  },
+  "scripts": {
+    "build": "npm run build:cjs && npm run build:esm && npm run build:compat",
+    "build:cjs": "tsc -p tsconfig.json && node scripts/add-banners.mjs",
+    "build:esm": "tsc -p tsconfig.esm.json && node scripts/add-banners.mjs",
+    "build:compat": "node scripts/build-compat.mjs",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test",
+    "test": "npm run build && node test/test_mixin_ast.js && node test/test_build_tool.js && node test/test_v2_core.js && node test/test_node_host.js && node test/test_build_tool_v2.js && node test/test_build_tool_v3.js && node test/test_boot_bundle.js",
+    "build:mod": "node build-tool/build.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "acorn": "^8.18.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "esbuild": "^0.24.0",
+    "@types/node": "^20.0.0"
+  }
+}

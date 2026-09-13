@@ -1,0 +1,11 @@
+{
+  "modid": "cheat-mod",
+  "name": "CheatMod",
+  "version": "1.0.0",
+  "priority": 100,
+  "outDir": "../../mods/cheat-mod",
+  "gameFiles": {
+    "combat.js": "../../game/combat.js",
+    "shop.js": "../../game/shop.js"
+  }
+}

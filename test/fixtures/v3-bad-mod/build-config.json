@@ -1,0 +1,8 @@
+{
+  "modid": "v3-bad-mod",
+  "name": "V3BadMod",
+  "version": "0.1.0",
+  "gameFiles": {
+    "sample-es6.js": "../v3-mod/game/sample-es6.js"
+  }
+}

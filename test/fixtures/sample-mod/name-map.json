@@ -1,0 +1,5 @@
+{
+  "classes": { "Counter": "App" },
+  "methods": { "Counter.tick": "tick" },
+  "aliases": { "start": "boot" }
+}

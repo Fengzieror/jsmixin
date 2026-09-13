@@ -1,0 +1,14 @@
+{
+  "name": "demo-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "jsmixin 演示项目：一个零改动的宿主小游戏 + 3 个 mixin mod（log/balance/cheat）",
+  "scripts": {
+    "build:mods": "node ../../build-tool/build.js mod-projects/log-mod && node ../../build-tool/build.js mod-projects/balance-mod && node ../../build-tool/build.js mod-projects/cheat-mod",
+    "start": "node game/main.js",
+    "verify": "node verify.js"
+  },
+  "dependencies": {
+    "jsmixin": "file:../.."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "modid": "balance-mod",
+  "name": "BalanceMod",
+  "version": "1.0.0",
+  "priority": 50,
+  "outDir": "../../mods/balance-mod",
+  "gameFiles": {
+    "player.js": "../../game/player.js"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "modid": "demo-mod",
+  "name": "DemoMod",
+  "version": "0.1.0",
+  "mixins": [
+    "patches.js"
+  ],
+  "priority": 100
+}

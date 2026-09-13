@@ -1,0 +1,7 @@
+{
+  "modid": "demo-mod",
+  "name": "DemoMod",
+  "version": "0.1.0",
+  "priority": 100,
+  "gameFiles": { "sample.js": "game/sample.js" }
+}

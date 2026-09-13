@@ -1,0 +1,11 @@
+{
+  "modid": "log-mod",
+  "name": "LogMod",
+  "version": "1.0.0",
+  "priority": 10,
+  "entry": "entry.js",
+  "outDir": "../../mods/log-mod",
+  "gameFiles": {
+    "ui.js": "../../game/ui.js"
+  }
+}
