@@ -190,8 +190,13 @@ export function createMixinEngine(options?: EngineOptions): MixinEngine {
         if (!batch.length) return source;
         const stats: PatchStats = { applied: 0, skipped: [] };
         const out = applyAstPatches(filename, source, batch, stats);
-        if (stats.skipped.length) {
-            log('批量快路径有 ' + stats.skipped.length + ' 个 patch 未生效，回退串行管线: ' + filename);
+        if (stats.skipped.length || stats.ambiguous) {
+            // skipped：有 patch 未生效（可能链式定位了前一个 mod 注入的代码，或锚点不符）；
+            // ambiguous：跨 mod 的"零长插入压替换起点"（#7，如 A inject head + B overwrite/wrap
+            // 同一函数）——批量与串行产出不同，回退串行管线保证语义一致（最坏只多一次解析）。
+            log('批量快路径回退串行管线: ' + filename
+                + (stats.skipped.length ? '（' + stats.skipped.length + ' 个 patch 未生效）' : '')
+                + (stats.ambiguous ? '（跨 mod 插入点歧义）' : ''));
             return transformSerial(filename, source);
         }
         if (out !== source) log('patched (batch): ' + filename + ' (' + matched.length + ' 个 mixin 合并一次解析)');

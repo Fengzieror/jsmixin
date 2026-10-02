@@ -459,16 +459,14 @@ function applyEdits(src: string, edits: SourceEdit[]): string {
 /* ---------- 对外入口 ---------- */
 
 /*
- * 两个编辑区间是否重叠（边界相接不算）。两类一律判冲突：
- *   1. 区间相交（含零长插入落在另一编辑区间内部）；
- *   2. 零长插入压在另一编辑的起点上（#7）：应用顺序决定插入落在替换文本之前还是之后，
- *      批量快路径与串行管线对此会产出不同结果——语义歧义，必须拒绝。
+ * 两个编辑区间是否重叠（边界相接不算；零长插入落在区间内部算）。
+ * "零长插入压在另一编辑起点上"不在此判冲突——inject head + wrap 等组合在同一
+ * applyAstPatches 调用内语义是确定的（插入文本排在替换文本之前）；但该组合
+ * 跨 mixin 时批量快路径与串行管线会产出不同结果（#7），由 applyAstPatches
+ * 标记 stats.ambiguous、引擎批量快路径据此回退串行。
  */
 function editsOverlap(a: SourceEdit, b: SourceEdit): boolean {
-    if (a.start < b.end && b.start < a.end) return true;
-    const zeroA = a.start === a.end, zeroB = b.start === b.end;
-    if (zeroA !== zeroB && a.start === b.start) return true;
-    return false;
+    return a.start < b.end && b.start < a.end;
 }
 
 function findOverlap(accepted: SourceEdit[], incoming: SourceEdit[]): string | null {
@@ -539,6 +537,7 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
             if (r.error) { logable('SKIP ' + label + ': ' + r.error); skipped.push(label + ': ' + r.error); continue; }
             const patchEdits: SourceEdit[] = [];
             applyOp(r.node, patch, source, patchEdits);
+            for (let pe = 0; pe < patchEdits.length; pe++) patchEdits[pe].patchIndex = i;
             const conflict = findOverlap(accepted, patchEdits) || findSelfOverlap(patchEdits);
             if (conflict) { logable('SKIP ' + label + ': ' + conflict + '（坐标基于原文件，重叠会静默损坏，拒绝该 patch）'); skipped.push(label + ': ' + conflict); continue; }
             accepted = accepted.concat(patchEdits);
@@ -550,6 +549,23 @@ export function applyAstPatches(filename: string, source: string, patches: Patch
         }
     }
     if (stats) { stats.applied = ok; stats.skipped = skipped; }
+    // 跨 patch 歧义检测（#7）：零长插入压在不同 patch 的替换起点上时，批量快路径
+    // 与串行管线会产出不同结果（inject head + overwrite / wrap 跨 mod 组合）。
+    // 只标记不拒绝——同一调用内的组合语义确定（构建工具单 mod 打包依赖此行为）；
+    // 引擎批量快路径看到标记后回退串行管线，两条路径语义重新一致。
+    if (stats && accepted.length > 1) {
+        for (let a = 0; a < accepted.length && !stats.ambiguous; a++) {
+            const e1 = accepted[a];
+            if (e1.start !== e1.end) continue;
+            for (let b = 0; b < accepted.length; b++) {
+                const e2 = accepted[b];
+                if (e2.patchIndex !== e1.patchIndex && e2.start < e2.end && e2.start === e1.start) {
+                    stats.ambiguous = true;
+                    break;
+                }
+            }
+        }
+    }
     if (ok === 0) {
         logable('WARN: ' + filename + ' 没有 AST patch 生效（fail-safe 返回原文件）');
         return source;

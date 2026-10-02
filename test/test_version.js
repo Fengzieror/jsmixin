@@ -17,7 +17,7 @@ function check(name, cond, detail) {
     else { console.log('  FAIL ' + name + (detail ? ' — ' + detail : '')); failures++; }
 }
 
-var bannerRe = /^\/\*! jsmixin v(\S+) \| MIT License/;
+var bannerRe = /\/\*! jsmixin v(\S+) \| MIT License/;
 
 check('package.json version 存在', !!pkg, String(pkg));
 check('ast.VERSION 与 package.json 一致', require('../dist/cjs/core/ast.js').VERSION === pkg,
@@ -29,6 +29,7 @@ var cjsBanner = fs.readFileSync(path.join(root, 'dist/cjs/index.js'), 'utf8').ma
 check('dist/cjs banner 与 package.json 一致', !!cjsBanner && cjsBanner[1] === pkg, cjsBanner && cjsBanner[1]);
 var esmBanner = fs.readFileSync(path.join(root, 'dist/esm/index.js'), 'utf8').match(bannerRe);
 check('dist/esm banner 与 package.json 一致', !!esmBanner && esmBanner[1] === pkg, esmBanner && esmBanner[1]);
+// runtime 产物首行是 "构建生成" 标记，许可 banner 在其后
 var runtimeBanner = fs.readFileSync(path.join(root, 'runtime/mixinTransformer.js'), 'utf8').match(bannerRe);
 check('runtime banner 与 package.json 一致', !!runtimeBanner && runtimeBanner[1] === pkg, runtimeBanner && runtimeBanner[1]);
 

@@ -99,12 +99,16 @@ export interface SourceEdit {
     text: string;
     /** 接受顺序（applyAstPatches 内部赋值）：同点零长插入按其逆序应用，保证 priority 顺序（#7） */
     seq?: number;
+    /** 产出该编辑的 patch 在 patches 数组中的序号（applyAstPatches 内部赋值，歧义检测用） */
+    patchIndex?: number;
 }
 
 /** applyAstPatches 的可选统计输出 */
 export interface PatchStats {
     applied: number;
     skipped: string[];
+    /** 存在跨 patch 的"零长插入压替换起点"歧义（#7）：批量快路径应回退串行管线 */
+    ambiguous?: boolean;
 }
 
 /** 段解析结果：命中节点 / 带出的绑定名（供 method 段 cls 推断）/ 选中序号 / 错误 */

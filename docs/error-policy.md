@@ -29,7 +29,11 @@
 | 同一 patch 内部编辑互相重叠（#2：`all:true` 命中嵌套同名调用等） | SKIP（新增；此前静默产出损坏代码） |
 | 组装文本自身语法错误（调用点系 op 拼装校验） | SKIP |
 
-跳过的 patch 计入 `stats.skipped`；引擎批量快路径只要有 skipped 即回退串行管线（语义保底）。
+跳过的 patch 计入 `stats.skipped`；引擎批量快路径只要有 skipped，或存在跨 patch 的
+"零长插入压替换起点"歧义（`stats.ambiguous`，#7：如 A mod inject head + B mod
+overwrite/wrap 同一函数——两种管线产出不同），即回退串行管线（语义保底，最坏只多一次解析）。
+同一 applyAstPatches 调用内的 inject head + wrap 组合语义确定（插入文本排在替换文本之前，
+构建工具单 mod 打包依赖此行为），不判冲突。
 
 ### 3. 跳过该 mod / 该 mixin（其余 mod 照常）
 
