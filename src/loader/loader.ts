@@ -63,6 +63,7 @@ export function createModLoader(options: ModLoaderOptions): ModLoader {
     };
 
     const entries: (() => void)[] = [];  // mod 的 entry 队列（游戏启动后执行）
+    const queuedEntryKeys: Record<string, 1> = {}; // '<modid>/<entry>' → 已入队（reload 不重复追加，#13）
     let ranEntries = false;
     let loadedOk = false; // mods 已装载（或确定本会话无 mod）
     let lastRoot: string | null = null;
@@ -85,18 +86,26 @@ export function createModLoader(options: ModLoaderOptions): ModLoader {
         const mixinFiles = (manifest.mixins && manifest.mixins.length) ? manifest.mixins : ['patches.js'];
         for (let m = 0; m < mixinFiles.length; m++) {
             const code = readFile(dir + '/' + mixinFiles[m]);
-            if (!code) { warn('mod "' + id + '" 的 ' + mixinFiles[m] + ' 不可读，跳过'); return; }
+            // 单个 mixin 文件不可读 → 跳过该文件继续装载其余（#13）：
+            // 此前 return 连坐整个 mod——前面的已注册、后面的和 entry 全部不装载
+            if (!code) { warn('mod "' + id + '" 的 ' + mixinFiles[m] + ' 不可读，跳过该文件（继续装载其余）'); continue; }
             execute(code, id + '/' + mixinFiles[m]);
             log('mod "' + id + '" v' + (manifest.version || '?') + ' 注册: ' + mixinFiles[m]);
         }
         if (manifest.entry) {
             const entryTxt = readFile(dir + '/' + manifest.entry);
+            const entryKey = id + '/' + manifest.entry;
             if (entryTxt) {
-                entries.push(function (code: string, mid: string): () => void {
-                    return function (): void {
-                        execute(code, mid + '/entry.js');
-                    };
-                }(entryTxt, id));
+                if (queuedEntryKeys[entryKey]) {
+                    log('mod "' + id + '" entry ' + manifest.entry + ' 已在队列，reload 跳过重复装载');
+                } else {
+                    queuedEntryKeys[entryKey] = 1;
+                    entries.push(function (code: string, mid: string): () => void {
+                        return function (): void {
+                            execute(code, mid + '/entry.js');
+                        };
+                    }(entryTxt, id));
+                }
             } else {
                 warn('mod "' + id + '" entry ' + manifest.entry + ' 不可读');
             }

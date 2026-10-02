@@ -11,7 +11,6 @@ global.acorn = require('../vendor/acorn.js');
 require('../runtime/mixinAst.js');
 require('../runtime/mixinTransformer.js');
 
-var assert = require('assert');
 var build = require('../build-tool/build.js');
 
 var failures = 0;

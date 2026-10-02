@@ -24,7 +24,11 @@ function main(argv: string[]): number {
 }
 
 if (require.main === module) {
-    process.exit(main(process.argv.slice(2)));
+    // 不能 process.exit：Node 宿主的 mod entry 是 setTimeout(0) 调度的，exit 会丢弃
+    // pending timer，带 entry 的 mod 在 CLI 冒烟模式下永不执行（#8）。
+    // 改设 exitCode 让事件循环自然排空（entry 执行完毕后进程自然退出；
+    // 入口脚本若是常驻服务，进程随其事件循环存续）。
+    process.exitCode = main(process.argv.slice(2));
 }
 
 export { main };

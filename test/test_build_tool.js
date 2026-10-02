@@ -13,7 +13,6 @@ require('../runtime/mixinAst.js');
 require('../runtime/mixinTransformer.js');
 
 var build = require('../build-tool/build.js');
-var assert = require('assert');
 
 var failures = 0;
 function check(name, cond, detail) {
@@ -89,7 +88,7 @@ if (res.ok) {
     var sandboxWindow = { console: sandboxConsole, __mixin_exports: null };
     try {
         new Function('window', 'console', 'reg', 'Laya',
-            out.replace('({7:', 'window.__mc_mod = ({7:'))(sandboxWindow, sandboxConsole,
+            out.replace(/^\s*\(\{7:/, 'window.__mc_mod = ({7:'))(sandboxWindow, sandboxConsole,
             function () {}, {});
         check('变换后目标可执行且无异常', true);
         check('wrap/inject 日志按序出现',

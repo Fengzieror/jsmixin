@@ -7,10 +7,15 @@
  */
 import * as esbuild from 'esbuild';
 import fs from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+// 版本单一来源：package.json（#16，bump 只改一处）
+const VERSION = JSON.parse(fs.readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json'), 'utf8')).version;
 
 // 许可声明头：MIT 义务 = 再分发时保留版权与许可声明。
 // boot bundle 内联了 acorn，必须带 acorn 归属；其余产物只声明 jsmixin 自身。
-const OWN = '/*! jsmixin v2.1.0 | MIT License | https://github.com/Fengzieror/jsmixin */';
+const OWN = '/*! jsmixin v' + VERSION + ' | MIT License | https://github.com/Fengzieror/jsmixin */';
 const ACORN = '/*! Includes acorn 8.18.0 | MIT License | '
     + 'Copyright (C) 2012-2020 by Marijn Haverbeke, Ingvar Stepanyan and contributors '
     + '| https://github.com/acornjs/acorn */';

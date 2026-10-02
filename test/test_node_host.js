@@ -21,8 +21,15 @@ var HOST = path.join(__dirname, '../dist/cjs/hosts/node.js');
  * 场景搭建：files = { 相对路径: 内容 }；entry 相对 tmp 根，cwd = tmp 根。
  * mod 布局：mods/mods.json（可选）+ mods/<id>/{mixins.json,patches.js}
  */
+var tmpDirs = [];
+process.on('exit', function () {
+    // 临时目录用完即清（#17）：此前每跑一次测试泄漏一个 tmp 目录
+    tmpDirs.forEach(function (t) { try { fs.rmSync(t, { recursive: true, force: true }); } catch (e) { /* ignore */ } });
+});
+
 function runScene(files) {
     var tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'jsmixin-node-'));
+    tmpDirs.push(tmp);
     for (var rel in files) {
         var p = path.join(tmp, rel);
         fs.mkdirSync(path.dirname(p), { recursive: true });

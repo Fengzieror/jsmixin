@@ -54,7 +54,15 @@ function discoverScanDirs(root: string): string[] {
 
 export function activateNodeHost(options?: NodeHostOptions): NodeHost {
     const g = globalThis as G;
-    if (g.__jsmixinNodeHost) return g.__jsmixinNodeHost as NodeHost;
+    const existing = g.__jsmixinNodeHost as NodeHost | undefined;
+    if (existing) {
+        // 重复激活：幂等返回旧实例，但 modsDir 实际不同时必须出声（#14），静默吞掉会误导排障。
+        // 以解析后的绝对路径比较，避免 cli.js 自动激活（缺省 cwd/mods）与显式传参路径同目录的误报。
+        if (options && options.modsDir && path.resolve(options.modsDir) !== path.resolve(existing.modsDir)) {
+            console.log('[jsmixin] WARN: 宿主已激活（modsDir=' + existing.modsDir + '），本次 modsDir=' + options.modsDir + ' 被忽略');
+        }
+        return existing;
+    }
 
     let acornInst = options && options.acorn;
     if (!acornInst) {
@@ -88,7 +96,14 @@ export function activateNodeHost(options?: NodeHostOptions): NodeHost {
         g.eval = function (src: string): any {
             if (typeof src === 'string' && src.length > 64) {
                 try {
-                    src = transformAuto(src, '(inline-eval)');
+                    const t = transformAuto(src, '(inline-eval)');
+                    if (t !== src && /(^|[^\w$.])eval\s*\(/.test(src)) {
+                        // 语义边界告警（#3）：包装后 eval 内部对原始 eval 的调用是【间接 eval】，
+                        // 目标代码里的直接 eval 会失去词法作用域语义（ReferenceError / 全局泄漏）。
+                        // 这无法在保持语义的前提下拦截，只能告警 + 文档声明（docs/error-policy.md）。
+                        log('WARN: 目标代码疑似含直接 eval，eval 钩子会将其变为间接 eval（词法作用域语义改变），相关代码可能报 ReferenceError');
+                    }
+                    src = t;
                 } catch (e: any) {
                     log('eval transform error: ' + e);
                 }

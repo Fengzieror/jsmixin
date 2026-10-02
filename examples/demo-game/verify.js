@@ -19,6 +19,13 @@ var before = {};
 gameFiles.forEach(function (f) { before[f] = md5(f); });
 
 var r = spawnSync(process.execPath, ['game/main.js'], { cwd: here, encoding: 'utf8' });
+// 游戏进程崩溃时必须立刻报出来并展示 stderr，否则断言全挂在莫名的输出缺失上（#17）
+if (r.error) { console.error('verify: 启动游戏进程失败: ' + r.error.message); process.exit(1); }
+if (r.status !== 0) {
+    console.error('verify: 游戏进程异常退出（status=' + r.status + '）');
+    if (r.stderr) console.error('--- stderr ---\n' + r.stderr);
+    process.exit(r.status == null ? 1 : r.status);
+}
 var out = r.stdout || '';
 
 var failed = 0;

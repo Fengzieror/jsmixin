@@ -1,0 +1,55 @@
+name: issue-repro
+
+# 复现 Fengzieror/jsmixin#1–#18：全新 clone 环境 + scripts/repro-issues.mjs 逐条核查。
+# 结论见 run 的 Summary（每条 issue 一行 CONFIRMED / NOT-REPRODUCED）。
+on:
+  push:
+    branches: [issue-repro]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repro:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # [#4] 全新 clone 的 npm install（触发 prepare → build → add-banners 走到不存在的 dist/esm）
+      # 预期失败；失败本身即 #4 的行为级复现，结果经 FRESH_INSTALL_RESULT 传给核查脚本。
+      - name: '[#4] fresh npm install (expected to fail)'
+        id: fresh
+        continue-on-error: true
+        run: npm install --no-audit --no-fund > fresh-install.log 2>&1
+
+      - name: record fresh install outcome
+        if: always()
+        run: echo "FRESH_INSTALL_RESULT=${{ steps.fresh.outcome }}" >> "$GITHUB_ENV"
+
+      # 绕过 #4 装依赖并构建（mkdir dist/esm 是 workaround，不是修复）
+      - name: install deps (skip prepare)
+        if: always()
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: build (workaround for #4)
+        if: always()
+        run: |
+          mkdir -p dist/esm
+          npm run build
+
+      - name: run issue repro (#1-#18)
+        if: always()
+        run: node scripts/repro-issues.mjs
+
+      - name: upload fresh-install log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fresh-install-log
+          path: fresh-install.log
+          if-no-files-found: ignore
