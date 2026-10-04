@@ -23,7 +23,7 @@
 import { applyAstPatches, setAcorn, VERSION as AST_VERSION } from './ast.js';
 import type { MixinEntry, ModDescription, PatchStats } from './types.js';
 
-export const VERSION = '2.1.0';
+export const VERSION = '2.2.0-beta.1';
 
 export interface MixinLog {
     (msg: string): void;
